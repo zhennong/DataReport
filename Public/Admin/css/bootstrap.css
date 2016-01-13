@@ -1,0 +1,28 @@
+/*Bootstrap Override*/
+body{color:%555;}
+.container-fluid{margin:25px auto;}
+.alert{background:#fcf8e3;color:#666;}
+.alert h4{color:#555;}
+label{font-weight:normal;}
+label.tip{font-weight:normal;color:gray;}
+label.tip.red{color:#f00;background:url(/Public/Admin/img/error.png) no-repeat 0px 9px;padding-left:20px;}
+
+.form-group{margin-bottom: 0px;}
+.form-horizontal .form-group{background: #fff;padding: 15px 0px;}
+.form-horizontal .form-group.odd{background: #fcfcfc;}
+
+.form-control{position:relative;display:inline-table;}
+.form-control.short{width:130px;}
+
+.row-fluid h4{font-weight: bold;text-indent: 1em;color: #555;}
+
+#content,#memo{overflow-y:auto;overflow-x:hidden;}
+
+#area_from_box{padding-left:8px;display:none;}
+
+/*日期CSS 重写*/
+.laydate-icon{height:auto;line-height:auto;}
+.laydate_body .laydate_top{padding:0px;}
+.laydate_body .laydate_bottom{height:33px;}
+
+
