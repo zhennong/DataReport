@@ -1,10 +1,28 @@
-/*
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
-*/
-/* 
-    Created on : Jan 14, 2016, 8:56:03 AM
-    Author     : wodrow
-*/
+@charset "utf-8";
+body {font-family:"微软雅黑";color:#000;font-size:14px;border:0px;padding:0px;margin:0px;}
+h1,h2,h3,h4,h5,h6,ul,ol,li,input,p,dl,dt,dd{border:0px;padding:0px;margin:0px;list-style-type:none;}
+a,a:hover{text-decoration:none;color:#000;}
+img{border:0px;vertical-align:top}
+.clear{clear:both;}
+.clearfix:after { content: ""; display: table; clear: both; }
+.clearfix { *zoom:1;}
 
+/*easyui重写*/
+.head a{color:White;text-decoration:underline;}
+
+.easyui-accordion ul{list-style-type:none;margin:0px; padding:10px 5px;}
+.easyui-accordion ul li{ padding:0px;}
+.easyui-accordion ul li a{line-height:24px;}
+.easyui-accordion ul li div{margin:0px 0px;padding-left:10px;padding-top:2px;border:1px solid #fff;}
+.easyui-accordion ul li div.hover{border:1px dashed #99BBE8; background:#E0ECFF;cursor:pointer;}
+.easyui-accordion ul li div.hover a{color:#416AA3;}
+.easyui-accordion ul li div.selected{border:1px solid #99BBE8; background:#E0ECFF;cursor:default;}
+.easyui-accordion ul li div.selected a{color:#416AA3; font-weight:bold;}
+
+.panel-icon{left:3px;}
+
+#west{}
+#west ul{}
+#west ul li{list-style-type: disc;list-style-position: inside;}
+#west ul li a{}
+#west ul li a:hover{color: blue;}
