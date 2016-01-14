@@ -8,8 +8,6 @@ img{border:0px;vertical-align:top}
 .clearfix { *zoom:1;}
 
 /*easyui重写*/
-.head a{color:White;text-decoration:underline;}
-
 .easyui-accordion ul{list-style-type:none;margin:0px; padding:10px 5px;}
 .easyui-accordion ul li{ padding:0px;}
 .easyui-accordion ul li a{line-height:24px;}
@@ -18,11 +16,19 @@ img{border:0px;vertical-align:top}
 .easyui-accordion ul li div.hover a{color:#416AA3;}
 .easyui-accordion ul li div.selected{border:1px solid #99BBE8; background:#E0ECFF;cursor:default;}
 .easyui-accordion ul li div.selected a{color:#416AA3; font-weight:bold;}
-
 .panel-icon{left:3px;}
-
 #west{}
 #west ul{}
 #west ul li{list-style-type: disc;list-style-position: inside;}
 #west ul li a{color: #555;}
 #west ul li a:hover{color: #0E2D5F;}
+
+/*bootstrap重写*/
+.panel{margin-bottom: 0px;}
+.panel-body{padding:0px;}
+.panel-title{font-size: 14px;color:#555;font}
+
+/*新样式*/
+.head a{color:White;text-decoration:underline;}
+
+
