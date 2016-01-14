@@ -11,8 +11,9 @@ return array(
     'DB_DEBUG'          =>  true, 		// 数据库调试模式 开启后可以记录SQL日志
 
     /* 主题设置 */
-    'DEFAULT_THEME' =>  'default', 
-    
+    'DEFAULT_THEME' => 'default',
+
     /* 业务网站数据库 */
     'BUSINESS_DB' => 'mysql://root:root@192.168.0.15:3306/nongyao001_com',
+    'BUSINESS_DB_TABLE_PREFIX' => 'destoon_',
 );

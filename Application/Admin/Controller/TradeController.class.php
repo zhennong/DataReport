@@ -13,6 +13,6 @@ class TradeController extends AdminController
 {
     public function index()
     {
-        _vp(D('trade')->where('itemid<100')->select());
+        _vp(D('trade')->where('itemid<1000')->select());
     }
 }
