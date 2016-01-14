@@ -2,7 +2,8 @@
 
 namespace Admin\Controller;
 
-class IndexController extends \Common\Controller\CommonController {
+class IndexController extends AdminController
+{
     public function index(){
         $this->display();
     }
