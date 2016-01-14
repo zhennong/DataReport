@@ -20,13 +20,14 @@ if(version_compare(PHP_VERSION,'5.4.0','<'))  die('require PHP > 5.4.0 !');
 define('APP_DEBUG',True);
 
 
-//定义默认模块
+// 定义默认模块
 define('BIND_MODULE','Admin');
 
 // 定义应用目录
 define('APP_PATH','./Application/');
 
-
+// composer
+include 'vendor/autoload.php';
 
 // 引入ThinkPHP入口文件
 require './ThinkPHP/ThinkPHP.php';
