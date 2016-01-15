@@ -51,13 +51,25 @@ class TradeController extends AdminController{
         $i = 1;
         while ($x < $end_t['ts']) {
             $mouth_solt[$i]['start']['ts'] = $x;
-            $mouth_solt[$i]['start']['date'] = date("Y-m-d", $x);
+            $mouth_solt[$i]['start']['date'] = date("Y-m", $x);
             $x = strtotime("+{$i} Month", $start_t['ts']);
             $mouth_solt[$i]['end']['ts'] = $x;
-            $mouth_solt[$i]['end']['date'] = date("Y-m-d", $x);
+            $mouth_solt[$i]['end']['date'] = date("Y-m", $x);
             $i++;
         }
         return $mouth_solt;
+    }
+
+    /**
+     * 获取月订单总额
+     */
+    public function getTradeAmountByMouth($mouth_trades)
+    {
+        $x = 0;
+        foreach ($mouth_trades as $k => $v) {
+            $x += $v['amount'];
+        }
+        return $x;
     }
 
     /**
@@ -76,8 +88,10 @@ class TradeController extends AdminController{
         $model = D('Trade');
         foreach ($mouth_sort as $k => $v) {
             $map['addtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
-            $mouth_solt_trades[$k]['trades'] = $model->field('itemid')->where($map)->select();
+            $map['status'] = ['in', '2,3,4'];
+            $mouth_solt_trades[$k]['trades'] = $model->field('itemid,amount')->where($map)->select();
             $mouth_solt_trades[$k]['trade_total'] = count($mouth_solt_trades[$k]['trades']);
+            $mouth_solt_trades[$k]['trade_amount'] = $this->getTradeAmountByMouth($mouth_solt_trades[$k]['trades']);
             $mouth_solt_trades[$k]['mouth_solt'] = $v;
             $mouth_solt_trades[$k]['mouth_name'] = date("Y-m", $v['start']['ts']);
             unset($mouth_solt_trades[$k]['trades']);
