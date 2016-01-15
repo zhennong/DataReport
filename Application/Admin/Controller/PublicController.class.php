@@ -6,9 +6,11 @@
  * @如果需要公共控制器，就不要继承AuthController，直接继承Controller
  */
 namespace Admin\Controller;
-use Think\Controller;
 
-class PublicController extends Controller{
+use Common\Controller\CommonController;
+
+class PublicController extends CommonController
+{
     //登录验证
     public function login(){
     	if(!empty($_POST)){			
@@ -42,10 +44,10 @@ class PublicController extends Controller{
 		    $this->error('验证码错误',U('Public/login'));
 	    }
     	}else{
-	    if(session('aid')){
-		    $this->error('已登录，正在跳转到主页',U('Index/index'));
-	    }
-	    $this->display();
+			if (session('aid')) {
+				$this->error('已登录，正在跳转到主页', U('Index/index'));
+			}
+			$this->display();
     	}
     }    
     

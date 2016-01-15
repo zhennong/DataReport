@@ -23,8 +23,8 @@ class AdminController extends AuthController{
     		$data[$k]['group'] = $group[0]['title'];
     	}	
     	$this->assign('data',$data);
-	
-	//分页 
+
+		//分页
     	$count = $m->count(id);		// 查询满足要求的总记录数
     	$page = new \Think\Page($count,PAGE_SIZE);		// 实例化分页类 传入总记录数和每页显示的记录数
     	$show = $page->show();		// 分页显示输出

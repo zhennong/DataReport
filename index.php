@@ -19,7 +19,6 @@ if(version_compare(PHP_VERSION,'5.4.0','<'))  die('require PHP > 5.4.0 !');
 // 开启调试模式 建议开发阶段开启 部署阶段注释或者设为false
 define('APP_DEBUG',True);
 
-
 // 定义默认模块
 define('BIND_MODULE','Admin');
 
@@ -30,7 +29,7 @@ define('APP_PATH','./Application/');
 define('RUNTIME_PATH','./Runtime/');
 
 // composer
-include 'vendor/autoload.php';
+require 'vendor/autoload.php';
 
 // 引入ThinkPHP入口文件
 require './ThinkPHP/ThinkPHP.php';
