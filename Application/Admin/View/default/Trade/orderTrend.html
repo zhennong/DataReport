@@ -4,38 +4,58 @@
     <script>
         $(document).ready(function () {
             // datatable
-            $("#order_trend_datatable").dataTable();
-            // echart
-            var mouth_solt_trades = <?= json_encode($mouth_solt_trades) ?>;
+            $("#order_trend_datatable").dataTable({
+                language: dataTables_zh_CN
+            });
+
+            var mouth_solt_trades = <?=json_encode($mouth_solt_trades) ?>;
+            var mouth_name = [];
+            var trade_total = [];
+            $.each(mouth_solt_trades, function (index, val) {
+                mouth_name[index - 1] = mouth_solt_trades[index]['mouth_name'];
+                trade_total[index - 1] = mouth_solt_trades[index]['trade_total'];
+            });
             option = {
-                tooltip : {
-                trigger: 'axis'
-            },
+                title: {
+                    text: '订单走势图',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    formatter: '{a} <br/>{b} : {c}'
+                },
+                legend: {
+                    left: 'left',
+                    data: ['订单数']
+                },
+                xAxis: {
+                    type: 'category',
+                    name: 'x',
+                    data: mouth_name,
+                    show: true,
+                    axisLabel: {
+                        interval: 0,
+                        formatter: function (val) {
+                            return val.split("").join("\n");
+                        }
+                    }
+                },
                 grid: {
-                left: '0',
-                right: '0',
-                bottom: '1%',
-                containLabel: true
-            },
-                xAxis : [
-            {
-                type : 'category',
-                boundaryGap : false,
-                data : ['周一','周二','周三','周四','周五','周六','周日']
-            }
-                ],
-                yAxis : [
-            {
-                type : 'value'
-            }
-                ],
-                series : [
-            {
-                name:'营销',
-                type:'line',
-                stack: '总量',
-                data:[120, 132, 101, 134, 90, 230, 210]
-            }
+                    left: '0',
+                    right: '0',
+                    bottom: '0',
+                    containLabel: true
+                },
+                yAxis: {
+                    type: 'log',
+                    name: 'y'
+                },
+                series: [
+                    {
+                        name: '订单数',
+                        type: 'line',
+                        data: trade_total
+                    }
                 ]
             };
             var order_trend_chart = echarts.init(document.getElementById('order_trend_chart'));
@@ -46,7 +66,7 @@
 
 <block name="body">
     <div class="container-fluid">
-        <div class="col-lg-5">
+        <div class="col-lg-12">
             <table id="order_trend_datatable" class="table table-bordered table-hover">
                 <thead>
                 <tr>

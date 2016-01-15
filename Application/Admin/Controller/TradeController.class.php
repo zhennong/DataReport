@@ -74,8 +74,9 @@ class TradeController extends AdminController
             $map['addtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
             $mouth_solt_trades[$k]['trades'] = $model->field('itemid')->where($map)->select();
             $mouth_solt_trades[$k]['trade_total'] = count($mouth_solt_trades[$k]['trades']);
-            unset($mouth_solt_trades[$k]['trades']);
             $mouth_solt_trades[$k]['mouth_solt'] = $v;
+            $mouth_solt_trades[$k]['mouth_name'] = date("Y-m", $v['start']['ts']);
+            unset($mouth_solt_trades[$k]['trades']);
         }
         return $mouth_solt_trades;
     }
@@ -90,6 +91,7 @@ class TradeController extends AdminController
         }
         $mouth_solt = ($this->getTimeSolt($this->start_t, $this->end_t));
         $mouth_solt_trades = $this->getTradeByMouthSolt($mouth_solt);
+        _vp($mouth_solt_trades, 0, 2);
         $this->assign(['mouth_solt_trades' => $mouth_solt_trades]);
         $this->display();
     }
