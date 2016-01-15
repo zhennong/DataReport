@@ -1,13 +1,11 @@
 <div region="west" split="true" title="导航菜单" style="width:180px;" id="west">
     <!--开始-->
     <div class="easyui-accordion" border="false">
-        <div title="About" data-options="iconCls:'icon-add'">
+        <div title="系统设置" data-options="iconCls:'icon-add'">
             <ul>
-                <li><a href="{:U('Public/login')}" target="mainFrame">系统设置1</a></li>
-                <li><a href="" target="mainFrame">系统设置</a></li>
-                <li><a href="">系统设置</a></li>
-                <li><a href="">系统设置</a></li>
-                <li><a href="">系统设置</a></li>
+                <li><a href="{:U('Admin/admin_list')}" target="mainFrame">用户管理</a></li>
+                <li><a href="{:U('Admin/auth_group')}" target="mainFrame">分组管理</a></li>
+                <li><a href="{:U('Admin/login')}" target="mainFrame">权限管理</a></li>
             </ul>
         </div>
         <div title="About" data-options="iconCls:'icon-add'">

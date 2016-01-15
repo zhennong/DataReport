@@ -19,14 +19,14 @@ img{border:0px;vertical-align:top}
 .panel-icon{left:3px;}
 #west{}
 #west ul{}
-#west ul li{list-style-type: disc;list-style-position: inside;}
+#west ul li{list-style-type: disc;list-style-position: inside;color: #555;}
 #west ul li a{color: #555;}
 #west ul li a:hover{color: #0E2D5F;}
 
 /*bootstrap重写*/
 .panel{margin-bottom: 0px;}
 .panel-body{padding:0px;}
-.panel-title{font-size: 14px;color:#555;font}
+.panel-title{font-size: 14px;color:#555;font-weight: normal;}
 
 /*新样式*/
 .head a{color:White;text-decoration:underline;}

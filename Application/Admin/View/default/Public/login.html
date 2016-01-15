@@ -3,30 +3,59 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>后台登陆 - 网站管理系统</title>
-<link type="text/css" href="__COMMON__/login.css" rel="stylesheet" />	
+<link type="text/css" href="__COMMON__/login.css" rel="stylesheet" />
+<script type="text/javascript" src="__STATIC__/jquery-2.0.3.min.js"></script>
+<script type="text/javascript">
+function check_login(){
+    var account = $('#account').val();
+    var password = $('#password').val();
+    var code = $('#code').val();	//验证码
+    if(account == ''){
+        alert('账号不能为空');
+        $('#account').focus();
+        return false;
+    }    
+    if(password == ''){
+        alert('密码不能为空');
+        $('#password').focus();
+        return false;
+    }    
+    if(code == ''){
+        alert('验证码不能为空');
+        $('#code').focus();
+        return false;
+    }
+    return true;
+}
+</script>
 </head>
 <body>
 <div id="container">
     <div class="logo">
-        <a href="#"><img src="__IMG__/logo.png" alt="" /></a>
+        <a href="/"><img src="__IMG__/logo.png" alt="" /></a>
     </div>
     
     <div id="box">
         <form name="loginform" id="loginform" method="post" action="{:U('Public/login')}" onSubmit="return check_login()">
         <p class="main">
-            <label>Username: </label>
-            <input type="text" name="account" value="" /> 
-            <label>Password: </label>
-            <input type="password" name="password" value="">	
+            <label>账&nbsp;&nbsp;号: </label>
+            <input type="text" name="account" id="account" value="" /> 
         </p>
-
-        <p class="space">
-            <span><input type="checkbox" />Remember me</span>
-            <input type="submit" value="Login" class="login" />
+        <p class="main">
+            <label>密&nbsp;&nbsp;码: </label>
+            <input type="password" name="password" id="password" value="">
+        </p>
+        <p class="main">
+            <label>验证码: </label>
+            <img style="border:1px solid #D4E7F6; cursor:pointer;position:relative;top:0px;float: left;left:-5px;" width=60 height=25 title="点我刷新哦！" src="{:U('Public/verify')}" onclick="javascript:this.src=this.src+'?time='+Math.random()" />
+            <input type="text" name="code" id="code" value="" style="width: 50px;margin-left: 10px;" />	
+        </p>
+        <p align="left" style="text-indent:7em;">
+          <input type="reset" name="btn" class="btn" value="重置" />	
+          <input type="submit" name="btn" class="btn" value="登陆" />	
         </p>
         </form>
     </div>
 </div>
-
 </body>
 </html>
