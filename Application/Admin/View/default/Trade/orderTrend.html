@@ -69,43 +69,40 @@
                 },
                 tooltip: {
                     trigger: 'axis',
-                    formatter: '{a}
-            <br/>
-            {b} : {c}'
-            },
-            legend: {
-                left: 'left',
-                data: ['交易额']
-            },
-            xAxis: {
-                type: 'category',
-                name: 'x',
-                data: mouth_name,
-                show: true,
-                axisLabel: {
-                interval: 0,
-                formatter: function (val) {
-                return val.split("").join("\n");
-            }
-            }
-            },
-            grid: {
-                left: '0',
-                right: '0',
-                bottom: '0',
-                containLabel: true
-            },
-            yAxis: {
-                type: 'log',
-                name: 'y'
-            },
-            series: [
-            {
-                name: '交易额',
-                type: 'line',
-                data: trade_amount
-            }
-            ]
+                    formatter: '{a}<br/>{b} : {c}'},
+                legend: {
+                    left: 'left',
+                    data: ['交易额']
+                },
+                xAxis: {
+                    type: 'category',
+                    name: 'x',
+                    data: mouth_name,
+                    show: true,
+                    axisLabel: {
+                        interval: 0,
+                        formatter: function (val) {
+                            return val.split("").join("\n");
+                        }
+                    }
+                },
+                grid: {
+                    left: '0',
+                    right: '0',
+                    bottom: '0',
+                    containLabel: true
+                },
+                yAxis: {
+                    type: 'log',
+                    name: 'y'
+                },
+                series: [
+                    {
+                        name: '交易额',
+                        type: 'line',
+                        data: trade_amount
+                    }
+                ]
             };
             var amount_trend_chart = echarts.init(document.getElementById('amount_trend_chart'));
             amount_trend_chart.setOption(option);
@@ -120,9 +117,9 @@
                 <thead>
                 <tr>
                     <th>开始时间</th>
-                    <th>end_time</th>
-                    <th>trade_total</th>
-                    <th>trade_amount</th>
+                    <th>结束时间</th>
+                    <th>订单数</th>
+                    <th>交易额</th>
                 </tr>
                 </thead>
                 <tbody>
