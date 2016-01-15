@@ -10,7 +10,11 @@ use Common\Controller\AuthController;
 use Think\Auth;
 
 class AdminController extends AuthController{
-   
+    //默认配置 对栏目权限判断
+    public function admin_index(){
+	$this->display('Admin/admin_list');
+    }
+
     //用户列表
     public function admin_list(){
     	$m = M('Admin');
@@ -23,8 +27,8 @@ class AdminController extends AuthController{
     		$data[$k]['group'] = $group[0]['title'];
     	}	
     	$this->assign('data',$data);
-	
-	//分页 
+
+		//分页
     	$count = $m->count(id);		// 查询满足要求的总记录数
     	$page = new \Think\Page($count,PAGE_SIZE);		// 实例化分页类 传入总记录数和每页显示的记录数
     	$show = $page->show();		// 分页显示输出

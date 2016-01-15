@@ -13,23 +13,23 @@ class IndexController extends AuthController{
     public function index(){
         $m = M('auth_rule');
 	$field = 'id,name,title';
-	$data = $m->field($field)->where('pid=0 AND status=1')->select();	   
+	$data = $m->field($field)->where('pid=0 AND status=1')->select();
 	$auth = new Auth();
 	//没有权限的菜单不显示
-    	foreach ($data as $k=>$v){
-	    if(!$auth->check($v['name'], session('aid')) && session('aid') != 1){
+	foreach ($data as $k => $v) {
+	    if (!$auth->check($v['name'], session('aid')) && session('aid') != 1) {
 		unset($data[$k]);
-	    }else{
+	    } else {
 		// status = 1    为菜单显示状态
-		$data[$k]['sub'] = $m->field($field)->where('pid='.$v['id'].' AND status=1')->order('sort asc,id')->select();
-		foreach ($v['sub'] as $k2 => $v2){
-			if(!$auth->check($v2['name'], session('aid')) && session('aid') != 1){
-				unset($v['sub'][$k2]);
-			}
+		$data[$k]['sub'] = $m->field($field)->where('pid=' . $v['id'] . ' AND status=1')->order('sort asc,id')->select();
+		foreach ($v['sub'] as $k2 => $v2) {
+		    if (!$auth->check($v2['name'], session('aid')) && session('aid') != 1) {
+			    unset($v['sub'][$k2]);
+		    }
 		}
 	    }
 	}
-
+	
 	$this->assign('data',$data);	// 顶级
     	$this->display();
     }

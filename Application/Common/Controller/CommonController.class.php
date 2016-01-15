@@ -8,7 +8,8 @@ use Think\Controller;
  *
  * @author wodrow
  */
-abstract class CommonController extends Controller
-{
-    //put your code here
+abstract class CommonController extends Controller{
+    public function _empty(){
+        $this->display('Public:Error');
+    }
 }

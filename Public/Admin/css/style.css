@@ -104,7 +104,7 @@ background:url(../img/menu_blue.gif) no-repeat 15px 9px; font-size:14px;border-b
 .details tbody tr td{ padding:8px 10px; border-bottom:1px solid #EFEFEF; border-right:1px solid #EFEFEF;font-size: 14px;}
 .details tbody tr td:last-child{ border-right:0px;}
 .details tbody tr td .label{ font-size:14px; font-weight:600; color:#333;}
-.details tbody tr td input{ height:26px; font-size:14px; font-family:"Microsoft YaHei"; padding-left:2px;border:1px solid #ccc;border-radius: 5px;}
+.details tbody tr td input{ height:26px; font-size:14px; font-family:"Microsoft YaHei"; padding-left:2px;border:1px solid #ccc;border-radius: 5px;text-indent:0.3em;}
 .details tbody tr td select{ min-height:26px;border:1px solid #ccc;border-radius: 5px;width:180px;}
 .details tbody tr td .checkbox{ margin-left:10px; position:relative; top:8px;}
 
@@ -112,7 +112,7 @@ background:url(../img/menu_blue.gif) no-repeat 15px 9px; font-size:14px;border-b
 
 
 /* page */
-.page {width:100%;padding:15px 0;clear: both; color: #666666; font-family: Arial,Helvetica,sans-serif; font-size: 14px;text-align: center;float:right;}
+.page {width:100%;padding:15px 0;clear: both; color: #666666; font-family: Arial,Helvetica,sans-serif; font-size: 14px;text-align: center;float:right;display:none;}
 .page a, .page span {border: 1px solid #ccc; color: #666; display: inline-block; font-family:'Tahoma'; margin: 0 3px; text-decoration: none;border-radius:5px;}
 .page a, .page span, .s2 {padding: 0 8px; text-align: center;}
 .page a:hover, .page span:hover,.page span.current{background-color: #6FB737; border: 1px solid #6FB737; color: #FFFFFF; cursor:pointer; text-decoration: none;}

@@ -30,5 +30,8 @@ img{border:0px;vertical-align:top}
 
 /*新样式*/
 .head a{color:White;text-decoration:none;margin:0 3px;}
+.head a:hover{text-decoration: underline;}
+
+.panel-body em{font-size: 10px;}
 
 
