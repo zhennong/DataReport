@@ -56,5 +56,12 @@ class PublicController extends Controller{
     	$Verify->fontSize = 50;	//验证码字体大小
     	$Verify->length = 4;	//验证码位数
     	$Verify->entry();
-    }    
+    }  
+    
+    //退出登录
+    public function logout(){
+    	session('aid',null);	//注销 uid ，account
+    	session('account',null);
+    	$this->success('退出登录成功',U('Public/login'));
+    }  
 }

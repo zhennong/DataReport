@@ -177,4 +177,71 @@ class AdminController extends AuthController{
     		$this->display();
     	}	
     }
+    
+    //编辑组
+    public function group_edit(){
+    	$m = M('auth_group');
+    	if(!empty($_POST)){
+    		$data['id'] = I('id');
+    		$data['title'] = I('title');
+    		$data['rules'] = implode(',', I('rules'));
+    		if($m->save($data)){
+    			$this->success('修改成功');
+    		}else{
+    			$this->error('修改失败');
+    		}
+    	}else{
+    		$where['id'] = I('id');	//组ID
+    		$reuslt = $m->field('id,title,rules')->where($where)->find();
+    		$reuslt['rules'] = ','.$reuslt['rules'].',';
+    		$this->assign('reuslt',$reuslt);
+
+     		$m = M('auth_rule');
+    		$data = $m->field('id,title')->where('pid = 0')->select();
+    		$arr = array();
+    		foreach ($data as $k => $v){
+    			$data[$k]['sub'] = $m->field('id,title')->where('pid ='.$v['id'])->select();
+    		}
+    		$this->assign('data',$data);
+    		$this->display();    		
+    	}
+    }
+
+    //删除组
+    public function group_del(){
+    	$where['id'] = I('id');
+    	$m = M('auth_group');
+    	if($m->where($where)->delete()){
+    		$this->ajaxReturn(1);
+    	}else{
+    		$this->ajaxReturn(0);
+    	}
+    }
+         
+    //权限列表
+    public function auth_rule(){
+    	if(!empty($_POST)){
+    		$m = M('auth_rule');
+    		$data['id'] = '';
+    		$data['name'] = I('name');
+    		$data['title'] = I('title');
+    		$data['pid'] = I('pid');
+    		$data['status'] = I('status');
+    		$data['create_time'] = time();
+    		if($m->add($data)){
+    			$this->success('添加成功');	//成功
+    		}else{
+    			$this->success('添加失败');	//失败
+    		}
+    	}else{
+    		$m = M('auth_rule');
+    		$field = 'id,name,title,create_time,status';
+	    	$data = $m->field($field)->where('pid=0')->select();
+	    	foreach ($data as $k=>$v){
+	    		$data[$k]['sub'] = $m->field($field)->where('pid='.$v['id'])->select();
+	    	}
+	    	$this->assign('data',$data);	// 顶级
+	    	$this->display();
+    	}
+    }
 }

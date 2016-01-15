@@ -8,7 +8,7 @@ img{border:0px;vertical-align:top}
 .clearfix { *zoom:1;}
 
 /*easyui重写*/
-.easyui-accordion ul{list-style-type:none;margin:0px; padding:10px 5px;}
+.easyui-accordion ul{list-style-type:none;margin:0px; padding:6px 5px;}
 .easyui-accordion ul li{ padding:0px;}
 .easyui-accordion ul li a{line-height:24px;}
 .easyui-accordion ul li div{margin:0px 0px;padding-left:10px;padding-top:2px;border:1px solid #fff;}
@@ -20,15 +20,15 @@ img{border:0px;vertical-align:top}
 #west{}
 #west ul{}
 #west ul li{list-style-type: disc;list-style-position: inside;color: #555;}
-#west ul li a{color: #555;}
-#west ul li a:hover{color: #0E2D5F;}
+#west ul li a{color: #555;font-size: 12px;}
+#west ul li a:hover{color: #0E2D5F;text-decoration: underline;}
 
 /*bootstrap重写*/
 .panel{margin-bottom: 0px;}
 .panel-body{padding:0px;}
-.panel-title{font-size: 14px;color:#555;font-weight: normal;}
+.panel-title{font-size: 12px;color:#555;font-weight: normal;}
 
 /*新样式*/
-.head a{color:White;text-decoration:underline;}
+.head a{color:White;text-decoration:none;margin:0 3px;}
 
 

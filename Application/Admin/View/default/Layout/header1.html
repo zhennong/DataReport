@@ -8,8 +8,9 @@
     background: url(__IMG__/layout-browser-hd-bg.gif) #7f99be repeat-x center 50%;
     line-height: 25px;color: #fff; font-family: Verdana, 微软雅黑,黑体">
     <span style="float:right; padding-right:20px;" class="head">
-        欢迎 admin <a href="#" id="editpass">修改密码</a>
-        <a href="#" id="loginOut">安全退出</a>
+        您好 [ <a target="mainFrame" href="{:U('Admin/admin_edit',array('id'=>$_SESSION['aid']))}">{$_SESSION['account']}</a> ] ，欢迎回来！ <a href="javascript:;" onclick="return update_pwd();" id="editpass">修改密码</a>
+        <a href="javascript:;" onclick="clear_cache();">清除缓存</a>
+        <a href="javascript:;" onclick="return logout();" id="loginOut">安全退出</a>
     </span>
     <span style="padding-left:10px; font-size: 16px; ">后台管理系统</span>
 </div>

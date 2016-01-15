@@ -1,10 +1,10 @@
 @charset "utf-8";
 /* CSS Document */
 *{ margin:0; padding:0; font-weight:normal; list-style:none; font-family:'Microsoft YaHei';}
-body{font:14px/1.6 Microsoft YaHei, sans-serif; margin:0px; padding:0px; color:#666; line-height:22px; border:0;}
+body{font:12px/1.6 Microsoft YaHei, sans-serif; margin:0px; padding:0px; color:#666; line-height:22px; border:0;}
 ul,ol{list-style:none;color:#666;}
 img{border:none;}
-a{font:14px/1.6 Tahoma, Helvetica, arial,\5fae\8f6f\96c5\9ed1, sans-serif; text-decoration:none; line-height:22px; color:#555;}
+a{font:12px/1.6 Tahoma, Helvetica, arial,\5fae\8f6f\96c5\9ed1, sans-serif; text-decoration:none; line-height:22px; color:#555;}
 a:hover{text-decoration:none;}
 .clear{ clear:both;}
 .input{ min-height:26px; min-width:80px; padding:0 10px; padding-left:3px; font-size:16px;}
@@ -18,10 +18,10 @@ a:hover{text-decoration:none;}
 .a_button:last-child{ margin-right:0px;}
 .round { border-top-left-radius:4px; border-top-right-radius:4px;}
 
-.table_top{ min-height:40px; padding-top:10px; text-align:center; font-family:Microsoft YaHei; }
-.table_top input{ margin-right:10px; width:150px; color:#666;}
+.table_top{ min-height:40px; padding:10px 0; text-align:center; font-family:Microsoft YaHei; }
+.table_top input{ margin-right:10px; width:150px; color:#666;border:1px solid #ccc;border-radius: 3px;}
 .table_top input:hover{ color:#666; font-family:Microsoft YaHei;}
-.table_top select{ height:30px; font-size:14px; line-height:24px; margin-right:10px;}
+.table_top select{ height:26px; font-size:14px; line-height:26px; margin-right:10px;border:1px solid #ccc;border-radius: 3px;}
 
 .first_checkbox li{ float:none; border-bottom:1px dotted #CCC; overflow:auto; font-size:16px;}
 .first_checkbox li:last-child{ border-bottom:0px;}
