@@ -1,10 +1,10 @@
 @charset "utf-8";
 /* CSS Document */
 *{ margin:0; padding:0; font-weight:normal; list-style:none; font-family:'Microsoft YaHei';}
-body{font:12px/1.6 Microsoft YaHei, sans-serif; margin:0px; padding:0px; color:#666; line-height:22px; border:0;}
+body{font:14px/1.6 Microsoft YaHei, sans-serif; margin:0px; padding:0px; color:#666; line-height:22px; border:0;}
 ul,ol{list-style:none;color:#666;}
 img{border:none;}
-a{font:12px/1.6 Tahoma, Helvetica, arial,\5fae\8f6f\96c5\9ed1, sans-serif; text-decoration:none; line-height:22px; color:#555;}
+a{font:14px/1.6 Tahoma, Helvetica, arial,\5fae\8f6f\96c5\9ed1, sans-serif; text-decoration:none; line-height:22px; color:#555;}
 a:hover{text-decoration:none;}
 .clear{ clear:both;}
 .input{ min-height:26px; min-width:80px; padding:0 10px; padding-left:3px; font-size:16px;}
@@ -70,7 +70,7 @@ background:url(../img/menu_blue.gif) no-repeat 15px 9px; font-size:14px;border-b
 .sub_menu li a:hover{ background:url(../img/menu_blue_hover.png) no-repeat #146AC1 15px 10px; color:#FFF;}
 .sub_menu li .sub_menu_hover{ background:url(../img/menu_blue_hover.png) no-repeat #146AC1 15px 10px; color:#FFF;}
 
-.web_info{ width:210px; line-height:28px; text-align:center;font-size:12px;}
+.web_info{ width:210px; line-height:28px; text-align:center;font-size:14px;}
 
 /* right */
 .nav{ min-width:800px; min-height:35x; border-bottom:#09F; background:#E4EEFA; margin-top:3px; border-top:1px solid #E4EEFA;}
@@ -101,9 +101,9 @@ background:url(../img/menu_blue.gif) no-repeat 15px 9px; font-size:14px;border-b
 /* details */
 .details{border-top:1px solid #EFEFEF; margin-top:15px;}
 .details tbody tr:hover td{ background:#FFF;}
-.details tbody tr td{ padding:8px 10px; border-bottom:1px solid #EFEFEF; border-right:1px solid #EFEFEF;font-size: 12px;}
+.details tbody tr td{ padding:8px 10px; border-bottom:1px solid #EFEFEF; border-right:1px solid #EFEFEF;font-size: 14px;}
 .details tbody tr td:last-child{ border-right:0px;}
-.details tbody tr td .label{ font-size:12px; font-weight:600; color:#333;}
+.details tbody tr td .label{ font-size:14px; font-weight:600; color:#333;}
 .details tbody tr td input{ height:26px; font-size:14px; font-family:"Microsoft YaHei"; padding-left:2px;border:1px solid #ccc;border-radius: 5px;}
 .details tbody tr td select{ min-height:26px;border:1px solid #ccc;border-radius: 5px;width:180px;}
 .details tbody tr td .checkbox{ margin-left:10px; position:relative; top:8px;}
@@ -112,7 +112,7 @@ background:url(../img/menu_blue.gif) no-repeat 15px 9px; font-size:14px;border-b
 
 
 /* page */
-.page {width:100%;padding:15px 0;clear: both; color: #666666; font-family: Arial,Helvetica,sans-serif; font-size: 12px;text-align: center;float:right;}
+.page {width:100%;padding:15px 0;clear: both; color: #666666; font-family: Arial,Helvetica,sans-serif; font-size: 14px;text-align: center;float:right;}
 .page a, .page span {border: 1px solid #ccc; color: #666; display: inline-block; font-family:'Tahoma'; margin: 0 3px; text-decoration: none;border-radius:5px;}
 .page a, .page span, .s2 {padding: 0 8px; text-align: center;}
 .page a:hover, .page span:hover,.page span.current{background-color: #6FB737; border: 1px solid #6FB737; color: #FFFFFF; cursor:pointer; text-decoration: none;}
