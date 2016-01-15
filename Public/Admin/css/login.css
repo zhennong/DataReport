@@ -7,7 +7,7 @@
 body {
  position:relative;
  height:100%;
- background:#fff url('../admin/images/loginbg.png') left -50px repeat-x;
+ background:#fff url('../images/loginbg.png') left -50px repeat-x;
  font-family:Tahoma, Arial, sans-serif;
 }
 

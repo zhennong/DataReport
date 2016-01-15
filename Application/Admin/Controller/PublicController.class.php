@@ -53,7 +53,7 @@ class PublicController extends Controller{
     public function verify(){   	
     	ob_clean();		//清除缓存
     	$Verify = new \Think\Verify();
-    	$Verify->fontSize = 50;	//验证码字体大小
+    	$Verify->fontSize = 100;	//验证码字体大小
     	$Verify->length = 4;	//验证码位数
     	$Verify->entry();
     }  
