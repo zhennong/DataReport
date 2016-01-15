@@ -15,6 +15,14 @@ class TradeController extends AdminController
 {
     public function index()
     {
-        _vp(D('trade')->where('itemid<1000')->select());
+//        $this->redirect('orderTeand');
+    }
+
+    /**
+     * 订单走势
+     */
+    public function orderTrend()
+    {
+        $this->display();
     }
 }
