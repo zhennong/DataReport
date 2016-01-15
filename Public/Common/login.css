@@ -7,7 +7,7 @@
 body {
  position:relative;
  height:100%;
- background:#fff url('../assets/loginbg.png') left top repeat-x;
+ background:#fff url('../admin/images/loginbg.png') left top repeat-x;
  font-family:Tahoma, Arial, sans-serif;
 }
 
@@ -49,7 +49,7 @@ p.main label {
 }
 
 p.main INPUT {
- background:url('../assets/input.png') 0 0 repeat-x;
+ background:url('../admin/images/input.png') 0 0 repeat-x;
  border:1px solid #d3d3d3;
  color:#555;
  padding:5px;
@@ -64,7 +64,7 @@ input.login {
  font-size:12px;
  text-decoration:none;
  border:1px solid #555;
- background:url('../assets/rep1.png') 50% 50% repeat-x;
+ background:url('../admin/images/rep1.png') 50% 50% repeat-x;
  display:inline;
  margin-right:5px;
 }
