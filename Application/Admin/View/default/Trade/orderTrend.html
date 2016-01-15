@@ -8,11 +8,7 @@
                 language: dataTables_zh_CN
             });
 
-            var mouth_solt_trades = {
-            :
-            json_encode($mouth_solt_trades)
-        }
-            ;
+            var mouth_solt_trades = <?=json_encode($mouth_solt_trades) ?>;
             var mouth_name = [];
             var trade_total = [];
             $.each(mouth_solt_trades, function (index, val) {
