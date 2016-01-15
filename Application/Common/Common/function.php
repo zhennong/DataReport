@@ -382,7 +382,7 @@ function get_url()
  * @return void       浏览器输出
  * @author wodrow <wodrow451611cv@gmail.com | 1173957281@qq.com>
  */
-function _vp($test, $style = 0, $stop = 0)
+function _vp($test, $stop = 0, $style = 0)
 {
     switch ($style) {
         case 0:
