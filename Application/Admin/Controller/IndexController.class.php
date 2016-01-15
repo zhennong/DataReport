@@ -117,22 +117,22 @@ class IndexController extends AuthController{
 	    //strpos 参数必须加引号
 	    //删除Runtime/Cache/admin目录下面的编译文件
 	    if(strpos("'".$str."'", '1')){   			
-		$dir = APP_PATH.'Runtime/Cache/Admin/';
+		$dir = RUNTIME_PATH.'/Cache/Admin/';
 		$this->delDirAndFile($dir);
 	    }
 	    //删除Runtime/Cache/Home目录下面的编译文件
 	    if(strpos("'".$str."'", '2')){    			
-		$dir = APP_PATH.'Runtime/Cache/Home/';
+		$dir = RUNTIME_PATH.'/Cache/Home/';
 		$this->delDirAndFile($dir);
 	    }
 	    //删除Runtime/Data/目录下面的编译文件
 	    if(strpos("'".$str."'", '3')){
-		$dir = APP_PATH.'Runtime/Data/';
+		$dir = RUNTIME_PATH.'/Data/';
 		$this->delDirAndFile($dir);
 	    }
 	    //删除Runtime/Temp/目录下面的编译文件
 	    if(strpos("'".$str."'", '4')){	
-		$dir = APP_PATH.'Runtime/Temp/';
+		$dir = RUNTIME_PATH.'/Temp/';
 		$this->delDirAndFile($dir);
 	    }
 	    $this->ajaxReturn(1);	//成功
