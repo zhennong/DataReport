@@ -124,8 +124,7 @@ class TradeController extends AdminController
     /**
      * 下单时段（24小时制）
      */
-    public function orderTime()
-    {
+    public function orderTime(){
         $date_start = $this->date_start;
         $date_end = $this->date_end;
 	
@@ -147,6 +146,72 @@ class TradeController extends AdminController
                 }
             }
         }
+        $this->assign(['time_solt_trades'=>$time_solt_trades]);
+
+        $this->display();
+    }
+    
+    /**
+     * 付款时段（24小时制）
+     */
+    public function orderPay(){
+	$date_start = $this->date_start;
+        $date_end = $this->date_end;
+	
+        $map['paytime'] = [
+            ['gt',$date_start],['lt',$date_end]
+        ];
+        $map['status'] = ['in','2,3,4'];
+        $trades = D('Trade')->where($map)->field("paytime")->select();
+        for($i = 0;$i<24;$i++){
+            $x = $i;
+            if($x<10){
+                $x = "0{$x}";
+            }
+            $pay_solt_trades[$i]['pay_name'] = $x."点";
+            $pay_solt_trades[$i]['trade_total'] = 0;
+            foreach($trades as $k => $v){
+                if($x == date('H',$v['paytime'])){
+                    $pay_solt_trades[$i]['trade_total']++;
+                }
+            }
+        }
+        $this->assign(['pay_solt_trades'=>$pay_solt_trades]);
+
+        $this->display();
+    }
+    
+    /**
+     * 发货时段（24小时制）
+     */
+    public function orderLogistics(){
+	$date_start = $this->date_start;
+        $date_end = $this->date_end;
+	
+        $map['addtime'] = [
+            ['gt',$date_start],['lt',$date_end]
+        ];
+        $map['status'] = ['in','2,3,4'];
+        $trades = D('Logistics')->where($map)->field("addtime")->select();
+	
+        for($i = 0;$i<24;$i++){
+            $x = $i;
+            if($x<10){
+                $x = "0{$x}";
+            }
+            $time_solt_trades[$i]['time_name'] = $x."点";
+            $time_solt_trades[$i]['trade_total'] = 0;
+	    
+	    foreach($trades as $k => $v){
+                if($x == date('H',$v['addtime'])){
+		     $time_solt_trades[$i]['trade_total'] ++;
+                }
+            }	    
+            
+        }
+	
+	//exit;
+	
         $this->assign(['time_solt_trades'=>$time_solt_trades]);
 
         $this->display();
