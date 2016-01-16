@@ -8,12 +8,14 @@
 
 namespace Admin\Controller;
 
-class TradeController extends AdminController{
+class TradeController extends AdminController
+{
     //默认配置 对栏目权限判断
-    public function trade_index(){
-	$this->display('Trade/trade_index');
+    public function trade_index()
+    {
+        $this->display('Trade/trade_index');
     }
-    
+
     public $start_t, $end_t; // ['y'=>'','m'=>'','d'=>'','ts'=>''];
 
     public function index()
@@ -110,7 +112,6 @@ class TradeController extends AdminController{
         }
         $mouth_solt = ($this->getTimeSolt($this->start_t, $this->end_t));
         $mouth_solt_trades = $this->getTradeByMouthSolt($mouth_solt);
-        _vp($mouth_solt_trades, 0, 2);
         $this->assign(['mouth_solt_trades' => $mouth_solt_trades]);
         $this->display();
     }
