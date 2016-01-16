@@ -121,14 +121,8 @@ class TradeController extends AdminController{
      */
     public function orderTime() {	
 	$Trade = D('Trade');
-	//$data = $Trade->field('itemid,addtime')->order('itemid desc')->select();
 	
-	
-	
-	//$begin = strtotime("2016-01-01 1:00:00");
-	//$end = strtotime("2016-01-01 1:59:59");
-	
-	$day = "2016-1-1";
+	$day = "2016-1-1"; //动态获取
 	
 	for ($i=0;$i < 24; $i++ ){
 	    
@@ -142,11 +136,7 @@ class TradeController extends AdminController{
 	}
 	
 	exit;
-	//$begin = date("Y-m-d H:i:s",$begin);
-	
-		
-		
-	$this->assign("data",$data_a);	
+	$this->assign("data",$data);	
 	$this->display();
     }
 }
