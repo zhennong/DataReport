@@ -16,4 +16,11 @@ return array(
     /* 业务网站数据库 */
     'BUSINESS_DB' => 'mysql://root:root@192.168.0.15:3306/nongyao001_com',
     'BUSINESS_DB_TABLE_PREFIX' => 'destoon_',
+    
+     /*验证码设置*/
+    'VERIFY' => array(
+	'fontSize'    =>  60,    // 验证码字体大小
+	'length'      =>  4,     // 验证码位数
+	//'useNoise'    =>    false, // 关闭验证码杂点
+    )
 );
