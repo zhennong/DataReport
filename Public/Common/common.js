@@ -61,3 +61,10 @@ function clear_cache(){
         content: "{:U('Index/clear_cache')}"
     });
 }
+
+//日期转换成时间戳
+function formatTime(time){
+    var time = Date.parse(new Date(time));
+    time = time / 1000;
+    return time;
+}

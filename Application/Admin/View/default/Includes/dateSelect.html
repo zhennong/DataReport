@@ -12,13 +12,6 @@
     </form>
 
     <script>
-        //日期转换成时间戳
-        function formatTime(time){
-            var time = Date.parse(new Date(time));
-            time = time / 1000;    
-            return time;
-        }
-        
         //日期验证结束时间必须大于开始时间
         function check_date_input(){            
             var date_start = $("#date_start").val();
