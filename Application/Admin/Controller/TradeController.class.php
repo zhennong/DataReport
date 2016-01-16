@@ -115,29 +115,35 @@ class TradeController extends AdminController
         $this->assign(['mouth_solt_trades' => $mouth_solt_trades]);
         $this->display();
     }
-    
-    
+
+
     /**
      * 下单时段（24小时制）
      */
-    public function orderTime() {	
-	$Trade = D('Trade');
-	
-	$day = "2016-1-1"; //动态获取
-	
-	for ($i=0;$i < 24; $i++ ){
-	    
-	    $begin = strtotime($day.$i.":00:00");	    
-	    $end = strtotime($day.$i.":59:59");
-	    
-	    $data = $Trade->where("addtime > '".$begin."' AND addtime < '".$end."'")->field('itemid,addtime')->order('addtime desc')->count();
-	    
-	    
-	    dump($data);
-	}
-	
-	exit;
-	$this->assign("data",$data);	
-	$this->display();
+    public function orderTime()
+    {
+        $date_start = strtotime("2015-01-01 00:00:00");
+        $date_end = strtotime("2015-12-31 23:59:59");
+        $map['addtime'] = [
+            ['gt',$date_start],['lt',$date_end]
+        ];
+        $map['status'] = ['in','2,3,4'];
+        $trades = D('Trade')->where($map)->field("addtime")->select();
+        for($i = 0;$i<24;$i++){
+            $x = $i;
+            if($x<10){
+                $x = "0{$x}";
+            }
+            $time_solt_trades[$i]['time_name'] = $x."点";
+            $time_solt_trades[$i]['trade_total'] = 0;
+            foreach($trades as $k => $v){
+                if($x == date('H',$v['addtime'])){
+                    $time_solt_trades[$i]['trade_total']++;
+                }
+            }
+        }
+        $this->assign(['time_solt_trades'=>$time_solt_trades]);
+
+        $this->display();
     }
 }
