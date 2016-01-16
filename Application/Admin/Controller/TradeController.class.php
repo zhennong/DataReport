@@ -113,4 +113,39 @@ class TradeController extends AdminController{
         $this->assign(['mouth_solt_trades' => $mouth_solt_trades]);
         $this->display();
     }
+    
+    
+    /**
+     * 下单时段（24小时制）
+     */
+    public function orderTime() {	
+	$Trade = D('Trade');
+	//$data = $Trade->field('itemid,addtime')->order('itemid desc')->select();
+	
+	
+	
+	//$begin = strtotime("2016-01-01 1:00:00");
+	//$end = strtotime("2016-01-01 1:59:59");
+	
+	$day = "2016-1-1";
+	
+	for ($i=0;$i < 24; $i++ ){
+	    
+	    $begin = strtotime($day.$i.":00:00");	    
+	    $end = strtotime($day.$i.":59:59");
+	    
+	    $data = $Trade->where("addtime > '".$begin."' AND addtime < '".$end."'")->field('itemid,addtime')->order('addtime desc')->count();
+	    
+	    
+	    dump($data);
+	}
+	
+	exit;
+	//$begin = date("Y-m-d H:i:s",$begin);
+	
+		
+		
+	$this->assign("data",$data_a);	
+	$this->display();
+    }
 }
