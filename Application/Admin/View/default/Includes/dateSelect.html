@@ -6,15 +6,32 @@
         </div>
         <div class="form-group">
             <label for="date_end">结束日期</label>
-            <input type="text" name="date_start" class="form-control" id="date_end" placeholder="结束日期">
+            <input type="text" name="date_end" class="form-control" id="date_end" placeholder="结束日期">
         </div>
         <button type="submit" class="btn btn-default">提交</button>
     </form>
 
     <script>
-        function check_date_input(){
-            return false
+        //日期转换成时间戳
+        function formatTime(time){
+            var time = Date.parse(new Date(time));
+            time = time / 1000;    
+            return time;
         }
+        
+        //日期验证结束时间必须大于开始时间
+        function check_date_input(){            
+            var date_start = $("#date_start").val();
+            var date_end = $("#date_end").val();                          
+            if(formatTime(date_end) < formatTime(date_start)){
+                alert('结束日期必须大于开始日期');
+                $("#date_end").val("").focus();
+                return false;
+            }
+            return true;            
+        }
+               
+        //日期控件配置
         $(document).ready(function () {
             var datetimepicker_config = {
                 format:"yyyy-mm-dd",
@@ -25,6 +42,6 @@
             };
             $("#date_start").datetimepicker(datetimepicker_config);
             $("#date_end").datetimepicker(datetimepicker_config);
-        });
+        });        
     </script>
 </div>

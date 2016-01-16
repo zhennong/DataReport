@@ -10,6 +10,16 @@ namespace Admin\Controller;
 
 class TradeController extends AdminController
 {
+    public function _initialize()
+    {
+	parent::_initialize();
+	
+        $this->start_t = ['y' => '2013', 'm' => '01', 'd' => '01'];
+        $this->getTimeStramp($this->start_t);
+        $this->end_t = ['y' => date('Y'), 'm' => date('m'), 'd' => date('d')];
+        $this->getTimeStramp($this->end_t);
+    }
+    
     //默认配置 对栏目权限判断
     public function trade_index()
     {
@@ -23,13 +33,7 @@ class TradeController extends AdminController
 //        $this->redirect('orderTeand');
     }
 
-    public function _initialize()
-    {
-        $this->start_t = ['y' => '2013', 'm' => '01', 'd' => '01'];
-        $this->getTimeStramp($this->start_t);
-        $this->end_t = ['y' => date('Y'), 'm' => date('m'), 'd' => date('d')];
-        $this->getTimeStramp($this->end_t);
-    }
+    
 
     /**
      * 获取时间戳
@@ -125,18 +129,16 @@ class TradeController extends AdminController
 	
 	$day = "2016-1-1"; //动态获取
 	
-	for ($i=0;$i < 24; $i++ ){
-	    
+	for ($i=0;$i < 24; $i++ ){	    
 	    $begin = strtotime($day.$i.":00:00");	    
 	    $end = strtotime($day.$i.":59:59");
 	    
 	    $data = $Trade->where("addtime > '".$begin."' AND addtime < '".$end."'")->field('itemid,addtime')->order('addtime desc')->count();
 	    
 	    
-	    dump($data);
+	    //dump($data);
 	}
 	
-	exit;
 	$this->assign("data",$data);	
 	$this->display();
     }

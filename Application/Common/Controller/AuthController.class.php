@@ -11,7 +11,8 @@ use Think\Auth;
 use Think\Model;
 
 class AuthController extends CommonController {
-    protected function _initialize(){
+    public function _initialize(){
+	parent::_initialize();
 	//session不存在时，不允许直接访问
 	if (!session('aid')) {
 		$this->error('还没有登录，正在跳转到登录页', U('Public/login'));
