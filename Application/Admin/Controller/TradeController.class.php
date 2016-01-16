@@ -80,6 +80,7 @@ class TradeController extends AdminController{
      *          'trades'=>[[]],
      *          'trade_total' => int,
      *          'mouth_solt' => ['start'=>[],'end'=>[]],
+     *          ...
      *      ]]
      * ]
      */
