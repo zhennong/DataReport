@@ -28,6 +28,9 @@ img{border:0px;vertical-align:top}
 .panel-body{padding:0px;}
 .panel-title{font-size: 14px;color:#555;font-weight: normal;}
 
+.container-fluid.padding{padding: 25px 25px 35px;}
+.form-group.margin-left{margin-left: 25px;}
+
 /*新样式*/
 .head a{color:White;text-decoration:none;margin:0 3px;}
 .head a:hover{text-decoration: underline;}

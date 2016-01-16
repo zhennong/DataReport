@@ -21,12 +21,14 @@ abstract class CommonController extends Controller{
 	    $this->date_end = strtotime(I('date_end'));
 
 	    $this->assign(['date_start' => $this->date_start,'date_end' => $this->date_end]);	
+	}else{	    
+	    $curr_date = date('Y');    
+	    $this->date_start = strtotime($curr_date ."-1-1 00:00:00");
+	    $this->date_end = strtotime($curr_date ."-12-31 23:59:59");
 	}
     }
     
     public function _empty(){
         $this->display('Public:Error');
-    }
-    
-   
+    }   
 }

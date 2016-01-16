@@ -126,8 +126,9 @@ class TradeController extends AdminController
      */
     public function orderTime()
     {
-        $date_start = strtotime("2015-01-01 00:00:00");
-        $date_end = strtotime("2015-12-31 23:59:59");
+        $date_start = $this->date_start;
+        $date_end = $this->date_end;
+	
         $map['addtime'] = [
             ['gt',$date_start],['lt',$date_end]
         ];
