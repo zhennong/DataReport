@@ -5,14 +5,14 @@
         $(function () {
             var mouth_solt_trades = <?=json_encode($mouth_solt_trades) ?>;
             var mouth_name = [];
-            var trade_total = [];
+            var trade_amount = [];
             $.each(mouth_solt_trades, function (index, val) {
                 mouth_name[index-1] = mouth_solt_trades[index]['mouth_name'];
                 trade_amount[index-1] = mouth_solt_trades[index]['trade_amount'];
             });
             option = {
                 title: {
-                text: '下单时段图',
+                text: '下单付款金额图',
                 left: 'center'
             },
                 tooltip: {
@@ -23,7 +23,7 @@
             },
                 legend: {
                 left: 'left',
-                data: ['下单时段']
+                data: ['交易金额']
             },
                 grid: {
                 left: '0',
@@ -44,7 +44,7 @@
                 ],
                 series: [
             {
-                name: '下单时段',
+                name: '交易金额',
                 type: 'bar',
                 data: trade_amount
             }
