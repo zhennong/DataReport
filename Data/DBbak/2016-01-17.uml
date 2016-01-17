@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>DATABASE</ID>
+  <OriginalElement>64c88574-d310-4817-b9f0-7bf53060b743</OriginalElement>
+  <nodes>
+    <node x="340.0" y="206.0">64c88574-d310-4817-b9f0-7bf53060b743.TABLE:data_report.dr_auth_group_access</node>
+    <node x="-82.0" y="317.0">64c88574-d310-4817-b9f0-7bf53060b743.TABLE:data_report.dr_auth_group</node>
+    <node x="328.0" y="-70.0">64c88574-d310-4817-b9f0-7bf53060b743.TABLE:data_report.dr_auth_rule</node>
+    <node x="-159.0" y="-62.0">64c88574-d310-4817-b9f0-7bf53060b743.TABLE:data_report.dr_admin</node>
+  </nodes>
+  <notes />
+  <edges />
+  <settings layout="Hierarchic Group" zoom="1.0" x="311.0" y="315.0" />
+  <SelectedNodes>
+    <node>64c88574-d310-4817-b9f0-7bf53060b743.TABLE:data_report.dr_auth_group_access</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Key columns</Category>
+    <Category>Columns</Category>
+  </Categories>
+</Diagram>
+
