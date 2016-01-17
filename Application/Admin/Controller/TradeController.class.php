@@ -127,7 +127,7 @@ class TradeController extends AdminController
     public function orderTime(){
         $date_start = $this->date_start;
         $date_end = $this->date_end;
-	
+		
         $map['addtime'] = [
             ['gt',$date_start],['lt',$date_end]
         ];
@@ -153,7 +153,7 @@ class TradeController extends AdminController
     
     /**
      * 付款时段（24小时制）
-     * 默认值：当年
+     * @author iredbaby
      */
     public function orderPay(){
 	$date_start = $this->date_start;
@@ -184,7 +184,7 @@ class TradeController extends AdminController
     
     /**
      * 发货时段（24小时制）
-     * 默认值：当年
+     * @author iredbaby
      */
     public function orderLogistics(){
 	$date_start = $this->date_start;
@@ -217,7 +217,7 @@ class TradeController extends AdminController
     
     /**
      * 支付方式
-     * 默认值：当年
+     * @author iredbaby
      */
     public function orderPaytype() {
 	$date_start = $this->date_start;
@@ -241,6 +241,7 @@ class TradeController extends AdminController
     
     /**
      * 客户退单
+     * @author iredbaby
      * 算法：【选择日期】成功退款笔数/【选择日期】支付宝交易笔数*100%；
      * @param $trades_a  退款状态统计
      * @param $trades_b  交易成功状态统计
@@ -259,23 +260,31 @@ class TradeController extends AdminController
     
     /**
      * 年趋势图
+     * @author iredbaby
      */
     public function orderYearTrend(){
-//	$year_start = $this->year_start;
-//        $year_end = $this->year_end;
-	
-//	$year_start = date("Y-m-d H:i:s",$year_start);
-//	$year_end = date("Y-m-d H:i:s",$year_end);
-	
-	
-//        $map['addtime'] = [
-//            ['gt',$year_start],['lt',$year_end]
-//        ];
-//        $map['status'] = ['in','2,3,4'];
-//        $Trade = D('Trade')->where($map)->field("addtime")->count();
-		
-	$this->assign("data",date('Y',$this->year_start) ." | ". date('Y',$this->year_end));
-	$this->display();
-	
+	$year_start = $this->year_start;
+        $year_end = $this->year_end;		
+        $map['addtime'] = [
+            ['gt',$year_start],['elt',$year_end]
+        ];
+        $map['status'] = ['in','2,3,4'];
+        $Trade = D('Trade')->where($map)->field("addtime")->select();		
+	$year_s = (int)date("Y",$year_start); 
+	$year_e = (int)date("Y",$year_end); 	
+	for ($i = $year_s;$i <= $year_e; $i++){
+	    $yeartrade_name['yeartrade_name'] .= "'".$i."',";	    
+	    foreach($Trade as $k => $v){		
+                if($i == date('Y',$v['addtime'])){
+		    $yeartrade_total[$i]['yeartrade_total'] ++;
+		}
+            }	    
+	}	
+	foreach ($yeartrade_total as $k => $v) {
+	    $total .= "'" .$v['yeartrade_total'] ."',";
+	}				
+	$yeartrade_name = arr2str($yeartrade_name);				
+	$this->assign(['yeartrade_name'=>$yeartrade_name,'yeartrade_total'=>$total]);
+	$this->display();	
     }
 }
