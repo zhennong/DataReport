@@ -264,13 +264,16 @@ class TradeController extends AdminController
 	$date_start = $this->date_start;
         $date_end = $this->date_end;
 	
+	dump(date("Y-m-d H:i:s",$date_end));
+	
         $map['addtime'] = [
             ['gt',$date_start],['lt',$date_end]
         ];
         $map['status'] = ['in','2,3,4'];
-        $Trade = D('Trade')->where($map)->field("addtime")->select();
+        $Trade = D('Trade')->where()->field("addtime")->select();
 	
-	dump($Trade);exit;
+	//$this->assign("data",$Trade);
+	$this->display();
 	
     }
 }

@@ -5,7 +5,7 @@
         $(function () {
             option = {
                 title: {
-                    text: '订单数年走势',
+                    text: '订单数年走势  （开始时间：<?= date("Y-m-d",$date_start )?> - 结束时间：<?= date("Y-m-d",$date_end ) ?>）',
                     left: 'center'
                 },
                 tooltip: {
@@ -54,6 +54,7 @@
 <block name="body">
     <div class="container-fluid">   
         <include file="Includes/yearSelect" />
+                
         <div class="col-lg-12">
             <div id="order_trend_chart" class="charts_h600"></div>
         </div>
