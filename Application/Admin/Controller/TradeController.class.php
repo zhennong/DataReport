@@ -271,20 +271,26 @@ class TradeController extends AdminController
         $map['status'] = ['in','2,3,4'];
         $Trade = D('Trade')->where($map)->field("addtime")->select();		
 	$year_s = (int)date("Y",$year_start); 
-	$year_e = (int)date("Y",$year_end); 	
+	$year_e = (int)date("Y",$year_end); 
+	
 	for ($i = $year_s;$i <= $year_e; $i++){
-	    $yeartrade_name['yeartrade_name'] .= "'".$i."',";	    
+	    //$yeartrade_name['yeartrade_name'] .= "'".$i."',";	    
+	    
+	    $yeartrade_name['yeartrade_name'] .= $i.",";	    
+	    
 	    foreach($Trade as $k => $v){		
                 if($i == date('Y',$v['addtime'])){
 		    $yeartrade_total[$i]['yeartrade_total'] ++;
 		}
-            }	    
-	}	
+            }	
+	    
+	}
 	foreach ($yeartrade_total as $k => $v) {
-	    $total .= $v['yeartrade_total'] .",";
-	}				
-	$yeartrade_name = arr2str($yeartrade_name);				
-	$this->assign(['yeartrade_name'=>$yeartrade_name,'yeartrade_total'=>$total]);
+	    $total[] = $v['yeartrade_total'];
+	}		
+	$yeartrade_total = arr2str($total);	
+	$yeartrade_name = arr2str($yeartrade_name);	
+	$this->assign(['yeartrade_name'=>$yeartrade_name,'yeartrade_total'=>$yeartrade_total]);
 	$this->display();	
     }
 }
