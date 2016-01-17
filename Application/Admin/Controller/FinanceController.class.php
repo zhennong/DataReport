@@ -44,4 +44,9 @@ class FinanceController extends AdminController
         $this->assign(['amount_total'=>$amount_total,'today_amount_total'=>$today_amount_total]);
         $this->display();
     }
+
+    public function mouthSoltPayment()
+    {
+
+    }
 }
