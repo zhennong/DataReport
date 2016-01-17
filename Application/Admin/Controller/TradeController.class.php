@@ -241,7 +241,7 @@ class TradeController extends AdminController
     
     /**
      * 客户退单
-     * 算法：近30天成功退款笔数/近30天支付宝交易笔数*100%；
+     * 算法：【选择日期】成功退款笔数/【选择日期】支付宝交易笔数*100%；
      * @param $trades_a  退款状态统计
      * @param $trades_b  交易成功状态统计
     */
