@@ -256,4 +256,11 @@ class TradeController extends AdminController
         $this->assign(['amount_rate_total'=>$trades_a,'amount_rate'=>$amount_rate,'amount_total'=>$trades_b]);
         $this->display();
     }
+    
+    /**
+     * 年趋势图
+     */
+    public function orderYearTrend(){
+	$this->display();
+    }
 }
