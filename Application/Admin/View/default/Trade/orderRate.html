@@ -1,0 +1,20 @@
+<extend name="Layout:ly2" />
+
+<block name="head">
+
+</block>
+
+<block name="body">
+    <include file="Includes/dateSelect" />
+    <div class="container-fluid">
+        <div class="col-lg-7">
+            <div class="alert alert-success">
+                <span><b>{:date("Y-m-d",$date_start)}</b> 到 <b>{:date("Y-m-d",$date_end)}</b>  成功数：<span class="label label-danger">{$amount_total}</span> 单</span>
+                <hr>
+                <span><b>{:date("Y-m-d",$date_start)}</b> 到 <b>{:date("Y-m-d",$date_end)}</b>  退单数：<span class="label label-danger">{$amount_rate_total}</span> 单</span>
+                <hr>                
+                <span><b>{:date("Y-m-d",$date_start)}</b> 到 <b>{:date("Y-m-d",$date_end)}</b>  退单率：<span class="label label-danger">{$amount_rate}</span> %</span>
+            </div>
+        </div>
+    </div>
+</block>
