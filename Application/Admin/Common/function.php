@@ -141,3 +141,31 @@ function diffdate($date1, $date2){
     return $my_arr;
 }
 
+/**
+ * 获取每月时间段
+ * @param $start_ts
+ * @param $end_ts
+ * @author wodrow
+ * @return
+ * return [
+ *      ['k'=>[
+ *          'start'=>['ts'=>timestrap,'date'=>'Y-m'],
+ *          'end'=>['ts'=>timestrap,'date'=>'Y-m'],
+ *      ]]
+ * ]
+ */
+function get_mouth_solt($start_ts,$end_ts){
+    $mouth_solt = [];
+    $x = $start_ts;
+    $i = 1;
+    while($x < $end_ts){
+        $mouth_solt[$i]['start']['ts'] = $x;
+        $mouth_solt[$i]['start']['date'] = date("Y-m", $x);
+        $x = strtotime("+{$i} Month", $start_ts);
+        $mouth_solt[$i]['end']['ts'] = $x;
+        $mouth_solt[$i]['end']['date'] = date("Y-m", $x);
+        $i++;
+    }
+    return $mouth_solt;
+}
+

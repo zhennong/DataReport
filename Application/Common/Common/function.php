@@ -375,6 +375,21 @@ function get_url()
 }
 
 /**
+ * 获取二维数组的一个键的值的和
+ * @param $arr [[]]
+ * @param $k
+ * @return int amount
+ */
+function get_arr_k_amount($arr,$k)
+{
+    $x = 0;
+    foreach ($arr as $key => $v) {
+        $x += $v[$k];
+    }
+    return $x;
+}
+
+/**
  * 调试输出|调试模式下
  * @param  mixed $test 调试变量
  * @param  int $style 模式
