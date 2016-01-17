@@ -281,7 +281,7 @@ class TradeController extends AdminController
             }	    
 	}	
 	foreach ($yeartrade_total as $k => $v) {
-	    $total .= "'" .$v['yeartrade_total'] ."',";
+	    $total .= $v['yeartrade_total'] .",";
 	}				
 	$yeartrade_name = arr2str($yeartrade_name);				
 	$this->assign(['yeartrade_name'=>$yeartrade_name,'yeartrade_total'=>$total]);
