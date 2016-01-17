@@ -1,4 +1,4 @@
-<extend name="Layout:ly2"/>
+<extend name="Layout:ly2" />
 
 <block name="head">
     <script type="text/javascript">
@@ -7,7 +7,7 @@
             var year_name = [];
             var trade_amount = [];
             $.each(year_solt_trades, function (index, val) {
-                year_name[index - 1] = year_solt_trades[index]['year_name'];
+                year_name[index-1] = year_solt_trades[index]['year_name'];
                 trade_amount[index-1] = year_solt_trades[index]['trade_amount'];
             });
             option = {
@@ -60,18 +60,8 @@
 </block>
 
 <block name="body">
-    <div class="container-fluid padding">
-        <div class="col-lg-12">
-            <h3><b>{$start_year}</b>年到<b>{$end_year}</b>年 隔年增长率</h3>
-            <div class="alert alert-success">
-                <?php foreach($year_solt_trades as $k => $v): ?>
-                    <?php if($v['year_name']>$start_year&&$v['year_name']<($end_year+1)): ?>
-                        <p>{$v['year_name']}年增长率为<span class="label label-danger"><?= ($year_solt_trades[$k]['trade_amount'] - $year_solt_trades[$k-1]['trade_amount']) * 100 / $year_solt_trades[$k-1]['trade_amount'] ?></span>%</p>
-                    <?php endif; ?>
-                <?php endforeach; ?>
-            </div>
-        </div>
-        <hr>
+    <include file="Includes/yearSelect" />
+    <div class="container-fluid">
         <div class="col-lg-12">
             <div id="order_year_chart" class="charts_h600"></div>
         </div>

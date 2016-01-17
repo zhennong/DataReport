@@ -169,3 +169,21 @@ function get_mouth_solt($start_ts,$end_ts){
     return $mouth_solt;
 }
 
+/**
+ * 获取年时间段
+ */
+function get_year_solt($start_ts,$end_ts){
+    $year_solt = [];
+    $x = $start_ts;
+    $i = 1;
+    while($x < $end_ts){
+        $year_solt[$i]['start']['ts'] = $x;
+        $year_solt[$i]['start']['year'] = date("Y", $x);
+        $x = strtotime("+{$i} Year", $start_ts);
+        $year_solt[$i]['end']['ts'] = $x;
+        $year_solt[$i]['end']['year'] = date("Y", $x);
+        $i++;
+    }
+    return $year_solt;
+}
+
