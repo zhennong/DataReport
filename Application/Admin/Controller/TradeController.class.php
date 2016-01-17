@@ -261,11 +261,11 @@ class TradeController extends AdminController
      * 年趋势图
      */
     public function orderYearTrend(){
-	$year_start = $this->year_start;
-        $year_end = $this->year_end;
+//	$year_start = $this->year_start;
+//        $year_end = $this->year_end;
 	
-	$year_start = date("Y-m-d H:i:s",$year_start);
-	$year_end = date("Y-m-d H:i:s",$year_end);
+//	$year_start = date("Y-m-d H:i:s",$year_start);
+//	$year_end = date("Y-m-d H:i:s",$year_end);
 	
 	
 //        $map['addtime'] = [
@@ -274,7 +274,7 @@ class TradeController extends AdminController
 //        $map['status'] = ['in','2,3,4'];
 //        $Trade = D('Trade')->where($map)->field("addtime")->count();
 		
-	$this->assign("data",$year_start ." | ". $year_end);
+	$this->assign("data",date('Y',$this->year_start) ." | ". date('Y',$this->year_end));
 	$this->display();
 	
     }

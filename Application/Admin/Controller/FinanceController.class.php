@@ -48,6 +48,7 @@ class FinanceController extends AdminController
 
     /**
      * 月付款
+     * @author wodrow
      */
     public function mouthSoltPayment()
     {
@@ -63,6 +64,25 @@ class FinanceController extends AdminController
             unset($mouth_solt_trades[$k]['trades']);
         }
         $this->assign('mouth_solt_trades',$mouth_solt_trades);
+        $this->display();
+    }
+
+    /**
+     * 年付款
+     * @author wodrow
+     */
+    public function annualPayment()
+    {
+        $this->display();
+    }
+
+    /**
+     * 付款年增长率
+     * @author wodrow
+     */
+    public function annualGrowthRateOfPayment()
+    {
+        $Trade = D('Trade');
         $this->display();
     }
 }
