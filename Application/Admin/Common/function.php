@@ -1,4 +1,10 @@
 <?php
+/**
+ * 公用方法
+ * User: iredbaby
+ * Date: 1/14/16
+ * Time: 09:01 AM
+ */
 
 //处理方法
 function rmdirr($dirname) {

@@ -19,7 +19,7 @@ class AuthController extends CommonController {
 	}
 
 	//session存在时，不需要验证的权限
-	$not_check = ['Index/index', 'Index/main', 'Index/clear_cache','Index/edit_pwd', 'Index/logout', 'Admin/admin_list','Admin/admin_edit', 'Admin/admin_add'];
+	$not_check = ['Index/index', 'Index/main', 'Index/clear_cache','Index/edit_pwd', 'Public/logout', 'Admin/admin_list','Admin/admin_edit', 'Admin/admin_add'];
 
 	//当前操作的请求                 模块名/方法名
 	if (in_array(CONTROLLER_NAME . '/' . ACTION_NAME, $not_check)) {
@@ -29,7 +29,7 @@ class AuthController extends CommonController {
 	//下面代码动态判断权限
 	$auth = new Auth();
 	if (!$auth->check(CONTROLLER_NAME . '/' . ACTION_NAME, session('aid')) && session('aid') != 1) {
-		$this->error('没有权限');
+	    $this->error('没有权限');
 	}
     }
 }

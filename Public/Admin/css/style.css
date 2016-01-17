@@ -108,7 +108,7 @@ background:url(../img/menu_blue.gif) no-repeat 15px 9px; font-size:14px;border-b
 .details tbody tr td select{ min-height:26px;border:1px solid #ccc;border-radius: 5px;width:180px;}
 .details tbody tr td .checkbox{ margin-left:10px; position:relative; top:8px;}
 
-.footer{ position:absolute; bottom:0; height:40px; background:#D0DBE8; width:100%; text-align:center; padding-top:6px;}
+.footer{ position:fixed; bottom:0;left:0px;z-index:99999; height:40px; background:#D0DBE8; width:100%; text-align:center; padding-top:6px;}
 
 
 /* page */
