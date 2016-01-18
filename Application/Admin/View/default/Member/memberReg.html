@@ -1,8 +1,8 @@
 <extend name="Layout:ly2"/>
 
 <block name="head">
-    <script type="text/javascript">
-        $(function () {            
+    <script type="text/javascript">                    
+        $(function () {             
             option = {
                 title: {
                     text: '会员注册月走势  （开始时间：<?= date("Y-m",$date_start )?>  结束时间：<?= date("Y-m",$date_end ) ?>）',
@@ -20,7 +20,7 @@
                     type: 'category',
                     name: 'x',
                     splitLine: {show: false},
-                    data: ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']
+                    data: ['<?= $mouth_name ?>']
                 },
                 grid: {
                     left: '3%',
@@ -36,7 +36,7 @@
                     {
                         name: '月走势',
                         type: 'line',
-                        data: [150,350,150,350,150,250,150,150,150,150,350,450]
+                        data: [<?= $member_amount ?>]
                     },
                     
                 ]
