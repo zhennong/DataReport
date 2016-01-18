@@ -192,7 +192,7 @@ class TradeController extends AdminController
             ['gt',$date_start],['lt',$date_end]
         ];
         $map['status'] = ['in','2,3,4'];
-        $trades = D('Logistics')->where($map)->field("addtime")->select();
+        $Logistics = D('Logistics')->where($map)->field("addtime")->select();
 	
         for($i = 0;$i<24;$i++){
             $x = $i;
@@ -202,7 +202,7 @@ class TradeController extends AdminController
             $time_solt_trades[$i]['time_name'] = $x."点";
             $time_solt_trades[$i]['trade_total'] = 0;
 	    
-	    foreach($trades as $k => $v){
+	    foreach($Logistics as $k => $v){
                 if($x == date('H',$v['addtime'])){
 		     $time_solt_trades[$i]['trade_total'] ++;
                 }
@@ -210,10 +210,30 @@ class TradeController extends AdminController
             
         }
 	
-	//exit;
-	
         $this->assign(['time_solt_trades'=>$time_solt_trades]);
-
         $this->display();
+    }
+    
+    /**
+     * 支付方式
+     */
+    public function orderPaytype() {
+	$date_start = $this->date_start;
+        $date_end = $this->date_end;	
+        $map['paytime'] = [
+            ['gt',$date_start],['lt',$date_end]
+        ];
+        $map['status'] = ['in','2,3,4'];
+        $trades = D('Trade')->where($map)->field('pay,count(pay) AS c')->group('pay')->select();	
+	foreach ($trades as $k => $v) {
+	    $time_solt_trades[$k]['name'] = $v['pay'];
+	    $title[] = "'".$v['pay']."'";
+	    $time_solt_trades[$k]['value'] = $v['c'];
+	}	
+	$data = json_encode($time_solt_trades);		
+	$title = arr2str($title);	
+	$this->assign("title",$title);
+	$this->assign("data",$data);		 
+        $this->display();	
     }
 }

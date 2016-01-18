@@ -42,4 +42,37 @@
 <!--self-->
 <link rel="stylesheet" type="text/css" href="__CSS__/style.css" />
 
+<script type="text/javascript">
+//退出登录
+function logout(){
+    layer.confirm('你确定要退出吗？', {icon: 3}, function(index){
+        layer.close(index);
+        window.location.href="{:U('Public/logout')}";
+    });
+}
+
+//修改密码
+function update_pwd(){
+    layer.open({
+        type: 2,
+        closeBtn: 2,
+        area: ['450px', '280px'],
+        title: '修改密码',
+        content: "{:U('Index/edit_pwd')}"
+    });
+}
+
+//清除缓存
+function clear_cache(){
+    layer.open({
+        type: 2,
+        closeBtn: 2,
+        area: ['520px', '160px'],
+        shadeClose: true,
+        title: '清除缓存（ 点击遮罩可以关闭窗口哦！ ）',
+        content: "{:U('Index/clear_cache')}"
+    });
+}    
+</script>
+
 <block name="head"></block>
