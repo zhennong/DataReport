@@ -187,3 +187,15 @@ function get_year_solt($start_ts,$end_ts){
     return $year_solt;
 }
 
+
+/**
+ * 时间戳转格式化年
+ * @param type $start
+ * @param type $end
+ * @return type
+ */
+function time2year($start , $end){   
+    $year_array['year']['start'] = date("Y", $start);	    
+    $year_array['year']['end'] = date("Y", $end);
+    return $year_array;    
+}

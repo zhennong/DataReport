@@ -5,7 +5,7 @@
         $(function () {            
             option = {
                 title: {
-                    text: '订单数年走势  （开始时间：<?= date("Y",$date_start )?>年 - 结束时间：<?= date("Y",$date_end ) ?>年）',
+                    text: '订单数年走势  （开始时间：<?= date("Y",$year_start )?>年 - 结束时间：<?= date("Y",$year_end ) ?>年）',
                     left: 'center'
                 },
                 tooltip: {
@@ -14,13 +14,13 @@
                 },
                 legend: {
                     left: 'left',
-                    data: ['年走势', '年走势']
+                    data: ['年走势']
                 },
                 xAxis: {
                     type: 'category',
                     name: 'x',
                     splitLine: {show: false},
-                    data: [{$yeartrade_name}]
+                    data: ['{$yeartrade_name}']
                 },
                 grid: {
                     left: '3%',

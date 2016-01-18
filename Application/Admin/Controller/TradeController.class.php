@@ -262,34 +262,22 @@ class TradeController extends AdminController
      * 年趋势图
      * @author iredbaby
      */
-    public function orderYearTrend(){
-	$year_start = $this->year_start;
-        $year_end = $this->year_end;		
-        $map['addtime'] = [
-            ['gt',$year_start],['elt',$year_end]
-        ];
-        $map['status'] = ['in','2,3,4'];
-        $Trade = D('Trade')->where($map)->field("addtime")->select();		
-	$year_s = (int)date("Y",$year_start); 
-	$year_e = (int)date("Y",$year_end); 
-	
-	for ($i = $year_s;$i <= $year_e; $i++){
-	    //$yeartrade_name['yeartrade_name'] .= "'".$i."',";	    
-	    
-	    $yeartrade_name['yeartrade_name'] .= $i.",";	    
-	    
-	    foreach($Trade as $k => $v){		
-                if($i == date('Y',$v['addtime'])){
-		    $yeartrade_total[$i]['yeartrade_total'] ++;
-		}
-            }	
-	    
-	}
-	foreach ($yeartrade_total as $k => $v) {
-	    $total[] = $v['yeartrade_total'];
-	}		
-	$yeartrade_total = arr2str($total);	
-	$yeartrade_name = arr2str($yeartrade_name);	
+    public function orderYearTrend(){		
+	$year = time2year($this->year_start,$this->year_end);
+	for($i = $year['year']['start']; $i <= $year['year']['end'];$i++){	    
+	    $year_start = strtotime($i . "-01-01 00:00:00");
+	    $year_start_end = strtotime($i . "-12-31 23:59:59");	    
+	    $map['addtime'] = [
+		['gt',$year_start],
+		['lt',$year_start_end]
+	    ];
+	    $map['status'] = ['in','2,3,4'];	    
+	    $data = D('Trade')->where($map)->field("addtime")->count();
+	    $yeartrade_names[] = $i;
+	    $yeartrade_total[] = $data;
+	}	
+	$yeartrade_name = implode("','",$yeartrade_names);
+	$yeartrade_total = implode(",",str_replace(0,'',$yeartrade_total));		
 	$this->assign(['yeartrade_name'=>$yeartrade_name,'yeartrade_total'=>$yeartrade_total]);
 	$this->display();	
     }

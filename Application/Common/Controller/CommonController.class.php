@@ -39,7 +39,7 @@ abstract class CommonController extends Controller
             $this->year_end = strtotime(I('year_end') . "-12-31 23:59:59");
         } else {
             $curr_date = date('Y');
-            $this->year_start = strtotime($curr_date . "-01-01 00:00:00");
+            $this->year_start = strtotime($curr_date-1 . "-01-01 00:00:00");
             $this->year_end = time();
         }
         $this->assign(['year_start' => $this->year_start, 'year_end' => $this->year_end]);
