@@ -12,14 +12,14 @@ class TradeController extends AdminController
 {
     public function _initialize()
     {
-	parent::_initialize();
-	
+        parent::_initialize();
+
         $this->start_t = ['y' => '2013', 'm' => '01', 'd' => '01'];
         $this->getTimeStramp($this->start_t);
         $this->end_t = ['y' => date('Y'), 'm' => date('m'), 'd' => date('d')];
         $this->getTimeStramp($this->end_t);
     }
-    
+
     //默认配置 对栏目权限判断
     public function trade_index()
     {
@@ -33,7 +33,6 @@ class TradeController extends AdminController
 //        $this->redirect('orderTeand');
     }
 
-    
 
     /**
      * 获取时间戳
@@ -128,15 +127,15 @@ class TradeController extends AdminController
         $map['addtime'] = $this->mapDateRange;;
         $map['status'] = ['in','2,3,4'];
         $trades = D('Trade')->where($map)->field("addtime")->select();
-        for($i = 0;$i<24;$i++){
+        for ($i = 0; $i < 24; $i++) {
             $x = $i;
-            if($x<10){
+            if ($x < 10) {
                 $x = "0{$x}";
             }
-            $time_solt_trades[$i]['time_name'] = $x."点";
+            $time_solt_trades[$i]['time_name'] = $x . "点";
             $time_solt_trades[$i]['trade_total'] = 0;
-            foreach($trades as $k => $v){
-                if($x == date('H',$v['addtime'])){
+            foreach ($trades as $k => $v) {
+                if ($x == date('H', $v['addtime'])) {
                     $time_solt_trades[$i]['trade_total']++;
                 }
             }
@@ -144,7 +143,7 @@ class TradeController extends AdminController
         $this->assign(['time_solt_trades'=>$time_solt_trades]);
         $this->display();
     }
-    
+
     /**
      * 付款时段（24小时制）
      * @author iredbaby
@@ -153,15 +152,15 @@ class TradeController extends AdminController
         $map['paytime'] = $this->mapDateRange;
         $map['status'] = ['in','2,3,4'];
         $trades = D('Trade')->where($map)->field("paytime")->select();
-        for($i = 0;$i<24;$i++){
+        for ($i = 0; $i < 24; $i++) {
             $x = $i;
-            if($x<10){
+            if ($x < 10) {
                 $x = "0{$x}";
             }
-            $pay_solt_trades[$i]['pay_name'] = $x."点";
+            $pay_solt_trades[$i]['pay_name'] = $x . "点";
             $pay_solt_trades[$i]['trade_total'] = 0;
-            foreach($trades as $k => $v){
-                if($x == date('H',$v['paytime'])){
+            foreach ($trades as $k => $v) {
+                if ($x == date('H', $v['paytime'])) {
                     $pay_solt_trades[$i]['trade_total']++;
                 }
             }
@@ -169,7 +168,7 @@ class TradeController extends AdminController
         $this->assign(['pay_solt_trades'=>$pay_solt_trades]);
         $this->display();
     }
-    
+
     /**
      * 发货时段（24小时制）
      * @author iredbaby
@@ -180,7 +179,7 @@ class TradeController extends AdminController
         $Logistics = D('Logistics')->where($map)->field("addtime")->select();	
         for($i = 0;$i<24;$i++){
             $x = $i;
-            if($x<10){
+            if ($x < 10) {
                 $x = "0{$x}";
             }
             $time_solt_trades[$i]['time_name'] = $x."点";
@@ -194,7 +193,7 @@ class TradeController extends AdminController
         $this->assign(['time_solt_trades'=>$time_solt_trades]);
         $this->display();
     }
-    
+
     /**
      * 支付方式
      * @author iredbaby
@@ -212,26 +211,27 @@ class TradeController extends AdminController
 	$this->assign("data",json_encode($time_solt_trades));		 
         $this->display();	
     }
-    
+
     /**
      * 客户退单
      * @author iredbaby
      * 算法：【选择日期】成功退款笔数/【选择日期】支付宝交易笔数*100%；
      * @param $trades_a  退款状态统计
      * @param $trades_b  交易成功状态统计
-    */
-    public function orderRate() {
-	$map_a['addtime'] = $this->mapDateRange;
-        $map_a['status'] = ['in','8,9'];	
-	$trades_a = D('Trade')->where($map_a)->count();	
-	$map_b['addtime'] = $this->mapDateRange;
-        $map_b['status'] = ['in','2,3,4'];	
-	$trades_b = D('Trade')->where($map_b)->count();	
-	$amount_rate = round($trades_a / $trades_b * 100, 3);		
-        $this->assign(['amount_rate_total'=>$trades_a,'amount_rate'=>$amount_rate,'amount_total'=>$trades_b]);
+     */
+    public function orderRate()
+    {
+        $map_a['addtime'] = $this->mapDateRange;
+        $map_a['status'] = ['in', '8,9'];
+        $trades_a = D('Trade')->where($map_a)->count();
+        $map_b['addtime'] = $this->mapDateRange;
+        $map_b['status'] = ['in', '2,3,4'];
+        $trades_b = D('Trade')->where($map_b)->count();
+        $amount_rate = round($trades_a / $trades_b * 100, 3);
+        $this->assign(['amount_rate_total' => $trades_a, 'amount_rate' => $amount_rate, 'amount_total' => $trades_b]);
         $this->display();
     }
-    
+
     /**
      * 年趋势图
      * @author iredbaby
