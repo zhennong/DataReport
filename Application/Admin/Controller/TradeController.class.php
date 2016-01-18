@@ -199,8 +199,9 @@ class TradeController extends AdminController
      * @author iredbaby
      */
     public function orderPaytype() {
-        $map['paytime'] = $this->yemapYearRange;
+        $map['paytime'] = $this->mapDateRange;	
         $map['status'] = ['in','2,3,4'];
+	$map['pay'] = ['neq',''];
         $trades = D('Trade')->where($map)->field('pay,count(pay) AS c')->group('pay')->select();	
 	foreach ($trades as $k => $v) {
 	    $time_solt_trades[$k]['name'] = $v['pay'];
@@ -241,10 +242,7 @@ class TradeController extends AdminController
 	for($i = $year['year']['start']; $i <= $year['year']['end'];$i++){	    
 	    $year_start = strtotime($i . "-01-01 00:00:00");
 	    $year_start_end = strtotime($i . "-12-31 23:59:59");	    
-	    $map['addtime'] = [
-		['gt',$year_start],
-		['lt',$year_start_end]
-	    ];
+	    $map['addtime'] = [['gt',$year_start],['lt',$year_start_end]];
 	    $map['status'] = ['in','2,3,4'];	    
 	    $data = D('Trade')->where($map)->field("addtime")->count();
 	    $yeartrade_names[] = $i;

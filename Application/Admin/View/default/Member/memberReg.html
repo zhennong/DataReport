@@ -1,0 +1,62 @@
+<extend name="Layout:ly2"/>
+
+<block name="head">
+    <script type="text/javascript">
+        $(function () {            
+            option = {
+                title: {
+                    text: '会员注册月走势  （开始时间：<?= date("Y-m",$date_start )?>  结束时间：<?= date("Y-m",$date_end ) ?>）',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b} : {c}'
+                },
+                legend: {
+                    left: 'left',
+                    data: ['月走势']
+                },
+                xAxis: {
+                    type: 'category',
+                    name: 'x',
+                    splitLine: {show: false},
+                    data: ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                yAxis: {
+                    type: 'log',
+                    name: 'y'
+                },
+                series: [
+                    {
+                        name: '月走势',
+                        type: 'line',
+                        data: [150,350,150,350,150,250,150,150,150,150,350,450]
+                    },
+                    
+                ]
+            };
+
+            var mem_trend_chart = echarts.init(document.getElementById('mem_trend_chart'));
+            mem_trend_chart.setOption(option);
+            window.onresize = function(){
+                mem_trend_chart.resize();
+            };
+        })
+    </script>
+</block>
+
+<block name="body">
+    <div class="container-fluid">   
+        <include file="Includes/dateSelect" />
+                
+        <div class="col-lg-12">
+            <div id="mem_trend_chart" class="charts_h600"></div>
+        </div>
+    </div>
+</block>        
