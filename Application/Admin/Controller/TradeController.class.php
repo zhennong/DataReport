@@ -204,8 +204,8 @@ class TradeController extends AdminController
 	$map['pay'] = ['neq',''];
         $trades = D('Trade')->where($map)->field('pay,count(pay) AS c')->group('pay')->select();	
 	foreach ($trades as $k => $v) {
-	    $time_solt_trades[$k]['name'] = $v['pay'];
 	    $title[] = $v['pay'];
+	    $time_solt_trades[$k]['name'] = $v['pay'];	    
 	    $time_solt_trades[$k]['value'] = $v['c'];
 	}					
 	$this->assign("title",implode("','",$title));
@@ -219,15 +219,16 @@ class TradeController extends AdminController
      * 算法：【选择日期】成功退款笔数/【选择日期】支付宝交易笔数*100%；
      * @param $trades_a  退款状态统计
      * @param $trades_b  交易成功状态统计
+     * @author iredbaby
      */
-    public function orderRate()
-    {
+    public function orderRate(){	
+	$Trade = D('Trade');	
         $map_a['addtime'] = $this->mapDateRange;
         $map_a['status'] = ['in', '8,9'];
-        $trades_a = D('Trade')->where($map_a)->count();
+        $trades_a = $Trade->where($map_a)->count();
         $map_b['addtime'] = $this->mapDateRange;
         $map_b['status'] = ['in', '2,3,4'];
-        $trades_b = D('Trade')->where($map_b)->count();
+        $trades_b = $Trade->where($map_b)->count();
         $amount_rate = round($trades_a / $trades_b * 100, 3);
         $this->assign(['amount_rate_total' => $trades_a, 'amount_rate' => $amount_rate, 'amount_total' => $trades_b]);
         $this->display();
@@ -245,9 +246,8 @@ class TradeController extends AdminController
 	    $year_start_end = strtotime($i . "-12-31 23:59:59");	    
 	    $map['addtime'] = [['gt',$year_start],['lt',$year_start_end]];
 	    $map['status'] = ['in','2,3,4'];	    
-	    $data = $Trade->where($map)->field("addtime")->count();
 	    $yeartrade_names[] = $i;
-	    $yeartrade_total[] = $data;
+	    $yeartrade_total[] = $Trade->where($map)->field("addtime")->count();	    
 	}	
 	$yeartrade_name = implode("','",$yeartrade_names);
 	$yeartrade_total = implode(",",str_replace(0,'',$yeartrade_total));		
