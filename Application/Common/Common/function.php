@@ -11,7 +11,6 @@
  * @param string $key 加密密钥
  * @param int $expire 过期时间 单位 秒
  * @return string
- * @author 麦当苗儿 <zuojiazi@vip.qq.com>
  */
 function think_encrypt($data, $key = '', $expire = 0)
 {
@@ -41,7 +40,6 @@ function think_encrypt($data, $key = '', $expire = 0)
  * @param  string $data 要解密的字符串 （必须是think_encrypt方法加密的字符串）
  * @param  string $key 加密密钥
  * @return string
- * @author 麦当苗儿 <zuojiazi@vip.qq.com>
  */
 function think_decrypt($data, $key = '')
 {
@@ -83,7 +81,6 @@ function think_decrypt($data, $key = '')
  * 数据签名认证
  * @param  array $data 被认证的数据
  * @return string       签名
- * @author 麦当苗儿 <zuojiazi@vip.qq.com>
  */
 function data_auth_sign($data)
 {
@@ -102,7 +99,6 @@ function data_auth_sign($data)
  * @param  number $size 字节数
  * @param  string $delimiter 数字和单位分隔符
  * @return string            格式化后的带单位的大小
- * @author 麦当苗儿 <zuojiazi@vip.qq.com>
  */
 function format_bytes($size, $delimiter = '')
 {
@@ -114,7 +110,6 @@ function format_bytes($size, $delimiter = '')
 /**
  * 设置跳转页面URL
  * 使用函数再次封装，方便以后选择不同的存储方式（目前使用cookie存储）
- * @author 麦当苗儿 <zuojiazi@vip.qq.com>
  */
 function set_redirect_url($url)
 {
@@ -124,7 +119,6 @@ function set_redirect_url($url)
 /**
  * 获取跳转页面URL
  * @return string 跳转页URL
- * @author 麦当苗儿 <zuojiazi@vip.qq.com>
  */
 function get_redirect_url()
 {
@@ -171,7 +165,6 @@ function list_sort_by($list, $field, $sortby = 'asc')
  * @param string $pid parent标记字段
  * @param string $level level标记字段
  * @return array
- * @author 麦当苗儿 <zuojiazi@vip.qq.com>
  */
 function list2tree($list, $pk = 'id', $pid = 'pid', $child = '_child', $root = 0)
 {
@@ -206,7 +199,6 @@ function list2tree($list, $pk = 'id', $pid = 'pid', $child = '_child', $root = 0
  * @param  string $order 排序显示的键，一般是主键 升序排列
  * @param  array $list 过渡用的中间数组，
  * @return array        返回排过序的列表数组
- * @author yangweijie <yangweijiester@gmail.com>
  */
 function tree2list($tree, $child = '_child', $order = 'id', &$list = [])
 {
@@ -300,7 +292,6 @@ function get_list_field($list, $key, $search, $field)
  * @param  string $str 要分割的字符串
  * @param  string $glue 分割符
  * @return array
- * @author 麦当苗儿 <zuojiazi@vip.qq.com>
  */
 function str2arr($str, $glue = ',')
 {
@@ -312,7 +303,6 @@ function str2arr($str, $glue = ',')
  * @param  array $arr 要连接的数组
  * @param  string $glue 分割符
  * @return string
- * @author 麦当苗儿 <zuojiazi@vip.qq.com>
  */
 function arr2str($arr, $glue = ',')
 {

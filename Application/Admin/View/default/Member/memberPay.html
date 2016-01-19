@@ -9,22 +9,23 @@
         <h1>会员付款详情（全部）：</h1>
         <div class="col-lg-12">
             <div class="alert alert-success">
-                <span>今日付款：<span class="label label-danger">{$amount_total}</span> 数</span>
+                <span>今日付款：<span class="label label-danger"><?= $day ?></span> 个</span>
                 <hr>
-                <span>本月度付款：<span class="label label-danger">{$amount_rate_total}</span> 数</span>
+                <span>本月度付款：<span class="label label-danger"><?= $month ?></span> 个</span>
                 <hr>                
-                <span>本年度付款：<span class="label label-danger">{$amount_rate}</span> 数</span>
+                <span>本年度付款：<span class="label label-danger"><?= $year ?></span> 个</span>
                 <hr>                
-                <span>全部付款：<span class="label label-danger">{$amount_rate}</span> 数</span>
-            </div>
+                <span>全部付款：<span class="label label-danger"><?= $all ?></span> 个</span>
+            </div>            
         </div>
-        <h2>新会员付款详情：</h2>
+        <h1>新会员付款详情：</h1>
         <div class="col-lg-12">
             <div class="alert alert-warning">
-                <span>今日付款新会员：<span class="label label-danger">{$amount_total}</span> 数</span>
+                <span>今日付款新会员：<span class="label label-danger"><?= $day_new ?></span> 个</span>
                 <hr>
-                <span>本月度付款新会员：<span class="label label-danger">{$amount_rate_total}</span> 数</span>
+                <span>本月度付款新会员：<span class="label label-danger"><?= $month_new ?></span> 个</span>
             </div>
+            <div class="alert alert-danger right">备注：以上数据均不包含重复购买会员</div>
         </div>
     </div>
 </block>

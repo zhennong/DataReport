@@ -199,3 +199,32 @@ function time2year($start , $end){
     $year_array['year']['end'] = date("Y", $end);
     return $year_array;    
 }
+
+/**
+ * 时间格式化
+ * @param type Y
+ * @param type Y-m
+ * @param type Y-m-d
+ */
+function format_date($id){
+    $data_date = "";
+    switch ($id){
+	case 1:
+	    $date = date('Y',time());
+	    $data_date = strtotime($date . '-01-01 00:00:00');
+	    break;
+	case 2:
+	    $date = date('Y-m',time());
+	    $data_date = strtotime($date . '-01 00:00:00');
+	    break;
+	case 3:
+	    $date = date('Y-m-d',time());
+	    $data_date = strtotime($date . ' 00:00:00');
+	    break;
+	default:
+	    $date = date('Y-m-d',time());
+	    $data_date = strtotime($date . ' 00:00:00');
+	    break;	    
+    }
+    return $data_date;
+}
