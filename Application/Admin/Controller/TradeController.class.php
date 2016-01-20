@@ -129,15 +129,10 @@ class TradeController extends AdminController
         $trades = D('Trade')->where($map)->field("addtime")->select();
         for ($i = 0; $i < 24; $i++) {
             $x = $i;
-            if ($x < 10) {
-                $x = "0{$x}";
-            }
+	    $x < 10 ?  $x = "0{$x}" : $x;
             $time_solt_trades[$i]['time_name'] = $x . "点";
-            $time_solt_trades[$i]['trade_total'] = 0;
             foreach ($trades as $k => $v) {
-                if ($x == date('H', $v['addtime'])) {
-                    $time_solt_trades[$i]['trade_total']++;
-                }
+		$x == date('H', $v['addtime']) ? $time_solt_trades[$i]['trade_total']++ : 0; 
             }
         }
         $this->assign(['time_solt_trades'=>$time_solt_trades]);
@@ -154,15 +149,10 @@ class TradeController extends AdminController
         $trades = D('Trade')->where($map)->field("paytime")->select();
         for ($i = 0; $i < 24; $i++) {
             $x = $i;
-            if ($x < 10) {
-                $x = "0{$x}";
-            }
+	    $x < 10 ?  $x = "0{$x}" : $x;	    
             $pay_solt_trades[$i]['pay_name'] = $x . "点";
-            $pay_solt_trades[$i]['trade_total'] = 0;
-            foreach ($trades as $k => $v) {
-                if ($x == date('H', $v['paytime'])) {
-                    $pay_solt_trades[$i]['trade_total']++;
-                }
+            foreach ($trades as $k => $v) {		
+		$x == date('H', $v['paytime']) ? $pay_solt_trades[$i]['trade_total']++ : 0;
             }
         }
         $this->assign(['pay_solt_trades'=>$pay_solt_trades]);
@@ -178,20 +168,15 @@ class TradeController extends AdminController
         $map['status'] = ['in','2,3,4'];
         $Logistics = D('Logistics')->where($map)->field("addtime")->select();	
         for($i = 0;$i<24;$i++){
-            $x = $i;
-            if ($x < 10) {
-                $x = "0{$x}";
-            }
-            $time_solt_trades[$i]['time_name'] = $x."点";
-            $time_solt_trades[$i]['trade_total'] = 0;	    
+            $x = $i;	    
+	    $x < 10 ?  $x = "0{$x}" : $x;	    
+            $time_solt_trades[$i]['time_name'] = $x."点";    
 	    foreach($Logistics as $k => $v){
-                if($x == date('H',$v['addtime'])){
-		     $time_solt_trades[$i]['trade_total'] ++;
-                }
+		$x == date('H',$v['addtime'])?$time_solt_trades[$i]['trade_total'] ++ : 0;
             }  
         }	
         $this->assign(['time_solt_trades'=>$time_solt_trades]);
-        $this->display();
+        $this->display();		
     }
 
     /**
