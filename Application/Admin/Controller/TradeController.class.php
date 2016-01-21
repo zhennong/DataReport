@@ -57,7 +57,7 @@ class TradeController extends AdminController
          *           'end'=>['ts'=>timestrap,'date'=>'Y-m']
          *       ]
          *   ]]
-         *];
+         * ];
          */
         $this->assign(['mouth_solt_trades' => $mouth_solt_trades]);
         $this->display();
