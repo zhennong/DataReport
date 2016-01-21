@@ -246,10 +246,11 @@ function exportExcel($fileName,$headArr,$data){
     //创建新的PHPExcel对象
     require VENDOR_PATH."phpoffice/phpexcel/src/Bootstrap.php";
     // Create new PHPExcel object
-    echo date('H:i:s') , " Create new PHPExcel object" , EOL;
+    //echo date('H:i:s') , " Create new PHPExcel object" , EOL;
     $objPHPExcel = new \PHPExcel\Spreadsheet();
-    _vp($objPHPExcel);exit;
-    $objProps = $objPHPExcel->getProperties();
+    
+    //$objPHPExcel = new PHPExcel();
+
  
     //设置表头
     $kk = ord("A");
@@ -273,11 +274,13 @@ function exportExcel($fileName,$headArr,$data){
     }
  
     $objPHPExcel->setActiveSheetIndex(0);
+        
     header('Content-Type: application/vnd.ms-excel');
     header("Content-Disposition: attachment;filename=\"$fileName\"");
     header('Cache-Control: max-age=0');
-    $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'csv');
+    $objWriter = \PHPExcel\IOFactory::createWriter($objPHPExcel, 'csv');
     $objWriter->save('php://output'); //文件通过浏览器下载
+  
     exit;
  
 }

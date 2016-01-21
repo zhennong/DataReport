@@ -63,11 +63,9 @@ class MemberController extends AuthController
         //导出excel
         if (I('get.type') == 'export') {
             /*导入phpExcel核心类 */
-
-
             $fileName = "会员信息";
-            $headArr = array('账号', '姓名', '购买数量', '交易额', '购买率', 'a');
-            exportExcel($fileName, $headArr, $data); //数据导出
+            $headArr = array('账号', '姓名', '购买数量', '交易额', '购买率');
+            exportExcel($fileName, $headArr, $member_info); //数据导出
         }
         $this->assign(['member_info' => $member_info, ['day_s' => $day_s], ['day_e' => $day_e]]);
         $this->assign(['show' => $show, 'count' => $count]);
