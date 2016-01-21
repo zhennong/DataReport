@@ -5,8 +5,8 @@
  * @Author  iredbaby   1596229276@qq.com
  */
 namespace Admin\Controller;
-use Common\Controller\AuthController;
-use Think\Auth;
+Use Common\Controller\AuthController;
+Use Think\Auth;
 
 class MemberController extends AuthController{
     /**
@@ -33,7 +33,42 @@ class MemberController extends AuthController{
         }		
 	$this->assign(['mouth_solt_member'=>$mouth_solt_member]);
         $this->display();	
-    }    
+    }  
+    
+    /**
+     * 会员信息
+     */
+    public function memberInfo() {
+	$TradeOrder = D('TradeOrder');
+	$map['status'] = array('in','2,3,4');
+	$map['status'] = array('neq','');
+	$count = $TradeOrder->field('buyer')->where($map)->count(('DISTINCT buyer'));	
+	$Page = new \Think\Page($count,17);	
+	$show = $Page->show();	
+	$data = $TradeOrder->field('DISTINCT buyer,buyer_name,SUM(total) as a,SUM(amount) as b')->where($map)->limit($Page->firstRow.','.$Page->listRows)->group('buyer')->order('b desc')->select();	
+	$all_amount_count = $TradeOrder->where($map)->field('amount')->sum('amount');		
+	foreach ($data as $k => $v) {
+	    $member_info[$k]['buyer'] = $v['buyer'];
+	    $member_info[$k]['buyer_name'] = $v['buyer_name'];
+	    $member_info[$k]['total'] = $v['a'];
+	    $member_info[$k]['amount'] = $v['b'];	    	    
+	    $member_info[$k]['rate'] = round($v['b'] / $all_amount_count * 100,5); 	    
+	}
+		
+	//导出excel
+	if(I('get.type')=='export'){		    
+	    /*导入phpExcel核心类 */
+	    
+	    
+	    $fileName = "会员信息";
+	    $headArr = array('账号','姓名','购买数量','交易额','购买率','a');	    
+	    exportExcel($fileName,$headArr,$data); //数据导出
+	}
+	$this->assign(['member_info'=>$member_info,['day_s'=>$day_s],['day_e'=>$day_e]]);
+	$this->assign(['show'=>$show,'count'=>$count]);		
+	$this->display();
+    }
+    
     
     /**
      * 获取新注册会员
@@ -78,6 +113,32 @@ class MemberController extends AuthController{
 	
 	$this->assign(['day'=>$member_count[2],'month'=>$member_count[1],'year'=>$member_count[0],'all'=>$all]);
 	$this->assign(['day_new'=>$new_member_count[1],'month_new'=>$new_member_count[0]]);
+	$this->display();
+    }
+    
+    /**
+     * 会员APP注册
+     */
+    public function memberRegApp() {
+	$Member = D('Member');
+        $mouth_solt = get_mouth_solt($this->date_start,$this->date_end);		
+        foreach($mouth_solt as $k => $v){
+            $map['regtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
+	    $map['comefrom'] = [['eq','touch']];
+            $mouth_solt_member_app[$k]['mouth_sort'] = $v;	    
+            $mouth_solt_member_app[$k]['member'] = $Member->field('regtime,comefrom')->where($map)->select();	    
+            $mouth_solt_member_app[$k]['mouth_name'] = date("Y-m", $v['start']['ts']);	    
+            $mouth_solt_member_app[$k]['member_amount'] = count($mouth_solt_member_app[$k]['member']);	    
+            unset($mouth_solt_member_app[$k]['member']);	    
+        }		
+	$this->assign(['mouth_solt_member_app'=>$mouth_solt_member_app]);
+        $this->display();
+    }
+    
+    /**
+     * 会员统计
+     */
+    public function memberCount() {
 	$this->display();
     }
 }

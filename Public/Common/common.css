@@ -49,5 +49,7 @@ img{border:0px;vertical-align:top}
 .container-fluid.padding-top h2{padding: 20px 20px 25px;font-size: 20px;}
 
 .container-fluid .alert.right{text-align: right;}
+.container-fluid.right{text-align: right;}
+.container-fluid.padding10{padding:20px;}
 
 
