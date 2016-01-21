@@ -93,8 +93,8 @@ background:url(../img/menu_blue.gif) no-repeat 15px 9px; font-size:14px;border-b
 .list_table tbody tr td .thumb_img{ width:80px; height:60px; padding:5px 0;}
 .list_table tbody tr td .thumb_img:hover{ border:1px solid #06C;}
 
-.btn{ cursor:pointer; background:#6FB737; color:#FFF; border:0px; text-align:center; margin:0 10px;}
-.btn:hover{ background:#146AC1;}
+/*.btn{ cursor:pointer; background:#6FB737; color:#FFF; border:0px; text-align:center; margin:0 10px;}
+.btn:hover{ background:#146AC1;}*/
 .check_div{text-align:center; margin-top:20px;}
 .check_div .cache_checkbox{position:relative;top:2px;}
 

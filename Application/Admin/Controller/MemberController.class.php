@@ -23,8 +23,7 @@ class MemberController extends AuthController
      * 会员月注册趋势
      * @author iredbaby
      */
-    public function memberReg()
-    {
+    public function memberReg(){
         $Member = D('Member');
         $mouth_solt = get_mouth_solt($this->date_start, $this->date_end);
         foreach ($mouth_solt as $k => $v) {
@@ -40,10 +39,9 @@ class MemberController extends AuthController
     }
 
     /**
-     * 会员信息
+     * 会员信息 带分页
      */
-    public function memberInfo()
-    {
+    public function memberInfo(){
         $TradeOrder = D('TradeOrder');
         $map['status'] = array('in', '2,3,4');
         $map['status'] = array('neq', '');
@@ -58,27 +56,37 @@ class MemberController extends AuthController
             $member_info[$k]['total'] = $v['a'];
             $member_info[$k]['amount'] = $v['b'];
             $member_info[$k]['rate'] = round($v['b'] / $all_amount_count * 100, 5);
-        }
+        }        
+        $this->assign(['member_info' => $member_info,'day_s' => $day_s,'day_e' => $day_e,'show' => $show, 'count' => $count]);
+        $this->display();
+    }
 
-        //导出excel
-        if (I('get.type') == 'export') {
-            /*导入phpExcel核心类 */
+    //导出Excel表
+    public function exportExcel() {
+	$TradeOrder = D('TradeOrder');
+        $map['status'] = array('in', '2,3,4');
+        $map['status'] = array('neq', '');	
+        if (I('get.type') == 'export') { 
+	    $data = $TradeOrder->field('DISTINCT buyer,buyer_name,SUM(total) as a,SUM(amount) as b')->where($map)->group('buyer')->order('b desc')->select();
+	    $all_amount_count = $TradeOrder->where($map)->field('amount')->sum('amount');
+	    foreach ($data as $k => $v) {
+		$member_info[$k]['buyer'] = $v['buyer'];
+		$member_info[$k]['buyer_name'] = $v['buyer_name'];
+		$member_info[$k]['total'] = $v['a'];
+		$member_info[$k]['amount'] = $v['b'];
+		$member_info[$k]['rate'] = round($v['b'] / $all_amount_count * 100, 5) . '%';
+	    } 
             $fileName = "会员信息";
             $headArr = array('账号', '姓名', '购买数量', '交易额', '购买率');
             exportExcel($fileName, $headArr, $member_info); //数据导出
         }
-        $this->assign(['member_info' => $member_info, ['day_s' => $day_s], ['day_e' => $day_e]]);
-        $this->assign(['show' => $show, 'count' => $count]);
-        $this->display();
     }
-
 
     /**
      * 获取新注册会员
      * @author iredbaby
      */
-    private function get_new_member($date_id)
-    {
+    private function get_new_member($date_id){
         $Member = D('Member');
         $map_new['regtime'] = [['gt', $date_id], ['lt', time()]];
         $reg_member_data = $Member->where($map_new)->field('truename,regtime')->select();
@@ -94,8 +102,7 @@ class MemberController extends AuthController
      * @param format_date ($i)  1 年  2 月 3 日
      * @author iredbaby
      */
-    public function memberPay()
-    {
+    public function memberPay(){
         $TradeOrder = D('TradeOrder');
         //按年月日全部付款
         for ($i = 1; $i <= 3; $i++) {
@@ -119,7 +126,6 @@ class MemberController extends AuthController
         //全部付款
         $map_all['paytime'] = [['neq', 0]];
         $all = $TradeOrder->where($map_all)->field('buyer_name,paytime')->count('distinct buyer_name');
-
         $this->assign(['day' => $member_count[2], 'month' => $member_count[1], 'year' => $member_count[0], 'all' => $all]);
         $this->assign(['day_new' => $new_member_count[1], 'month_new' => $new_member_count[0]]);
         $this->display();
@@ -128,8 +134,7 @@ class MemberController extends AuthController
     /**
      * 会员APP注册
      */
-    public function memberRegApp()
-    {
+    public function memberRegApp(){
         $Member = D('Member');
         $mouth_solt = get_mouth_solt($this->date_start, $this->date_end);
         foreach ($mouth_solt as $k => $v) {
@@ -148,8 +153,34 @@ class MemberController extends AuthController
     /**
      * 会员统计
      */
-    public function memberCount()
-    {
+    public function memberCount(){	
+	$Area = D('Area');
+	$Member = D('Member');	
+	//自定义sql空模型
+	$CountData = D();
+	$CountData->db(1,C('BUSINESS_DB'));
+	$mem_data = $Member->field('areaid,SUM(areaid) AS count')->group('areaid')->select();	
+	$provice = $this->getProvice();		
+	$provice_id = I('pid');	
+	if($provice_id == ""){
+	    $provice_id = 17; //默认河南省
+	}	
+	$data = $Area->where('parentid = ' .$provice_id)->select();
+	foreach ($data as $k=>$v){    
+	   $sql = "select a.areaid as areaid,a.areaname as areaname,b.areaid as areaids,SUM(b.areaid) as count from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.parentid='".$v['areaid']."'group by b.areaid";	
+	   $data[$k]['sub'] = $CountData->query($sql);	    	    
+	}	
+	$this->assign('data',$data);
+	$this->assign('provice',$provice);
         $this->display();
+    }
+    
+    /**
+     * 获取省份
+     */    
+    public function getProvice() {
+	$m = D('area');
+	$data = $m->field($field)->where('parentid = 0')->select();
+	return $data;
     }
 }

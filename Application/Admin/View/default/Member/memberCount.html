@@ -1,0 +1,54 @@
+<include file="Layout:ly2"/>
+
+<block name="body">  
+<div class="container-fluid padding10">
+    <div class="dropdown">
+      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          <font>请选择省份</font>
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+        <foreach name="provice" item="vo">
+            <li><a href="{:U('Member/memberCount',array('pid'=>$vo['areaid']))}">{$vo['areaname']}</a></li>
+        </foreach>
+      </ul>
+    </div>
+</div>
+    
+<div class="list">
+  <table width="100%" border="0" cellpadding="0" cellspacing="0" class="list_table">
+      <thead>
+	    <tr>
+	      <td width="5%"><div align="center">ID</div></td>
+	      <td width="10%"><div align="center">市</div></td>
+	      <td width="10%"><div align="center">县</div></td>
+            <td width="75%"><div align="center">统计</div></td>
+        </tr>
+        </thead>
+        <tbody>
+        <foreach name="data" item="vo" key="k">
+            <tr bgcolor="#fafafa">
+                <td height="45"><div align="center">{$k + 1}</div></td>
+                <td><div style="padding-left:55px;">{$vo.areaname}</div></td>
+                <td><div align="center"></div></td>
+                <td><div align="center"></div></td>
+	      </tr>
+            <foreach name="vo['sub']" item="sub">
+                <tr>
+                    <td height="45"><div align="center">{$sub.areaid}</div></td>
+                    <td><div style="padding-left:50px;">&nbsp;&nbsp;&nbsp;&nbsp;┠─&nbsp;&nbsp;{$sub.title}</div></td>
+                    <td><div style="padding-left:70px;">{$sub.areaname}</div></td>
+                    <td><div align="right" style="padding-right:50px;">{$sub.count}</div></td>
+                </tr>
+            </foreach>
+        </foreach>
+        </tbody>
+  </table>
+</div>
+
+<!-- 分页 -->
+<div class="page">
+  <div align="center">{$page} </div>
+</div>
+
+</block>
