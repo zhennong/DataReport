@@ -52,4 +52,6 @@ img{border:0px;vertical-align:top}
 .container-fluid.right{text-align: right;}
 .container-fluid.padding10{padding:20px;}
 
+.dropdown-menu{height:300px;overflow-y: auto;}
+
 

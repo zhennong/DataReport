@@ -154,14 +154,33 @@ class MemberController extends AuthController
      * 会员统计
      */
     public function memberCount(){	
+	$Area = D('Area');
+	$Member = D('Member');	
+	//自定义sql空模型
+	$CountData = D();
+	$CountData->db(3,C('BUSINESS_DB'));
+	$mem_data = $Member->field('areaid,SUM(areaid) AS count')->group('areaid')->select();	
+	$provice = $this->getProvice();		
+	$provice_id = I('pid');	
+	if($provice_id == ""){
+	    $provice_id = 17; //默认河南省
+	}	
+	$data = $Area->where('parentid = ' .$provice_id)->select();
+	foreach ($data as $k=>$v){    
+	   $sql = "select a.areaid as areaid,a.areaname as areaname,b.areaid as areaids,SUM(b.areaid) as count from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.parentid='".$v['areaid']."'group by b.areaid";	
+	   $data[$k]['sub'] = $CountData->query($sql);	    	    
+	}	
+	$this->assign('data',$data);
+	$this->assign('provice',$provice);
+        $this->display();
+    }
+    
+    /**
+     * 获取省份
+     */    
+    public function getProvice() {
 	$m = D('area');
-	$data = $m->field($field)->where('parentid <> 0')->select();
-	foreach ($data as $k=>$v){
-	    $data[$k]['sub'] = $m->field('areaname')->where('parentid='.$v['areaid'])->select();
-	}
-	
-	dump($data);
-	
-        //$this->display();
+	$data = $m->field($field)->where('parentid = 0')->select();
+	return $data;
     }
 }
