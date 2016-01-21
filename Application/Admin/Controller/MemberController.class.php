@@ -158,7 +158,7 @@ class MemberController extends AuthController
 	$Member = D('Member');	
 	//自定义sql空模型
 	$CountData = D();
-	$CountData->db(3,C('BUSINESS_DB'));
+	$CountData->db(1,C('BUSINESS_DB'));
 	$mem_data = $Member->field('areaid,SUM(areaid) AS count')->group('areaid')->select();	
 	$provice = $this->getProvice();		
 	$provice_id = I('pid');	
