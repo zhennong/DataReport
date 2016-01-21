@@ -42,14 +42,10 @@ class FinanceController extends AdminController
         $this->display();
     }
 
-    /**
-     * 月付款
-     * @author wodrow
-     */
-    public function mouthSoltPayment()
+    private function getMouthSoltPayment($date_start,$date_end)
     {
         $Trade = D('Trade');
-        $mouth_solt = get_mouth_solt($this->date_start,$this->date_end);
+        $mouth_solt = get_mouth_solt($date_start,$date_end);
         $map['status'] = ['in','2,3,4'];
         foreach($mouth_solt as $k => $v){
             $map['paytime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
@@ -59,7 +55,16 @@ class FinanceController extends AdminController
             $mouth_solt_trades[$k]['trade_amount'] = get_arr_k_amount($mouth_solt_trades[$k]['trades'],'amount');
             unset($mouth_solt_trades[$k]['trades']);
         }
-        $this->assign('mouth_solt_trades',$mouth_solt_trades);
+        return $mouth_solt_trades;
+    }
+
+    /**
+     * 月付款
+     * @author wodrow
+     */
+    public function mouthSoltPayment()
+    {
+        $this->assign('mouth_solt_trades',$this->getMouthSoltPayment($this->date_start,$this->date_end));
         $this->display();
     }
 
@@ -90,10 +95,8 @@ class FinanceController extends AdminController
      */
     public function annualGrowthRateOfPayment()
     {
-        $start_year = "2012";
-        $end_year = date("Y",time()) - 1;
         $Trade = D('Trade');
-        $year_solt = get_year_solt(strtotime($start_year . '-01-01 00:00:00'),strtotime($end_year . '-12-31 23:59:59'));
+        $year_solt = get_year_solt($this->year_start,$this->year_end);
         $map['status'] = ['in','2,3,4'];
         foreach($year_solt as $k => $v){
             $map['paytime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
@@ -103,7 +106,7 @@ class FinanceController extends AdminController
             $year_solt_trades[$k]['trade_amount'] = get_arr_k_amount($year_solt_trades[$k]['trades'],'amount');
             unset($year_solt_trades[$k]['trades']);
         }
-        $this->assign(['start_year'=>$start_year,'end_year'=>$end_year,'year_solt_trades'=>$year_solt_trades]);
+        $this->assign(['start_year'=>date("Y",$this->year_start),'end_year'=>date("Y",$this->year_end),'year_solt_trades'=>$year_solt_trades]);
         $this->display();
     }
 
@@ -113,6 +116,49 @@ class FinanceController extends AdminController
      */
     public function sameMouthAnnually()
     {
+        $Trade = D('Trade');
+        $map['addtime'] = $this->mapYearRange;
+        $map['status'] = ['in','2,3,4'];
+        $trades = $Trade->where($map)->field("addtime,amount")->select();
+        for($i=1;$i<=12;$i++){
+            $xAxis[] = $i;
+        }
+        $year_solt = get_year_solt($this->year_start,$this->year_end);
+        foreach($year_solt as $k => $v){
+            $legend[] = $v['start']['year'];
+            $legend_data[] = $v['start']['year'];
+        }
+        $legend_data = "'".implode("','",$legend_data)."'";
+        foreach($xAxis as $k1 => $v1){
+            $same_mouth_trades["mouth_name"] = $v1;
+            foreach($year_solt as $k2 => $v2){
+                foreach($trades as $k => $v){
+                    if(date("m",$v['addtime'])==$v1){
+                        if($v['addtime']>$v2['start']['ts']&&$v['addtime']<$v2['end']['ts']){
+                            $same_mouth_trades[$v1][$v2['start']['year']]['trades'][] = $v;
+                        }
+                    }
+                }
+            }
+        }
+        foreach($same_mouth_trades as $k => $v){
+            foreach($v as $k1 => $v1){
+                $same_mouth_trades[$k][$k1]['amount'] = get_arr_k_amount($v1['trades'],'amount');
+                unset($same_mouth_trades[$k][$k1]['trades']);
+            }
+        }
+        /**
+         * $legend=['2011', '2012',...,'前年']
+         * $xAxis=['1', '2',...,'12'],
+         * $same_mouth_trades = [
+         *      [
+         *          'mouth_name'=>str,
+         *          'mouth'=>[
+         *              'year'=>int,'amount'=>int
+         *      ]]
+         * ]
+         */
+        $this->assign(['xAxis'=>$xAxis,'legend'=>$legend,'legend_data'=>$legend_data,'same_mouth_trades'=>$same_mouth_trades]);
         $this->display();
     }
 }

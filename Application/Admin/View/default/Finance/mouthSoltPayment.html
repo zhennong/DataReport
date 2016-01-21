@@ -3,56 +3,56 @@
 <block name="head">
     <script type="text/javascript">
         $(function () {
-            var mouth_solt_trades = "<?=json_encode($mouth_solt_trades) ?>";
+            var mouth_solt_trades = <?=json_encode($mouth_solt_trades) ?>;
             var mouth_name = [];
             var trade_amount = [];
             $.each(mouth_solt_trades, function (index, val) {
                 mouth_name[index - 1] = mouth_solt_trades[index]['mouth_name'];
-                trade_amount[index - 1] = mouth_solt_trades[index]['trade_amount'];
+                trade_amount[index-1] = mouth_solt_trades[index]['trade_amount'];
             });
             option = {
                 title: {
-                    text: '下单付款金额图',
-                    left: 'center'
-                },
+                text: '下单付款金额图',
+                left: 'center'
+            },
                 tooltip: {
-                    trigger: 'axis',
-                    axisPointer: {
-                        type: 'shadow'
-                    }
-                },
+                trigger: 'axis',
+                axisPointer: {
+                type: 'shadow'
+            }
+            },
                 legend: {
-                    left: 'left',
-                    data: ['交易金额']
-                },
+                left: 'left',
+                data: ['交易金额']
+            },
                 grid: {
-                    left: '0',
-                    right: '0',
-                    bottom: '0',
-                    containLabel: true
-                },
+                left: '0',
+                right: '0',
+                bottom: '0',
+                containLabel: true
+            },
                 xAxis: [
-                    {
-                        type: 'category',
-                        data: mouth_name
-                    }
+            {
+                type: 'category',
+                data: mouth_name
+            }
                 ],
                 yAxis: [
-                    {
-                        type: 'value'
-                    }
+            {
+                type: 'value'
+            }
                 ],
                 series: [
-                    {
-                        name: '交易金额',
-                        type: 'bar',
-                        data: trade_amount
-                    }
+            {
+                name: '交易金额',
+                type: 'bar',
+                data: trade_amount
+            }
                 ]
             };
             var Echart = echarts.init(document.getElementById('Echart'));
             Echart.setOption(option);
-            window.onresize = function () {
+            window.onresize = function(){
                 Echart.resize();
             };
         })

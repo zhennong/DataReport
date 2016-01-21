@@ -84,7 +84,12 @@ function strFilter($str){
 	return trim($str);
 }
 
-//获取两个日期的时间所有的月份
+/**
+ * 获取两个日期的时间所有的月份
+ * @param $date1 Y-m-d
+ * @param $date2 Y-m-d
+ * @return [[]]
+ */
 function diffdate($date1, $date2){
     if (strtotime ( $date1 ) > strtotime ( $date2 )) 
     {
@@ -146,8 +151,7 @@ function diffdate($date1, $date2){
  * @param $start_ts
  * @param $end_ts
  * @author wodrow
- * @return
- * return [
+ * @return [
  *      ['k'=>[
  *          'start'=>['ts'=>timestrap,'date'=>'Y-m'],
  *          'end'=>['ts'=>timestrap,'date'=>'Y-m'],
