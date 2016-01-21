@@ -244,10 +244,11 @@ function exportExcel($fileName,$headArr,$data){
     $fileName .= "_{$date}.csv";
  
     //创建新的PHPExcel对象
-    
-    
-    
-    $objPHPExcel = new PHPExcel\Autoloader();
+    require VENDOR_PATH."phpoffice/phpexcel/src/Bootstrap.php";
+    // Create new PHPExcel object
+    echo date('H:i:s') , " Create new PHPExcel object" , EOL;
+    $objPHPExcel = new \PHPExcel\Spreadsheet();
+    _vp($objPHPExcel);exit;
     $objProps = $objPHPExcel->getProperties();
  
     //设置表头

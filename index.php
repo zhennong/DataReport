@@ -31,6 +31,9 @@ define('RUNTIME_PATH','./Runtime/');
 // composer
 require 'vendor/autoload.php';
 
+// vendor目录
+define('VENDOR_PATH','./vendor/');
+
 // 引入ThinkPHP入口文件
 require './ThinkPHP/ThinkPHP.php';
 
