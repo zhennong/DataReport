@@ -10,15 +10,6 @@ namespace Admin\Controller;
 
 class TradeController extends AdminController
 {
-    public function _initialize()
-    {
-        parent::_initialize();
-
-        $this->start_t = ['y' => '2013', 'm' => '01', 'd' => '01'];
-        $this->getTimeStramp($this->start_t);
-        $this->end_t = ['y' => date('Y'), 'm' => date('m'), 'd' => date('d')];
-        $this->getTimeStramp($this->end_t);
-    }
 
     //默认配置 对栏目权限判断
     public function trade_index()
@@ -26,83 +17,9 @@ class TradeController extends AdminController
         $this->display('Trade/trade_index');
     }
 
-    public $start_t, $end_t; // ['y'=>'','m'=>'','d'=>'','ts'=>''];
-
     public function index()
     {
 //        $this->redirect('orderTeand');
-    }
-
-
-    /**
-     * 获取时间戳
-     * @param $t 日期['y'=>'','m'=>'','d'=>'']
-     */
-    private function getTimeStramp(&$t)
-    {
-        $t['ts'] = strtotime("{$t['y']}-{$t['m']}-{$t['d']} 00:00:00");
-    }
-
-    /**
-     * 获取月时间段
-     * @param $start_t
-     * @param $end_t
-     * @return array 时间段
-     */
-    private function getTimeSolt($start_t, $end_t)
-    {
-        $mouth_solt = [];
-        $x = $start_t['ts'];
-        $i = 1;
-        while ($x < $end_t['ts']) {
-            $mouth_solt[$i]['start']['ts'] = $x;
-            $mouth_solt[$i]['start']['date'] = date("Y-m", $x);
-            $x = strtotime("+{$i} Month", $start_t['ts']);
-            $mouth_solt[$i]['end']['ts'] = $x;
-            $mouth_solt[$i]['end']['date'] = date("Y-m", $x);
-            $i++;
-        }
-        return $mouth_solt;
-    }
-
-    /**
-     * 获取月订单总额
-     */
-    public function getTradeAmountByMouth($mouth_trades)
-    {
-        $x = 0;
-        foreach ($mouth_trades as $k => $v) {
-            $x += $v['amount'];
-        }
-        return $x;
-    }
-
-    /**
-     * 获取订单信息 by 月份
-     * @param $mouth_sort 月时间段
-     * return [
-     *      ['k'=>[
-     *          'trades'=>[[]],
-     *          'trade_total' => int,
-     *          'mouth_solt' => ['start'=>[],'end'=>[]],
-     *          ...
-     *      ]]
-     * ]
-     */
-    public function getTradeByMouthSolt($mouth_sort)
-    {
-        $model = D('Trade');
-        foreach ($mouth_sort as $k => $v) {
-            $map['addtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
-            $map['status'] = ['in', '2,3,4'];
-            $mouth_solt_trades[$k]['trades'] = $model->field('itemid,amount')->where($map)->select();
-            $mouth_solt_trades[$k]['trade_total'] = count($mouth_solt_trades[$k]['trades']);
-            $mouth_solt_trades[$k]['trade_amount'] = $this->getTradeAmountByMouth($mouth_solt_trades[$k]['trades']);
-            $mouth_solt_trades[$k]['mouth_solt'] = $v;
-            $mouth_solt_trades[$k]['mouth_name'] = date("Y-m", $v['start']['ts']);
-            unset($mouth_solt_trades[$k]['trades']);
-        }
-        return $mouth_solt_trades;
     }
 
     /**
@@ -110,11 +27,38 @@ class TradeController extends AdminController
      */
     public function orderTrend()
     {
-        if (IS_POST) {
-//            $this->start_t
+        $mouth_solt = get_mouth_solt($this->date_start,$this->date_end);
+        $model = D('Trade');
+        foreach ($mouth_solt as $k => $v) {
+            $map['addtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
+            $map['status'] = ['in', '2,3,4'];
+            $mouth_solt_trades[$k]['trades'] = $model->field('itemid,amount')->where($map)->select();
+            $x = count($mouth_solt_trades[$k]['trades']);
+            $x = $x==0?'':$x;
+            $mouth_solt_trades[$k]['trade_total'] = $x;
+            $y = get_arr_k_amount($mouth_solt_trades[$k]['trades'],'amount');
+            $y = $y==0?'':$y;
+            $mouth_solt_trades[$k]['trade_amount'] = $y;
+            $mouth_solt_trades[$k]['mouth_solt'] = $v;
+            $mouth_solt_trades[$k]['mouth_name'] = date("Y-m", $v['start']['ts']);
+            unset($mouth_solt_trades[$k]['trades']);
         }
-        $mouth_solt = ($this->getTimeSolt($this->start_t, $this->end_t));
-        $mouth_solt_trades = $this->getTradeByMouthSolt($mouth_solt);
+        /**
+         * $mouth_solt_trades = [
+         *   ['k'=>[
+         *       'trades' => [
+         *           'k'=>['itemid'=>int,'amount'=>int],
+         *       ],
+         *       'trade_total'=>int,
+         *       'trade_amount'=>int,
+         *       'mouth_name'=>data("Y-m",time),
+         *       'mouth_solt'=>[
+         *           'start'=>['ts'=>timestrap,'date'=>'Y-m'],
+         *           'end'=>['ts'=>timestrap,'date'=>'Y-m']
+         *       ]
+         *   ]]
+         * ];
+         */
         $this->assign(['mouth_solt_trades' => $mouth_solt_trades]);
         $this->display();
     }

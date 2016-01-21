@@ -113,28 +113,7 @@
 <block name="body">
     <include file="Includes/dateSelect" />
     <div class="container-fluid">
-        <div class="col-lg-12">
-            <table id="order_trend_datatable" class="table table-bordered table-hover">
-                <thead>
-                <tr>
-                    <th>开始时间</th>
-                    <th>结束时间</th>
-                    <th>订单数</th>
-                    <th>交易额</th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php foreach($mouth_solt_trades as $k => $v): ?>
-                <tr>
-                    <td>{$v['mouth_solt']['start']['date']}</td>
-                    <td>{$v['mouth_solt']['end']['date']}</td>
-                    <td>{$v['trade_total']}</td>
-                    <td>{$v['trade_amount']}</td>
-                </tr>
-                <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
+
         <div class="col-lg-12">
             <div id="order_trend_chart"  class="charts_h600"></div>
         </div>

@@ -34,6 +34,16 @@ require 'vendor/autoload.php';
 // vendor目录
 define('VENDOR_PATH','./vendor/');
 
+//设置自定义类自动加载
+spl_autoload_register(function($classname){
+    $_file = './Application/' . str_replace('\\','/',$classname) . '.php';
+    if(file_exists($_file)){
+        require_once $_file;
+    }
+});
+
+echo \Common\Common\Tools::get_url();
+
 // 引入ThinkPHP入口文件
 require './ThinkPHP/ThinkPHP.php';
 
