@@ -43,6 +43,22 @@ class TradeController extends AdminController
             $mouth_solt_trades[$k]['mouth_name'] = date("Y-m", $v['start']['ts']);
             unset($mouth_solt_trades[$k]['trades']);
         }
+        /**
+         * $mouth_solt_trades = [
+         *   ['k'=>[
+         *       'trades' => [
+         *           'k'=>['itemid'=>int,'amount'=>int],
+         *       ],
+         *       'trade_total'=>int,
+         *       'trade_amount'=>int,
+         *       'mouth_name'=>data("Y-m",time),
+         *       'mouth_solt'=>[
+         *           'start'=>['ts'=>timestrap,'date'=>'Y-m'],
+         *           'end'=>['ts'=>timestrap,'date'=>'Y-m']
+         *       ]
+         *   ]]
+         *];
+         */
         $this->assign(['mouth_solt_trades' => $mouth_solt_trades]);
         $this->display();
     }
