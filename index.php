@@ -42,8 +42,6 @@ spl_autoload_register(function($classname){
     }
 });
 
-echo \Common\Common\Tools::get_url();
-
 // 引入ThinkPHP入口文件
 require './ThinkPHP/ThinkPHP.php';
 
