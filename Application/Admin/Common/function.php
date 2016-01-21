@@ -247,7 +247,7 @@ function exportExcel($fileName,$headArr,$data){
     
     
     
-    $objPHPExcel = new PHPExcel(); 
+    $objPHPExcel = new PHPExcel\Autoloader();
     $objProps = $objPHPExcel->getProperties();
  
     //设置表头
