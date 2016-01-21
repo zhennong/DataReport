@@ -232,29 +232,19 @@ function format_date($id){
 /**
  * 数据导出Excel表
  */
-
 function exportExcel($fileName,$headArr,$data){
-    if(empty($data) || !is_array($data)){
-        die("data must be a array");
-    }
-    if(empty($fileName)){
-        exit;
-    }
+    //引入类库
+    require VENDOR_PATH."/phpoffice/phpexcel/Classes/PHPExcel.php";
+    require VENDOR_PATH."/phpoffice/phpexcel/Classes/PHPExcel/IOFactory.php";
+    require VENDOR_PATH."/phpoffice/phpexcel/Classes/PHPExcel/Writer/CSV.php";
+    
+    if(empty($data) || !is_array($data)){die("data must be a array");}
+    if(empty($fileName)){exit;}
     $date = date("Y_m_d",time());
     $fileName .= "_{$date}.csv";
- 
-    //创建新的PHPExcel对象
-    require VENDOR_PATH."phpoffice/phpexcel/src/Bootstrap.php";
-    // Create new PHPExcel object
-    //echo date('H:i:s') , " Create new PHPExcel object" , EOL;
-    $objPHPExcel = new \PHPExcel\Spreadsheet();
-    
-    //$objPHPExcel = new PHPExcel();
-
- 
+    $objPHPExcel = new PHPExcel(); 
     //设置表头
     $kk = ord("A");
-    //r_dump($headArr);
     foreach($headArr as $v){
         $colum = chr($kk);
         $objPHPExcel->setActiveSheetIndex(0)->setCellValue($colum.'1',$v);
@@ -271,16 +261,12 @@ function exportExcel($fileName,$headArr,$data){
             $span++;
         }
         $column++;
-    }
- 
-    $objPHPExcel->setActiveSheetIndex(0);
-        
+    } 
+    $objPHPExcel->setActiveSheetIndex(0);        
     header('Content-Type: application/vnd.ms-excel');
     header("Content-Disposition: attachment;filename=\"$fileName\"");
     header('Cache-Control: max-age=0');
-    $objWriter = \PHPExcel\IOFactory::createWriter($objPHPExcel, 'csv');
-    $objWriter->save('php://output'); //文件通过浏览器下载
-  
-    exit;
- 
+    $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'csv');
+    $objWriter->save('php://output'); //文件通过浏览器下载     
+    exit; 
 }
