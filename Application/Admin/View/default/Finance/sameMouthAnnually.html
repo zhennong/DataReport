@@ -11,7 +11,6 @@
                     }
                 },
                 legend: {
-//                    data: ['2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019']
                     data:[<?=$legend_data ?>]
                 },
                 grid: {
@@ -30,7 +29,7 @@
                 xAxis: [
                     {
                         type: 'category',
-                        data: ['1', '2', '3', '4', '5', '6', '7']
+                        data: [<?=$xAxis_data ?>]
                     }
                 ],
                 yAxis: [
@@ -39,53 +38,16 @@
                     }
                 ],
                 series: [
-                    {
-                        name: '2011',
-                        type: 'bar',
-                        data: [320, 332, 301, 334, 390, 330, 320]
-                    },
-                    {
-                        name: '2012',
-                        type: 'bar',
-                        data: [120, 132, 101, 134, 90, 230, 210]
-                    },
-                    {
-                        name: '2013',
-                        type: 'bar',
-                        data: [220, 182, 191, 234, 290, 330, 310]
-                    },
-                    {
-                        name: '2014',
-                        type: 'bar',
-                        data: [150, 232, 201, 154, 190, 330, 410]
-                    },
-                    {
-                        name: '2015',
-                        type: 'bar',
-                        data: [862, 1018, 964, 1026, 1679, 1600, 1570],
-                    },
-                    {
-                        name: '2016',
-                        type: 'bar',
-                        data: [620, 732, 701, 734, 1090, 1130, 1120]
-                    },
-                    {
-                        name: '2017',
-                        type: 'bar',
-                        data: [120, 132, 101, 134, 290, 230, 220]
-                    },
-                    {
-                        name: '2018',
-                        type: 'bar',
-                        data: [60, 72, 71, 74, 190, 130, 110]
-                    },
-                    {
-                        name: '2019',
-                        type: 'bar',
-                        data: [62, 82, 91, 84, 109, 110, 120]
-                    }
+                    <?php foreach($same_year_trades as $k => $v): ?>
+                        {
+                            name: '<?=$k ?>',
+                            type: 'bar',
+                            data: [<?=$v['year_data'] ?>]
+                        },
+                    <?php endforeach; ?>
                 ]
             };
+
             var Echart = echarts.init(document.getElementById('Echart'));
             Echart.setOption(option);
             window.onresize = function () {
@@ -98,6 +60,7 @@
 <block name="body">
     <include file="Includes/yearSelect"/>
     <div class="container-fluid">
+        <h3>每月同期付款对比</h3>
         <div class="col-lg-12">
             <div id="Echart" class="charts_h600"></div>
         </div>

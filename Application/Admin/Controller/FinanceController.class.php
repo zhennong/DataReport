@@ -117,48 +117,46 @@ class FinanceController extends AdminController
     public function sameMouthAnnually()
     {
         $Trade = D('Trade');
-        $map['addtime'] = $this->mapYearRange;
+        $map['paytime'] = $this->mapYearRange;
         $map['status'] = ['in','2,3,4'];
-        $trades = $Trade->where($map)->field("addtime,amount")->select();
+        $trades = $Trade->where($map)->field("paytime,amount")->select();
         for($i=1;$i<=12;$i++){
             $xAxis[] = $i;
         }
+        $xAxis_data = "'".implode("','",$xAxis)."'";
         $year_solt = get_year_solt($this->year_start,$this->year_end);
         foreach($year_solt as $k => $v){
             $legend[] = $v['start']['year'];
-            $legend_data[] = $v['start']['year'];
         }
-        $legend_data = "'".implode("','",$legend_data)."'";
-        foreach($xAxis as $k1 => $v1){
-            $same_mouth_trades["mouth_name"] = $v1;
-            foreach($year_solt as $k2 => $v2){
-                foreach($trades as $k => $v){
-                    if(date("m",$v['addtime'])==$v1){
-                        if($v['addtime']>$v2['start']['ts']&&$v['addtime']<$v2['end']['ts']){
-                            $same_mouth_trades[$v1][$v2['start']['year']]['trades'][] = $v;
+        $legend_data = "'".implode("','",$legend)."'";
+        foreach($year_solt as $k => $v){
+            foreach($xAxis as $k1 => $v1){
+                foreach ($trades as $k2 => $v2) {
+                    if(date("m",$v2['paytime'])==$v1){
+                        if($v2['paytime']>$v['start']['ts']&&$v2['paytime']<$v['end']['ts']){
+                            $same_year_trades[$v['start']['year']][$v1]['mouth_name'] = $v1;
+                            $same_year_trades[$v['start']['year']][$v1]['mouth_trades'][] = $v2;
                         }
                     }
                 }
             }
         }
-        foreach($same_mouth_trades as $k => $v){
+        foreach($same_year_trades as $k => $v){
+            unset($x);
             foreach($v as $k1 => $v1){
-                $same_mouth_trades[$k][$k1]['amount'] = get_arr_k_amount($v1['trades'],'amount');
-                unset($same_mouth_trades[$k][$k1]['trades']);
+                $same_year_trades[$k][$k1]['mouth_amount'] = get_arr_k_amount($v1['mouth_trades'],'amount');
+                $x[$k1] = $same_year_trades[$k][$k1]['mouth_amount'];
+                unset($same_year_trades[$k][$k1]);
             }
+            foreach($xAxis as $k2 => $v2){
+                if(!$x[$v2]){
+                    $x[$v2] = '';
+                }
+            }
+            ksort($x);
+            $same_year_trades[$k]['year_data'] = "'".implode("','",$x)."'";
         }
-        /**
-         * $legend=['2011', '2012',...,'前年']
-         * $xAxis=['1', '2',...,'12'],
-         * $same_mouth_trades = [
-         *      [
-         *          'mouth_name'=>str,
-         *          'mouth'=>[
-         *              'year'=>int,'amount'=>int
-         *      ]]
-         * ]
-         */
-        $this->assign(['xAxis'=>$xAxis,'legend'=>$legend,'legend_data'=>$legend_data,'same_mouth_trades'=>$same_mouth_trades]);
+        $this->assign(['xAxis'=>$xAxis,'xAxis_data'=>$xAxis_data,'legend'=>$legend,'legend_data'=>$legend_data,'same_year_trades'=>$same_year_trades]);
         $this->display();
     }
 }
