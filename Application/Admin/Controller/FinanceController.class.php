@@ -42,14 +42,10 @@ class FinanceController extends AdminController
         $this->display();
     }
 
-    /**
-     * 月付款
-     * @author wodrow
-     */
-    public function mouthSoltPayment()
+    private function getMouthSoltPayment($date_start,$date_end)
     {
         $Trade = D('Trade');
-        $mouth_solt = get_mouth_solt($this->date_start,$this->date_end);
+        $mouth_solt = get_mouth_solt($date_start,$date_end);
         $map['status'] = ['in','2,3,4'];
         foreach($mouth_solt as $k => $v){
             $map['paytime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
@@ -59,7 +55,16 @@ class FinanceController extends AdminController
             $mouth_solt_trades[$k]['trade_amount'] = get_arr_k_amount($mouth_solt_trades[$k]['trades'],'amount');
             unset($mouth_solt_trades[$k]['trades']);
         }
-        $this->assign('mouth_solt_trades',$mouth_solt_trades);
+        return $mouth_solt_trades;
+    }
+
+    /**
+     * 月付款
+     * @author wodrow
+     */
+    public function mouthSoltPayment()
+    {
+        $this->assign('mouth_solt_trades',$this->getMouthSoltPayment($this->date_start,$this->date_end));
         $this->display();
     }
 
@@ -90,10 +95,8 @@ class FinanceController extends AdminController
      */
     public function annualGrowthRateOfPayment()
     {
-        $start_year = "2012";
-        $end_year = date("Y",time()) - 1;
         $Trade = D('Trade');
-        $year_solt = get_year_solt(strtotime($start_year . '-01-01 00:00:00'),strtotime($end_year . '-12-31 23:59:59'));
+        $year_solt = get_year_solt($this->year_start,$this->year_end);
         $map['status'] = ['in','2,3,4'];
         foreach($year_solt as $k => $v){
             $map['paytime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
@@ -103,7 +106,7 @@ class FinanceController extends AdminController
             $year_solt_trades[$k]['trade_amount'] = get_arr_k_amount($year_solt_trades[$k]['trades'],'amount');
             unset($year_solt_trades[$k]['trades']);
         }
-        $this->assign(['start_year'=>$start_year,'end_year'=>$end_year,'year_solt_trades'=>$year_solt_trades]);
+        $this->assign(['start_year'=>date("Y",$this->year_start),'end_year'=>date("Y",$this->year_end),'year_solt_trades'=>$year_solt_trades]);
         $this->display();
     }
 
@@ -113,6 +116,47 @@ class FinanceController extends AdminController
      */
     public function sameMouthAnnually()
     {
+        $Trade = D('Trade');
+        $map['paytime'] = $this->mapYearRange;
+        $map['status'] = ['in','2,3,4'];
+        $trades = $Trade->where($map)->field("paytime,amount")->select();
+        for($i=1;$i<=12;$i++){
+            $xAxis[] = $i;
+        }
+        $xAxis_data = "'".implode("','",$xAxis)."'";
+        $year_solt = get_year_solt($this->year_start,$this->year_end);
+        foreach($year_solt as $k => $v){
+            $legend[] = $v['start']['year'];
+        }
+        $legend_data = "'".implode("','",$legend)."'";
+        foreach($year_solt as $k => $v){
+            foreach($xAxis as $k1 => $v1){
+                foreach ($trades as $k2 => $v2) {
+                    if(date("m",$v2['paytime'])==$v1){
+                        if($v2['paytime']>$v['start']['ts']&&$v2['paytime']<$v['end']['ts']){
+                            $same_year_trades[$v['start']['year']][$v1]['mouth_name'] = $v1;
+                            $same_year_trades[$v['start']['year']][$v1]['mouth_trades'][] = $v2;
+                        }
+                    }
+                }
+            }
+        }
+        foreach($same_year_trades as $k => $v){
+            unset($x);
+            foreach($v as $k1 => $v1){
+                $same_year_trades[$k][$k1]['mouth_amount'] = get_arr_k_amount($v1['mouth_trades'],'amount');
+                $x[$k1] = $same_year_trades[$k][$k1]['mouth_amount'];
+                unset($same_year_trades[$k][$k1]);
+            }
+            foreach($xAxis as $k2 => $v2){
+                if(!$x[$v2]){
+                    $x[$v2] = '';
+                }
+            }
+            ksort($x);
+            $same_year_trades[$k]['year_data'] = "'".implode("','",$x)."'";
+        }
+        $this->assign(['xAxis'=>$xAxis,'xAxis_data'=>$xAxis_data,'legend'=>$legend,'legend_data'=>$legend_data,'same_year_trades'=>$same_year_trades]);
         $this->display();
     }
 }
