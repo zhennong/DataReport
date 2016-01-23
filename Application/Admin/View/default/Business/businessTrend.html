@@ -1,0 +1,71 @@
+<extend name="Layout:ly2"/>
+
+<block name="head">
+    <script type="text/javascript">   
+        <php>            
+        foreach($mouth_solt_agent as $k => $v){
+            $mouth_name[] = $v["mouth_name"];
+            $agent_amount[] = $v["agent_amount"];
+        }
+        $mouth_name = implode("','",$mouth_name);
+        $agent_amount = implode(",",str_replace(0,'',$agent_amount));	          
+        </php>
+        $(function () {             
+            option = {
+                title: {
+                    text: '合作商加盟月走势图  （开始时间：<?= date("Y-m",$date_start )?>  结束时间：<?= date("Y-m",$date_end ) ?>）',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b} : {c}'
+                },
+                legend: {
+                    left: 'left',
+                    data: ['月走势']
+                },
+                xAxis: {
+                    type: 'category',
+                    name: 'x',
+                    splitLine: {show: false},
+                    data: ['<?= $mouth_name ?>']
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                yAxis: {
+                    type: 'log',
+                    name: 'y'
+                },
+                series: [
+                    {
+                        name: '月走势',
+                        type: 'line',
+                        data: [<?= $agent_amount ?>]
+                    },
+                    
+                ]
+            };
+
+            var agent_trend_chart = echarts.init(document.getElementById('agent_trend_chart'));
+            agent_trend_chart.setOption(option);
+            window.onresize = function(){
+                agent_trend_chart.resize();
+            };
+        })
+    </script>
+</block>
+
+<block name="body">
+    <div class="container-fluid">   
+        <include file="Includes/dateSelect" />
+                
+        <div class="col-lg-12">
+            <div id="agent_trend_chart" class="charts_h600"></div>
+        </div>
+        
+    </div>
+</block>        

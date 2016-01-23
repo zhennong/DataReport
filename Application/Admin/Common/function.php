@@ -270,3 +270,13 @@ function exportExcel($fileName,$headArr,$data){
     $objWriter->save('php://output'); //文件通过浏览器下载     
     exit; 
 }
+
+/**
+ * D方法自定义空模型 / 读取nongyao001数据库
+ */
+function queryMysql($sql){
+    $CountData = D();
+    $CountData->db(1,C('BUSINESS_DB'));
+    $data = $CountData->query($sql);
+    return $data;
+}

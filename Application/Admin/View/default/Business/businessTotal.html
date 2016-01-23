@@ -1,7 +1,9 @@
 <include file="Layout:ly2"/>
 
-<block name="body">  
+<block name="body">     
 <div class="container-fluid padding10">
+    
+    
     <div class="dropdown">
       <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
           <font> {$provice_name|default="请选择省份"} </font>
@@ -9,10 +11,14 @@
       </button>
       <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
         <foreach name="provice" item="vo">
-            <li><a href="{:U('Member/memberCount',array('pid'=>$vo['areaid']))}">{$vo['areaname']}</a></li>
+            <li><a href="{:U('Business/businessTotal',array('pid'=>$vo['areaid']))}">{$vo['areaname']}</a></li>
         </foreach>
-      </ul>
+      </ul>        
     </div>
+    
+    <button type="button" class="btn btn-success pos-right" onclick="location.href='{:U('Business/businessExport',array('type'=>'export'))}'">导出Excel表</button>
+
+    
 </div>
     
 <div class="list">
@@ -22,7 +28,7 @@
 	      <td width="10%"><div align="center">ID</div></td>
 	      <td width="20%"><div align="center">市</div></td>
 	      <td width="30%"><div align="center">县</div></td>
-            <td width="30%"><div align="center">统计（位）</div></td>
+            <td width="40%"><div align="center">交易额（元）</div></td>
         </tr>
         </thead>
         
