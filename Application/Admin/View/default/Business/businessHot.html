@@ -1,0 +1,73 @@
+<extend name="Layout:ly2"/>
+
+<block name="head">     
+<script type="text/javascript">  
+    $(function () {             
+        option = {
+            title : {
+                text: '合作商分布热力图',
+                subtext: '（以省为单位）',
+                left: 'center'
+            },
+            tooltip : {
+                trigger: 'item'
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left',
+                data:['合作商']
+            },
+            visualMap: {
+                min: 0,
+                max: 10000,
+                left: 'left',
+                top: 'bottom',
+                text:['高','低'],           // 文本，默认为数值文本
+                calculable : true
+            },
+            toolbox: {
+                show: true,
+                orient : 'vertical',
+                x: 'right',
+                y: 'center',
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },
+            series : [
+                {
+                    name: '合作商',
+                    type: 'map',
+                    mapType: 'china',
+                    roam: true,
+                    itemStyle:{
+                        normal:{label:{show:true}},
+                        emphasis:{label:{show:true}}
+                    },
+                    data:[
+                        <foreach name="data" item="vo" key="k" >
+                        {name: '{$vo.areaname}',value: {$vo.areaid}},                        
+                        </foreach>
+                    ]
+                }
+            ]
+        };
+        var agent_hot_chart = echarts.init(document.getElementById('agent_hot_chart'));
+        agent_hot_chart.setOption(option);
+        window.onresize = function(){
+            agent_hot_chart.resize();
+        };
+    })
+</script>
+</block>
+
+<block name="body">
+    <div class="container-fluid">                   
+        <div class="col-lg-12 padding20">
+            <div id="agent_hot_chart" class="charts_h750"></div>
+        </div>
+    </div>
+</block>        

@@ -41,7 +41,7 @@ class MemberController extends AuthController
     /**
      * 会员信息 带分页
      */
-    public function memberInfo(){
+    public function memberInfos(){
         $TradeOrder = D('TradeOrder');
         $map['status'] = array('in', '2,3,4');
         $map['status'] = array('neq', '');
@@ -155,32 +155,37 @@ class MemberController extends AuthController
      */
     public function memberCount(){	
 	$Area = D('Area');
-	$Member = D('Member');	
-	//自定义sql空模型
-	$CountData = D();
-	$CountData->db(1,C('BUSINESS_DB'));
-	$mem_data = $Member->field('areaid,SUM(areaid) AS count')->group('areaid')->select();	
-	$provice = $this->getProvice();		
 	$provice_id = I('pid');	
-	if($provice_id == ""){
-	    $provice_id = 17; //默认河南省
-	}	
-	$data = $Area->where('parentid = ' .$provice_id)->select();
+	$provice = $this->getProvice();	
+	$provice_name = $this->getProvice(1,$provice_id);	
+	if($provice_id == ""){$provice_id = 17; } //默认河南省
+	$data = $Area->where('parentid =' .$provice_id)->select();
 	foreach ($data as $k=>$v){    
-	   $sql = "select a.areaid as areaid,a.areaname as areaname,b.areaid as areaids,SUM(b.areaid) as count from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.parentid='".$v['areaid']."'group by b.areaid";	
-	   $data[$k]['sub'] = $CountData->query($sql);	    	    
+	   $sql = "select a.areaid as areaid,a.areaname as areaname,b.areaid as areaids,COUNT(b.areaid) as total from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.parentid='".$v['areaid']."' group by b.areaid";		   
+	   $data[$k]['sub'] = queryMysql($sql);	
 	}	
+	//特殊城市处理 1、北京 2、上海 3、天津 4、重庆
+	if($provice_id == '1' |$provice_id == '2' |$provice_id == '3' |$provice_id == '4'){
+	    foreach ($data as $k=>$v){    
+	       $sql = "select a.areaid as areaid,a.areaname as areaname,b.areaid as areaids,COUNT(b.areaid) as total from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.areaid='".$v['areaid']."' group by b.areaid";		   
+	       $data[$k]['sub'] = queryMysql($sql);	
+	    }
+	}			
 	$this->assign('data',$data);
 	$this->assign('provice',$provice);
+	$this->assign('provice_name',$provice_name[0]['areaname']);
         $this->display();
     }
     
     /**
      * 获取省份
      */    
-    public function getProvice() {
+    public function getProvice($id,$pid) {
 	$m = D('area');
 	$data = $m->field($field)->where('parentid = 0')->select();
+	if($id == 1){
+	    $data = $m->field('areaname')->where('areaid = '.$pid)->select();
+	}
 	return $data;
     }
 }
