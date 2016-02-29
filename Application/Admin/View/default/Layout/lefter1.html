@@ -6,7 +6,7 @@
         <div title="{$vo['title']}" data-options="iconCls:'icon-add'">
             <ul>
                 <foreach name="vo['sub']" item="sub">
-                <li><a href="__MODULE__/{$sub['name']}" target="mainFrame">{$sub['title']}</a></li>  
+                <li><a href="{:U($sub['name'])}" target="mainFrame">{$sub['title']}</a></li>
                 </foreach>
             </ul>
         </div>
