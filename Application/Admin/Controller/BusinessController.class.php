@@ -72,10 +72,15 @@ class BusinessController extends AdminController{
 	$Area = D('Area');	
 	$Agent = D('Agent');
 	
-	$data = $Area->field($field)->where('parentid = 0')->select();
-	foreach ($data as $k=>$v){
-	    $data[$k]['sub'] = $Area->field($field)->where('parentid = '.$v['areaid'])->select();
-	}	
+	//$data = $Agent->field('agareaid,COUNT(agareaid) AS total')->group('agareaid')->select();
+	
+	$data_area = $Area->where('parentid=0')->select();
+	foreach ($data_area as $k=>$v){
+	    $data_area[$k]['sub'] = $Area->where('parentid='.$v['areaid'])->select();
+	}
+	dump($data_area);
+	//$this->assign('data',$data);
 	$this->display();
     }
+    
 }
