@@ -23,7 +23,8 @@ class InformationController extends AdminController
     public function monthlyInformation()
     {
         $Information=D("Information")->field('itemid')->select();
-        foreach($Information as $key=>$value){
+        foreach($Information as $value){
+
         }
     }
 }
