@@ -5,7 +5,7 @@
     $(function () {             
         option = {
             title : {
-                text: '合作商分布热力图',
+                text: '合作商分布地图',
                 subtext: '（以省为单位）',
                 left: 'center'
             },
@@ -49,7 +49,7 @@
                     },
                     data:[
                         <foreach name="data" item="vo" key="k" >
-                        {name: '{$vo.areaname}',value: {$vo.areaid}},                        
+                        {name:'{$vo.name}',value:{$vo.total}},                        
                         </foreach>
                     ]
                 }
