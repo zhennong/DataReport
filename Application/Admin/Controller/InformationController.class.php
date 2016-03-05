@@ -15,6 +15,15 @@ class InformationController extends AdminController
     //默认配置 对栏目权限判断
     public function information_index()
     {
-        $this->display('Information/information_index');
+        $this->display('information_index');
+    }
+    /**
+     * 月度资讯
+     */
+    public function monthlyInformation()
+    {
+        $Information=D("Information")->field('itemid')->select();
+        foreach($Information as $key=>$value){
+        }
     }
 }
