@@ -24,7 +24,7 @@ class InformationController extends AdminController
     {
         //$Information=D("Information")->field('itemid')->select();
         $Information=D("Information");
-        $monthlyCount=count($Information->select('itemid'));
+        $monthlyCount=count($Information->select());
         var_dump($monthlyCount);
     }
 }
