@@ -13,6 +13,8 @@ return [
     /* 主题设置 */
     'DEFAULT_THEME' => 'default',
 
+    'URL_MODEL'=>0,
+
     /* 业务网站数据库 */
     'BUSINESS_DB' => 'mysql://root:root@192.168.0.15:3306/nongyao001_com',
     'BUSINESS_DB_TABLE_PREFIX' => 'destoon_',
