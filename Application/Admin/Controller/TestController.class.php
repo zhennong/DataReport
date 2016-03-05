@@ -18,7 +18,7 @@ class TestController extends CommonController
     }
 
     public function test2(){
-        echo C('DB_TYPE');
+        echo C('URL_MODEL');
         exit;
     }
 }
