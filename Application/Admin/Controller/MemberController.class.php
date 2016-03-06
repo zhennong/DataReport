@@ -44,20 +44,19 @@ class MemberController extends AuthController
      */
     public function memberInfos()
     {
-        $TradeOrder = D('TradeOrder');
+        $Trade = D('Trade');
         $map['status'] = array('in', '2,3,4');
-        $map['status'] = array('neq', '');
-        $count = $TradeOrder->field('buyer')->where($map)->count(('DISTINCT buyer'));
+        $count = $Trade->field('buyer')->where($map)->count(('DISTINCT buyer'));
         $Page = new \Think\Page($count, 20);
         $show = $Page->show();
-        $data = $TradeOrder
+        $data = $Trade
             ->field('buyer,buyer_name,SUM(total) as a,SUM(amount) as b')
             ->where($map)
             ->limit($Page->firstRow . ',' . $Page->listRows)
             ->group('buyer')
             ->order('b desc')
             ->select();
-        $all_amount_count = $TradeOrder->where($map)->field('amount')->sum('amount');
+        $all_amount_count = $Trade->where($map)->field('amount')->sum('amount');
         foreach ($data as $k => $v) {
             $member_info[$k]['buyer'] = $v['buyer'];
             $member_info[$k]['buyer_name'] = $v['buyer_name'];
@@ -72,12 +71,12 @@ class MemberController extends AuthController
     //导出Excel表
     public function exportExcel()
     {
-        $TradeOrder = D('TradeOrder');
+        $Trade = D('Trade');
         $map['status'] = array('in', '2,3,4');
         $map['status'] = array('neq', '');
         if (I('get.type') == 'export') {
-            $data = $TradeOrder->field('DISTINCT buyer,buyer_name,SUM(total) as a,SUM(amount) as b')->where($map)->group('buyer')->order('b desc')->select();
-            $all_amount_count = $TradeOrder->where($map)->field('amount')->sum('amount');
+            $data = $Trade->field('DISTINCT buyer,buyer_name,SUM(total) as a,SUM(amount) as b')->where($map)->group('buyer')->order('b desc')->select();
+            $all_amount_count = $Trade->where($map)->field('amount')->sum('amount');
             foreach ($data as $k => $v) {
                 $member_info[$k]['buyer'] = $v['buyer'];
                 $member_info[$k]['buyer_name'] = $v['buyer_name'];
@@ -114,12 +113,12 @@ class MemberController extends AuthController
      */
     public function memberPay()
     {
-        $TradeOrder = D('TradeOrder');
+        $Trade = D('Trade');
         //按年月日全部付款
         for ($i = 1; $i <= 3; $i++) {
             $map['paytime'] = [['neq', 0], ['gt', format_date($i)], ['lt', time()]];
             $member_type[] = $i;
-            $member_count[] = $TradeOrder->where($map)->field('buyer_name,paytime')->count('distinct buyer_name');
+            $member_count[] = $Trade->where($map)->field('buyer_name,paytime')->count('distinct buyer_name');
         }
         //新会员按月日付款
         for ($i = 2; $i <= 3; $i++) {
@@ -127,7 +126,7 @@ class MemberController extends AuthController
             $map_day['paytime'] = [['neq', 0], ['gt', format_date($i)], ['lt', time()]];
             $map_day['buyer_name'] = [['in', $day_member_name]];
             $new_member_type[] = $i;
-            $new_member_str = $TradeOrder->where($map_day)->field('buyer_name,paytime')->count('distinct buyer_name');
+            $new_member_str = $Trade->where($map_day)->field('buyer_name,paytime')->count('distinct buyer_name');
             if (empty($new_member_str)) {
                 $new_member_count[] = 0;
             } else {
@@ -136,7 +135,7 @@ class MemberController extends AuthController
         }
         //全部付款
         $map_all['paytime'] = [['neq', 0]];
-        $all = $TradeOrder->where($map_all)->field('buyer_name,paytime')->count('distinct buyer_name');
+        $all = $Trade->where($map_all)->field('buyer_name,paytime')->count('distinct buyer_name');
         $this->assign(['day' => $member_count[2], 'month' => $member_count[1], 'year' => $member_count[0], 'all' => $all]);
         $this->assign(['day_new' => $new_member_count[1], 'month_new' => $new_member_count[0]]);
         $this->display();
