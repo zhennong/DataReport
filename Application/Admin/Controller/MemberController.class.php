@@ -7,6 +7,7 @@
 namespace Admin\Controller;
 
 Use Common\Controller\AuthController;
+use Common\Tools;
 Use Think\Auth;
 
 class MemberController extends AuthController
@@ -122,6 +123,8 @@ class MemberController extends AuthController
             $member_count[] = $Trade->where($map)->field('buyer,buyer_name,paytime')->count('distinct buyer');
         }
         //新会员按月日付款
+
+        Tools::_vp('start',0,2);
         for ($i = 2; $i <= 3; $i++) {
             $day_member_name = $this->get_new_member(format_date($i));
             $map['paytime'] = [['neq', 0], ['gt', format_date($i)], ['lt', $this->now]];
@@ -134,6 +137,7 @@ class MemberController extends AuthController
                 $map['status'] = ['in',[2,3,4]];
                 $map['paytime'] = [['neq', 0],['lt', format_date($i)]];
                 $x = $Trade->where($map)->field("count(*) AS count")->select();
+                Tools::_vp($Trade->_sql(),0,3);
                 if($x[0]['count']>0){
                     unset($new_member_str[$k]);
                 }
