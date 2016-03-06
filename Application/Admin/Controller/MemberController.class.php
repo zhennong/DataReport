@@ -23,7 +23,8 @@ class MemberController extends AuthController
      * 会员月注册趋势
      * @author iredbaby
      */
-    public function memberReg(){
+    public function memberReg()
+    {
         $Member = D('Member');
         $mouth_solt = get_mouth_solt($this->date_start, $this->date_end);
         foreach ($mouth_solt as $k => $v) {
@@ -41,14 +42,21 @@ class MemberController extends AuthController
     /**
      * 会员信息 带分页
      */
-    public function memberInfos(){
+    public function memberInfos()
+    {
         $TradeOrder = D('TradeOrder');
         $map['status'] = array('in', '2,3,4');
         $map['status'] = array('neq', '');
         $count = $TradeOrder->field('buyer')->where($map)->count(('DISTINCT buyer'));
-        $Page = new \Think\Page($count, 17);
+        $Page = new \Think\Page($count, 20);
         $show = $Page->show();
-        $data = $TradeOrder->field('DISTINCT buyer,buyer_name,SUM(total) as a,SUM(amount) as b')->where($map)->limit($Page->firstRow . ',' . $Page->listRows)->group('buyer')->order('b desc')->select();
+        $data = $TradeOrder
+            ->field('buyer,buyer_name,SUM(total) as a,SUM(amount) as b')
+            ->where($map)
+            ->limit($Page->firstRow . ',' . $Page->listRows)
+            ->group('buyer')
+            ->order('b desc')
+            ->select();
         $all_amount_count = $TradeOrder->where($map)->field('amount')->sum('amount');
         foreach ($data as $k => $v) {
             $member_info[$k]['buyer'] = $v['buyer'];
@@ -56,26 +64,27 @@ class MemberController extends AuthController
             $member_info[$k]['total'] = $v['a'];
             $member_info[$k]['amount'] = $v['b'];
             $member_info[$k]['rate'] = round($v['b'] / $all_amount_count * 100, 5);
-        }        
-        $this->assign(['member_info' => $member_info,'day_s' => $day_s,'day_e' => $day_e,'show' => $show, 'count' => $count]);
+        }
+        $this->assign(['member_info' => $member_info, 'day_s' => $day_s, 'day_e' => $day_e, 'show' => $show, 'count' => $count]);
         $this->display();
     }
 
     //导出Excel表
-    public function exportExcel() {
-	$TradeOrder = D('TradeOrder');
+    public function exportExcel()
+    {
+        $TradeOrder = D('TradeOrder');
         $map['status'] = array('in', '2,3,4');
-        $map['status'] = array('neq', '');	
-        if (I('get.type') == 'export') { 
-	    $data = $TradeOrder->field('DISTINCT buyer,buyer_name,SUM(total) as a,SUM(amount) as b')->where($map)->group('buyer')->order('b desc')->select();
-	    $all_amount_count = $TradeOrder->where($map)->field('amount')->sum('amount');
-	    foreach ($data as $k => $v) {
-		$member_info[$k]['buyer'] = $v['buyer'];
-		$member_info[$k]['buyer_name'] = $v['buyer_name'];
-		$member_info[$k]['total'] = $v['a'];
-		$member_info[$k]['amount'] = $v['b'];
-		$member_info[$k]['rate'] = round($v['b'] / $all_amount_count * 100, 5) . '%';
-	    } 
+        $map['status'] = array('neq', '');
+        if (I('get.type') == 'export') {
+            $data = $TradeOrder->field('DISTINCT buyer,buyer_name,SUM(total) as a,SUM(amount) as b')->where($map)->group('buyer')->order('b desc')->select();
+            $all_amount_count = $TradeOrder->where($map)->field('amount')->sum('amount');
+            foreach ($data as $k => $v) {
+                $member_info[$k]['buyer'] = $v['buyer'];
+                $member_info[$k]['buyer_name'] = $v['buyer_name'];
+                $member_info[$k]['total'] = $v['a'];
+                $member_info[$k]['amount'] = $v['b'];
+                $member_info[$k]['rate'] = round($v['b'] / $all_amount_count * 100, 5) . '%';
+            }
             $fileName = "会员信息";
             $headArr = array('账号', '姓名', '购买数量', '交易额', '购买率');
             exportExcel($fileName, $headArr, $member_info); //数据导出
@@ -86,7 +95,8 @@ class MemberController extends AuthController
      * 获取新注册会员
      * @author iredbaby
      */
-    private function get_new_member($date_id){
+    private function get_new_member($date_id)
+    {
         $Member = D('Member');
         $map_new['regtime'] = [['gt', $date_id], ['lt', time()]];
         $reg_member_data = $Member->where($map_new)->field('truename,regtime')->select();
@@ -102,7 +112,8 @@ class MemberController extends AuthController
      * @param format_date ($i)  1 年  2 月 3 日
      * @author iredbaby
      */
-    public function memberPay(){
+    public function memberPay()
+    {
         $TradeOrder = D('TradeOrder');
         //按年月日全部付款
         for ($i = 1; $i <= 3; $i++) {
@@ -134,7 +145,8 @@ class MemberController extends AuthController
     /**
      * 会员APP注册
      */
-    public function memberRegApp(){
+    public function memberRegApp()
+    {
         $Member = D('Member');
         $mouth_solt = get_mouth_solt($this->date_start, $this->date_end);
         foreach ($mouth_solt as $k => $v) {
@@ -153,39 +165,43 @@ class MemberController extends AuthController
     /**
      * 会员统计
      */
-    public function memberCount(){	
-	$Area = D('Area');
-	$provice_id = I('pid');	
-	$provice = $this->getProvice();	
-	$provice_name = $this->getProvice(1,$provice_id);	
-	if($provice_id == ""){$provice_id = 17; } //默认河南省
-	$data = $Area->where('parentid =' .$provice_id)->select();
-	foreach ($data as $k=>$v){    
-	   $sql = "select a.areaid as areaid,a.areaname as areaname,b.areaid as areaids,COUNT(b.areaid) as total from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.parentid='".$v['areaid']."' group by b.areaid";		   
-	   $data[$k]['sub'] = queryMysql($sql);	
-	}	
-	//特殊城市处理 1、北京 2、上海 3、天津 4、重庆
-	if($provice_id == '1' |$provice_id == '2' |$provice_id == '3' |$provice_id == '4'){
-	    foreach ($data as $k=>$v){    
-	       $sql = "select a.areaid as areaid,a.areaname as areaname,b.areaid as areaids,COUNT(b.areaid) as total from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.areaid='".$v['areaid']."' group by b.areaid";		   
-	       $data[$k]['sub'] = queryMysql($sql);	
-	    }
-	}			
-	$this->assign('data',$data);
-	$this->assign('provice',$provice);
-	$this->assign('provice_name',$provice_name[0]['areaname']);
+    public function memberCount()
+    {
+        $Area = D('Area');
+        $provice_id = I('pid');
+        $provice = $this->getProvice();
+        $provice_name = $this->getProvice(1, $provice_id);
+        if ($provice_id == "") {
+            $provice_id = 17;
+        } //默认河南省
+        $data = $Area->where('parentid =' . $provice_id)->select();
+        foreach ($data as $k => $v) {
+            $sql = "select a.areaid as areaid,a.areaname as areaname,b.areaid as areaids,COUNT(b.areaid) as total from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.parentid='" . $v['areaid'] . "' group by b.areaid";
+            $data[$k]['sub'] = queryMysql($sql);
+        }
+        //特殊城市处理 1、北京 2、上海 3、天津 4、重庆
+        if ($provice_id == '1' | $provice_id == '2' | $provice_id == '3' | $provice_id == '4') {
+            foreach ($data as $k => $v) {
+                $sql = "select a.areaid as areaid,a.areaname as areaname,b.areaid as areaids,COUNT(b.areaid) as total from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.areaid='" . $v['areaid'] . "' group by b.areaid";
+                $data[$k]['sub'] = queryMysql($sql);
+            }
+        }
+        $this->assign('data', $data);
+        $this->assign('provice', $provice);
+        $this->assign('provice_name', $provice_name[0]['areaname']);
         $this->display();
     }
-    
+
     /**
      * 获取省份
-     */    
-    public function getProvice($id,$pid) {
-	$m = D('area');
-	$data = $m->field($field)->where('parentid = 0')->select();
-	if($id == 1){
-	    $data = $m->field('areaname')->where('areaid = '.$pid)->select();
-	}
-	return $data;
+     */
+    public function getProvice($id, $pid)
+    {
+        $m = D('area');
+        $data = $m->field($field)->where('parentid = 0')->select();
+        if ($id == 1) {
+            $data = $m->field('areaname')->where('areaid = ' . $pid)->select();
+        }
+        return $data;
     }
 }

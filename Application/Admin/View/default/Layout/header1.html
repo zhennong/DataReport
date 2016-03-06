@@ -4,13 +4,51 @@
     </div>
 </noscript>
 
+<script type="text/javascript">
+    var Header = {
+        //退出登录
+        logout:function(){
+            layer.confirm('你确定要退出吗？', {icon: 3}, function(index){
+                layer.close(index);
+                window.location.href="{:U('Public/logout')}";
+            });
+        },
+        //修改密码
+        update_pwd:function(){
+            layer.open({
+                type: 2,
+                closeBtn: 2,
+                area: ['450px', '280px'],
+                title: '修改密码',
+                content: "{:U('Index/edit_pwd')}"
+            });
+        },
+        //清除缓存
+        clear_cache:function(){
+            layer.open({
+                type: 2,
+                closeBtn: 2,
+                area: ['520px', '160px'],
+                shadeClose: true,
+                title: '清除缓存（ 点击遮罩可以关闭窗口哦！ ）',
+                content: "{:U('Index/clear_cache')}"
+            });
+        },
+        //备份数据
+        data_backup:function(){
+            alert(1);
+        }
+    }
+</script>
+
 <div region="north" split="true" border="false" style="overflow: hidden; height: 30px;
     background: url(__IMG__/layout-browser-hd-bg.gif) #7f99be repeat-x center 50%;
     line-height: 25px;color: #fff; font-family: Verdana, 微软雅黑,黑体">
     <span style="float:right; padding-right:20px;" class="head">
-        您好 [ <a target="mainFrame" href="{:U('Admin/admin_edit',array('id'=>$_SESSION['aid']))}">{$_SESSION['account']}</a> ] ，欢迎回来！ <a onclick="return update_pwd();" id="editpass">修改密码</a>
-        <a onclick="clear_cache();">清除缓存</a>
-        <a onclick="return logout();" id="loginOut">安全退出</a>
+        您好 [ <a target="mainFrame" href="{:U('Admin/admin_edit',array('id'=>$_SESSION['aid']))}">{$_SESSION['account']}</a> ] ，欢迎回来！ <a onclick="Header.update_pwd();" id="editpass">修改密码</a>
+        <a onclick="Header.data_backup()">备份数据</a>
+        <a onclick="Header.clear_cache();">清除缓存</a>
+        <a onclick="Header.logout();" id="loginOut">安全退出</a>
     </span>
     <span style="padding-left:10px; font-size: 16px; ">后台管理系统 <em>测试版</em></span>
 </div>
