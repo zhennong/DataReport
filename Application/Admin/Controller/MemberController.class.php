@@ -99,9 +99,9 @@ class MemberController extends AuthController
     {
         $Member = D('Member');
         $map_new['regtime'] = [['gt', $date_id], ['lt', $this->now]];
-        $reg_member_data = $Member->where($map_new)->field('truename,regtime')->select();
+        $reg_member_data = $Member->where($map_new)->field('username,regtime')->select();
         foreach ($reg_member_data as $key => $value) {
-            $reg_member_count[] = $value['truename'];
+            $reg_member_count[] = $value['username'];
         }
         $reg_member_str = implode(',', $reg_member_count);
         return $reg_member_str;
@@ -124,25 +124,13 @@ class MemberController extends AuthController
         }
         //新会员按月日付款
 
-        Tools::_vp('start',0,2);
         for ($i = 2; $i <= 3; $i++) {
             $day_member_name = $this->get_new_member(format_date($i));
             $map['paytime'] = [['neq', 0], ['gt', format_date($i)], ['lt', $this->now]];
-            $map['buyer_name'] = [['in', $day_member_name]];
+            $map['buyer'] = [['in', $day_member_name]];
             $map['status'] = ['in',[2,3,4]];
             $new_member_type[] = $i;
             $new_member_str = $Trade->where($map)->field('buyer,buyer_name,paytime')->count('distinct buyer');
-            Tools::_vp($new_member_str,0,3);
-            foreach($new_member_str as $k => $v){
-                $map['buyer'] = $v['buyer'];
-                $map['status'] = ['in',[2,3,4]];
-                $map['paytime'] = [['neq', 0],['lt', format_date($i)]];
-                $x = $Trade->where($map)->field("count(*) AS count")->select();
-                Tools::_vp($Trade->_sql(),0,3);
-                if($x[0]['count']>0){
-                    unset($new_member_str[$k]);
-                }
-            }
             if (empty($new_member_str)) {
                 $new_member_count[] = 0;
             } else {
