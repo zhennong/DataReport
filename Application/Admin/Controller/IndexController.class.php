@@ -12,25 +12,25 @@ use Think\Auth;
 class IndexController extends AuthController{
     public function index(){
         $m = M('auth_rule');
-	$field = 'id,name,title';
-	$data = $m->field($field)->where('pid=0 AND status=1')->select();
-	$auth = new Auth();
-	//没有权限的菜单不显示
-	foreach ($data as $k => $v) {
-	    if (!$auth->check($v['name'], session('aid')) && session('aid') != 1) {
-		unset($data[$k]);
-	    } else {
-		// status = 1    为菜单显示状态
-		$data[$k]['sub'] = $m->field($field)->where('pid=' . $v['id'] . ' AND status=1')->order('sort asc,id')->select();
-		foreach ($v['sub'] as $k2 => $v2) {
-		    if (!$auth->check($v2['name'], session('aid')) && session('aid') != 1) {
-			    unset($v['sub'][$k2]);
-		    }
-		}
+		$field = 'id,name,title';
+		$data = $m->field($field)->where('pid=0 AND status=1')->select();
+		$auth = new Auth();
+		//没有权限的菜单不显示
+		foreach ($data as $k => $v) {
+			if (!$auth->check($v['name'], session('aid')) && session('aid') != 1) {
+				unset($data[$k]);
+			} else {
+			// status = 1    为菜单显示状态
+			$data[$k]['sub'] = $m->field($field)->where('pid=' . $v['id'] . ' AND status=1')->order('sort asc,id')->select();
+			foreach ($v['sub'] as $k2 => $v2) {
+				if (!$auth->check($v2['name'], session('aid')) && session('aid') != 1) {
+					unset($v['sub'][$k2]);
+				}
+			}
 	    }
 	}
 	
-	$this->assign('data',$data);	// 顶级
+		$this->assign('data',$data);	// 顶级
     	$this->display();
     }
     
@@ -42,28 +42,28 @@ class IndexController extends AuthController{
     	//最大上传限制
     	$data['max_upload'] = ini_get("file_uploads") ? ini_get("upload_max_filesize") : "Disabled";
 		
-	//整理实时数据
-	$realtime = array(
-	  'time' => date('Y年n月j日 H:i:s'),
-	  'uptime' => $sys_info['uptime'],
-	  'disk_free' => round(@disk_free_space('.') / (1024*1024*1024), 2).' G',
-	  'mem_used' => round($sys_info['mem_used']/1024, 2).' G',
-	  'mem_free' => round($sys_info['mem_free']/1024, 2).' G',
-	  'mem_cached' => round($sys_info['mem_cached']/1024, 2).' G',
-	  'mem_buffers' => round($sys_info['mem_buffers']/1024, 2).' G',
-	  'mem_real_used' => round($sys_info['mem_real_used']/1024, 2).' G', //真实内存使用
-	  'mem_real_free' => round($sys_info['mem_real_free']/1024, 2).' G', //真实内存空闲
-	  'mem_real_percent' => (int)$sys_info['mem_real_percent'].'%', //真实内存使用比率
-	  'mem_percent' => (int)$sys_info['mem_percent'].'%', //内存总使用率
-	  'mem_cached_percent' => (int)$sys_info['mem_cached_percent'].'%', //cache内存使用率
-	  'swap_percent' => (int)$sys_info['swap_percent'].'%',
-	  'load_avg' => $sys_info['load_avg'] //系统平均负载
-	);
+		//整理实时数据
+		$realtime = array(
+		  'time' => date('Y年n月j日 H:i:s'),
+		  'uptime' => $sys_info['uptime'],
+		  'disk_free' => round(@disk_free_space('.') / (1024*1024*1024), 2).' G',
+		  'mem_used' => round($sys_info['mem_used']/1024, 2).' G',
+		  'mem_free' => round($sys_info['mem_free']/1024, 2).' G',
+		  'mem_cached' => round($sys_info['mem_cached']/1024, 2).' G',
+		  'mem_buffers' => round($sys_info['mem_buffers']/1024, 2).' G',
+		  'mem_real_used' => round($sys_info['mem_real_used']/1024, 2).' G', //真实内存使用
+		  'mem_real_free' => round($sys_info['mem_real_free']/1024, 2).' G', //真实内存空闲
+		  'mem_real_percent' => (int)$sys_info['mem_real_percent'].'%', //真实内存使用比率
+		  'mem_percent' => (int)$sys_info['mem_percent'].'%', //内存总使用率
+		  'mem_cached_percent' => (int)$sys_info['mem_cached_percent'].'%', //cache内存使用率
+		  'swap_percent' => (int)$sys_info['swap_percent'].'%',
+		  'load_avg' => $sys_info['load_avg'] //系统平均负载
+		);
 
-	$sys_info['disk_total'] = round(@disk_total_space('.') / (1024*1024*1024), 2);
+		$sys_info['disk_total'] = round(@disk_total_space('.') / (1024*1024*1024), 2);
 
-	$this->assign('realtime',$realtime);
-	$this->assign('sys_info',$sys_info);
+		$this->assign('realtime',$realtime);
+		$this->assign('sys_info',$sys_info);
     	$this->assign('data',$data);
     	$this->display();
     }
