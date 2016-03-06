@@ -23,16 +23,17 @@ define('APP_DEBUG',True);
 define('BIND_MODULE','Admin');
 
 // 定义应用目录
+define('APP_ROOT',dirname(__FILE__));
 define('APP_PATH','./Application/');
 
 // 定义缓存目录
-define('RUNTIME_PATH','./Runtime/');
+define('RUNTIME_PATH',APP_ROOT.'/Runtime/');
 
 // composer
 require 'vendor/autoload.php';
 
 // vendor目录
-define('VENDOR_PATH','./vendor/');
+define('VENDOR_PATH',APP_ROOT.'/vendor/');
 
 //设置自定义类自动加载
 spl_autoload_register(function($classname){
