@@ -11,6 +11,9 @@ use Think\Auth;
 use Think\Model;
 
 class AuthController extends CommonController {
+	//session存在时，不需要验证的权限
+	public $not_check = ['Index/index', 'Index/main', 'Index/clear_cache','Index/edit_pwd', 'Public/logout', 'Admin/admin_list','Admin/admin_edit', 'Admin/admin_add'];
+
     public function _initialize(){
 		parent::_initialize();
 		//session不存在时，不允许直接访问
@@ -18,11 +21,8 @@ class AuthController extends CommonController {
 			$this->error('还没有登录，正在跳转到登录页', U('Public/login'));
 		}
 
-		//session存在时，不需要验证的权限
-		$not_check = ['Index/index', 'Index/main', 'Index/clear_cache','Index/edit_pwd', 'Public/logout', 'Admin/admin_list','Admin/admin_edit', 'Admin/admin_add'];
-
 		//当前操作的请求                 模块名/方法名
-		if (in_array(CONTROLLER_NAME . '/' . ACTION_NAME, $not_check)) {
+		if (in_array(CONTROLLER_NAME . '/' . ACTION_NAME, $this->not_check)) {
 			return true;
 		}
 

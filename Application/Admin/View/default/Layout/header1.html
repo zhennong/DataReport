@@ -33,10 +33,6 @@
                 title: '清除缓存（ 点击遮罩可以关闭窗口哦！ ）',
                 content: "{:U('Index/clear_cache')}"
             });
-        },
-        //备份数据
-        data_backup:function(){
-            alert(1);
         }
     }
 </script>
@@ -46,7 +42,6 @@
     line-height: 25px;color: #fff; font-family: Verdana, 微软雅黑,黑体">
     <span style="float:right; padding-right:20px;" class="head">
         您好 [ <a target="mainFrame" href="{:U('Admin/admin_edit',array('id'=>$_SESSION['aid']))}">{$_SESSION['account']}</a> ] ，欢迎回来！ <a onclick="Header.update_pwd();" id="editpass">修改密码</a>
-        <a onclick="Header.data_backup()">备份数据</a>
         <a onclick="Header.clear_cache();">清除缓存</a>
         <a onclick="Header.logout();" id="loginOut">安全退出</a>
     </span>
