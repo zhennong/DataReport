@@ -97,7 +97,7 @@ class MemberController extends AuthController
     private function get_new_member($date_id)
     {
         $Member = D('Member');
-        $map_new['regtime'] = [['gt', $date_id], ['lt', time()]];
+        $map_new['regtime'] = [['gt', $date_id], ['lt', $this->now]];
         $reg_member_data = $Member->where($map_new)->field('truename,regtime')->select();
         foreach ($reg_member_data as $key => $value) {
             $reg_member_count[] = $value['truename'];
@@ -116,17 +116,19 @@ class MemberController extends AuthController
         $Trade = D('Trade');
         //按年月日全部付款
         for ($i = 1; $i <= 3; $i++) {
-            $map['paytime'] = [['neq', 0], ['gt', format_date($i)], ['lt', time()]];
+            $map['paytime'] = [['neq', 0], ['gt', format_date($i)], ['lt', $this->now]];
+            $map['status'] = ['in',[2,3,4]];
             $member_type[] = $i;
             $member_count[] = $Trade->where($map)->field('buyer_name,paytime')->count('distinct buyer_name');
         }
         //新会员按月日付款
         for ($i = 2; $i <= 3; $i++) {
             $day_member_name = $this->get_new_member(format_date($i));
-            $map_day['paytime'] = [['neq', 0], ['gt', format_date($i)], ['lt', time()]];
-            $map_day['buyer_name'] = [['in', $day_member_name]];
+            $map['paytime'] = [['neq', 0], ['gt', format_date($i)], ['lt', $this->now]];
+            $map['buyer_name'] = [['in', $day_member_name]];
+            $map['status'] = ['in',[2,3,4]];
             $new_member_type[] = $i;
-            $new_member_str = $Trade->where($map_day)->field('buyer_name,paytime')->count('distinct buyer_name');
+            $new_member_str = $Trade->where($map)->field('buyer_name,paytime')->count('distinct buyer_name');
             if (empty($new_member_str)) {
                 $new_member_count[] = 0;
             } else {
