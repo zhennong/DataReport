@@ -9,6 +9,8 @@
 namespace Admin\Controller;
 
 
+use Common\Tools;
+
 class FinanceController extends AdminController
 {
     public function financeIndex()
