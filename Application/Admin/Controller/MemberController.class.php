@@ -65,7 +65,7 @@ class MemberController extends AuthController
             $member_info[$k]['amount'] = $v['b'];
             $member_info[$k]['rate'] = round($v['b'] / $all_amount_count * 100, 5);
         }
-        $this->assign(['member_info' => $member_info, 'day_s' => $day_s, 'day_e' => $day_e, 'show' => $show, 'count' => $count]);
+        $this->assign(['member_info' => $member_info, 'day_s' => $this->date_start, 'day_e' => $this->date_end, 'show' => $show, 'count' => $count]);
         $this->display();
     }
 
@@ -132,6 +132,7 @@ class MemberController extends AuthController
             $map['status'] = ['in',[2,3,4]];
             $new_member_type[] = $i;
             $new_member_str = $Trade->where($map)->field('buyer,buyer_name,paytime')->count('distinct buyer');
+            Tools::_vp($new_member_str,0,3);
             foreach($new_member_str as $k => $v){
                 $map['buyer'] = $v['buyer'];
                 $map['status'] = ['in',[2,3,4]];
@@ -212,6 +213,7 @@ class MemberController extends AuthController
     public function getProvice($id, $pid)
     {
         $m = D('area');
+        $field = '';
         $data = $m->field($field)->where('parentid = 0')->select();
         if ($id == 1) {
             $data = $m->field('areaname')->where('areaid = ' . $pid)->select();
