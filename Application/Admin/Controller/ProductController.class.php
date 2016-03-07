@@ -51,10 +51,17 @@ class ProductController extends AuthController
             $series_data[] = "{value:".$v['count'].", name:'".$v['catname']."'}";
         }
         $series_data = Tools::arr2str($series_data);
-//        Tools::_vp($sel_cat_info);
 
         // 注入显示
         $this->assign(['legend_data'=>$legend_data,'series_data'=>$series_data]);
+        $this->display();
+    }
+
+    /**
+     * 各类产品数量
+     */
+    public function categoryTotal(){
+        // 注入显示
         $this->display();
     }
 }

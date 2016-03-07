@@ -1,0 +1,21 @@
+<extend name="Layout:ly2" />
+
+<block name="head">
+    <script>
+        $(document).ready(function () {
+            var option = {};
+            var chart = echarts.init(document.getElementById('chart'));
+            chart.setOption(option);
+            window.onresize = function () {
+                chart.resize();
+            };
+        });
+    </script>
+</block>
+
+<block name="body">
+    <include file="Includes/dateSelect" />
+    <div class="col-lg-12">
+        <div id="chart"  class="charts_h600"></div>
+    </div>
+</block>
