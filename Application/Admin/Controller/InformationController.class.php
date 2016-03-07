@@ -26,7 +26,10 @@ class InformationController extends AdminController
         $informationDate = D("Information")->where($map)->field("addtime")->select();
         return get_arr_k_amount($informationDate,'addtime');
     }
-
+    /*
+     * 获取时间设置
+     * @Edwin
+     */
     private function getMouthSoltInformation($date_start,$date_end)
     {
         $Information = D('Information');
@@ -35,7 +38,7 @@ class InformationController extends AdminController
         foreach($mouth_solt as $k => $v){
             $map['paytime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
             $mouth_solt_information[$k]['mouth_solt'] = $v;
-            $mouth_solt_information[$k]['information'] = $Information->field('itemid,content')->where($map)->select();
+            $mouth_solt_information[$k]['information'] = $Information->field(count('addtime'))->where($map)->select();
             $mouth_solt_information[$k]['mouth_name'] = date("Y-m", $v['start']['ts']);
             $mouth_solt_information[$k]['trade_information'] = get_arr_k_amount($mouth_solt_information[$k]['information'],'information');
             unset($mouth_solt_information[$k]['trades']);
@@ -45,11 +48,12 @@ class InformationController extends AdminController
 
     /**
      * 月资讯总数
-     * @author wodrow
+     * @Edwin
      */
     public function monthlyInformation()
     {
         $this->assign('mouth_solt_information',$this->getMouthSoltInformation($this->date_start,$this->date_end));
         $this->display();
     }
+
 }
