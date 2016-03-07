@@ -18,34 +18,32 @@ class InformationController extends AdminController
         $this->display('information_index');
     }
 
-    /**
-     * 获取资讯日期
-     */
-    public function getInformationDate($map)
+
+
+
+    private function getMouthSoltInformation($date_start,$date_end)
     {
-        $informationDate = D("Information")->where($map)->field("addtime")->select();
-        return get_arr_k_amount($informationDate,'addtime');
+        $Trade = D('Information');
+        $mouth_solt = get_mouth_solt($date_start,$date_end);
+        $map['status'] = ['in','2,3,4'];
+        foreach($mouth_solt as $k => $v){
+            $map['paytime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
+            $mouth_solt_information[$k]['mouth_solt'] = $v;
+            $mouth_solt_information[$k]['information'] = $Trade->field('itemid,amount')->where($map)->select();
+            $mouth_solt_information[$k]['mouth_name'] = date("Y-m", $v['start']['ts']);
+            $mouth_solt_information[$k]['trade_information'] = get_arr_k_amount($mouth_solt_information[$k]['information'],'amount');
+            unset($mouth_solt_information[$k]['information']);
+        }
+        return $mouth_solt_information;
     }
 
     /**
-     * 资讯年总量
-     * @Edwin
+     * 月付款
+     * @author wodrow
      */
-
     public function monthlyInformation()
     {
-        $informationCount = D('Information');
-        $year_solt = get_year_solt($this->year_start,$this->year_end);
-        $map['status'] = ['in','2,3,4'];
-        foreach($year_solt as $k => $v){
-            $map['addtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
-            $year_solt_information[$k]['year_solt'] = $v;
-            $year_solt_information[$k]['information'] = $informationCount->field('count(addtime)')->where($map)->select();
-            $year_solt_information[$k]['year_name'] = date("Y", $v['start']['ts']);
-            $year_solt_information[$k]['infromation_amount'] = get_arr_k_amount($year_solt_information[$k]['information'],'amount');
-            unset($year_solt_information[$k]['information']);
-        }
-        $this->assign('year_solt_information',$year_solt_information);
+        $this->assign('mouth_solt_information',$this->getMouthSoltInformation($this->date_start,$this->date_end));
         $this->display();
     }
 }
