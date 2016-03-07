@@ -116,32 +116,51 @@ class MemberController extends AuthController
     {
         $Trade = D('Trade');
         //按年月日全部付款
+        $map['status'] = ['in',[2,3,4]];
         for ($i = 1; $i <= 3; $i++) {
             $map['paytime'] = [['neq', 0], ['gt', format_date($i)], ['lt', $this->now]];
-            $map['status'] = ['in',[2,3,4]];
             $member_type[] = $i;
             $member_count[] = $Trade->where($map)->field('buyer,buyer_name,paytime')->count('distinct buyer');
         }
-        //新会员按月日付款
-
-        for ($i = 2; $i <= 3; $i++) {
-            $day_member_name = $this->get_new_member(format_date($i));
-            $map['paytime'] = [['neq', 0], ['gt', format_date($i)], ['lt', $this->now]];
-            $map['buyer'] = [['in', $day_member_name]];
-            $map['status'] = ['in',[2,3,4]];
-            $new_member_type[] = $i;
-            $new_member_str = $Trade->where($map)->field('buyer,buyer_name,paytime')->count('distinct buyer');
-            if (empty($new_member_str)) {
-                $new_member_count[] = 0;
-            } else {
-                $new_member_count[] = $new_member_str;
+        $day_new = $month_new = 0;
+        //日付款新会员
+        $map['paytime'] = [['lt', $this->now_d_start]];
+        $buyer_all_before_day = Tools::getCols($Trade->where($map)->field("buyer")->group('buyer')->select(),'buyer');
+        $map['paytime'] = [['gt', $this->now_d_start],['lt', $this->now]];
+        $buyer_after_day = $Trade->where($map)->field("buyer")->group('buyer')->select();
+        foreach($buyer_after_day as $k => $v){
+            if(in_array($v['buyer'],$buyer_all_before_day)){
+                $day_new ++;
             }
         }
+        //月付款新会员
+        $map['paytime'] = [['lt', $this->now_m_start]];
+        $buyer_all_before_month = Tools::getCols($Trade->where($map)->field("buyer")->group('buyer')->select(),'buyer');
+        $map['paytime'] = [['gt', $this->now_m_start],['lt', $this->now]];
+        $buyer_after_month = $Trade->where($map)->field("buyer")->group('buyer')->select();
+        foreach($buyer_after_month as $k => $v){
+            if(in_array($v['buyer'],$buyer_all_before_month)){
+                $month_new ++;
+            }
+        }
+//        for ($i = 2; $i <= 3; $i++) {
+//            $day_member_name = $this->get_new_member(format_date($i));
+//            $map['paytime'] = [['neq', 0], ['gt', format_date($i)], ['lt', $this->now]];
+//            $map['buyer'] = [['in', $day_member_name]];
+//            $map['status'] = ['in',[2,3,4]];
+//            $new_member_type[] = $i;
+//            $new_member_str = $Trade->where($map)->field('buyer,buyer_name,paytime')->count('distinct buyer');
+//            if (empty($new_member_str)) {
+//                $new_member_count[] = 0;
+//            } else {
+//                $new_member_count[] = $new_member_str;
+//            }
+//        }
         //全部付款
         $map_all['paytime'] = [['neq', 0]];
         $all = $Trade->where($map_all)->field('buyer_name,paytime')->count('distinct buyer_name');
         $this->assign(['day' => $member_count[2], 'month' => $member_count[1], 'year' => $member_count[0], 'all' => $all]);
-        $this->assign(['day_new' => $new_member_count[1], 'month_new' => $new_member_count[0]]);
+        $this->assign(['day_new' => $day_new, 'month_new' => $month_new]);
         $this->display();
     }
 

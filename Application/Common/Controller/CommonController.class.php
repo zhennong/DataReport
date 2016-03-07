@@ -19,12 +19,15 @@ abstract class CommonController extends Controller
     protected $mapDateRange; // 获取公用查询段
     protected $mapYearRange; // 获取公用查询段
     protected $now; //当前时间戳
-    protected $now_Y;
+    protected $now_Y; //当前年
     protected $now_m;
     protected $now_d;
     protected $now_H;
     protected $now_i;
     protected $now_s;
+    protected $now_Y_start; //当前年开始时间戳
+    protected $now_m_start;
+    protected $now_d_start;
 
 
     public function _initialize()
@@ -44,6 +47,9 @@ abstract class CommonController extends Controller
         $this->now_H = date('H',$this->now);
         $this->now_i = date('i',$this->now);
         $this->now_s = date('s',$this->now);
+        $this->now_Y_start = strtotime($this->now_Y . '-01-01 00:00:00');
+        $this->now_m_start = strtotime($this->now_m . '-01 00:00:00');
+        $this->now_d_start = strtotime($this->now_d . ' 00:00:00');
     }
 
     /**
