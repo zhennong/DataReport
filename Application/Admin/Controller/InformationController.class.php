@@ -45,7 +45,7 @@ class InformationController extends AdminController
             $year_solt_information[$k]['infromation_amount'] = get_arr_k_amount($year_solt_information[$k]['information'],'amount');
             unset($year_solt_information[$k]['information']);
         }
-        $this->assign('year_solt_trades',$year_solt_information);
+        $this->assign('year_solt_information',$year_solt_information);
         $this->display();
     }
 }
