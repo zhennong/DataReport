@@ -143,19 +143,19 @@ class MemberController extends AuthController
                 $month_new ++;
             }
         }
-//        for ($i = 2; $i <= 3; $i++) {
-//            $day_member_name = $this->get_new_member(format_date($i));
-//            $map['paytime'] = [['neq', 0], ['gt', format_date($i)], ['lt', $this->now]];
-//            $map['buyer'] = [['in', $day_member_name]];
-//            $map['status'] = ['in',[2,3,4]];
-//            $new_member_type[] = $i;
-//            $new_member_str = $Trade->where($map)->field('buyer,buyer_name,paytime')->count('distinct buyer');
-//            if (empty($new_member_str)) {
-//                $new_member_count[] = 0;
-//            } else {
-//                $new_member_count[] = $new_member_str;
-//            }
-//        }
+        /*for ($i = 2; $i <= 3; $i++) {
+            $day_member_name = $this->get_new_member(format_date($i));
+            $map['paytime'] = [['neq', 0], ['gt', format_date($i)], ['lt', $this->now]];
+            $map['buyer'] = [['in', $day_member_name]];
+            $map['status'] = ['in',[2,3,4]];
+            $new_member_type[] = $i;
+            $new_member_str = $Trade->where($map)->field('buyer,buyer_name,paytime')->count('distinct buyer');
+            if (empty($new_member_str)) {
+                $new_member_count[] = 0;
+            } else {
+                $new_member_count[] = $new_member_str;
+            }
+        }*/
         //全部付款
         $map_all['paytime'] = [['neq', 0]];
         $all = $Trade->where($map_all)->field('buyer_name,paytime')->count('distinct buyer_name');

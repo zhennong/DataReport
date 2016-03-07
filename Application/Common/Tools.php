@@ -502,13 +502,17 @@ class Tools
      *
      * @return array 包含指定键所有值的数组
      */
-    public static function getCols($arr, $col)
+    public static function getCols($arr, $col ,$add_quotation_marks = false)
     {
         $ret = array();
         foreach ($arr as $row)
         {
             if (isset($row[$col])) {
-                $ret[] = $row[$col];
+                if($add_quotation_marks&&is_string($row[$col])){
+                    $ret[] = "'" . $row[$col] . "'";
+                }else{
+                    $ret[] = $row[$col];
+                }
             }
         }
         return $ret;
@@ -588,7 +592,7 @@ class Tools
      *
      * @return array 分组后的结果
      */
-    static function groupBy($arr, $keyField)
+    public static function groupBy($arr, $keyField)
     {
         $ret = array();
         foreach ($arr as $row)
@@ -621,7 +625,7 @@ class Tools
      *
      * return array 树形结构的数组
      */
-    static function toTree($arr, $keyNodeId, $keyParentId = 'parent_id', $keyChildrens = 'childrens', & $refs = NULL)
+    public static function toTree($arr, $keyNodeId, $keyParentId = 'parent_id', $keyChildrens = 'childrens', & $refs = NULL)
     {
         $refs = array();
         foreach ($arr as $offset => $row)
@@ -662,7 +666,7 @@ class Tools
      *
      * @return array 展开后的数组
      */
-    static function treeToArray($tree, $keyChildrens = 'childrens')
+    public static function treeToArray($tree, $keyChildrens = 'childrens')
     {
         $ret = array();
         if (isset($tree[$keyChildrens]) && is_array($tree[$keyChildrens]))
@@ -692,7 +696,7 @@ class Tools
      *
      * @return array 排序后的数组
      */
-    static function sortByCol($array, $keyname, $dir = SORT_ASC)
+    public static function sortByCol($array, $keyname, $dir = SORT_ASC)
     {
         return self::sortByMultiCols($array, array($keyname => $dir));
     }
@@ -713,7 +717,7 @@ class Tools
      *
      * @return array 排序后的数组
      */
-    static function sortByMultiCols($rowset, $args)
+    public static function sortByMultiCols($rowset, $args)
     {
         $sortArray = array();
         $sortRule = '';
