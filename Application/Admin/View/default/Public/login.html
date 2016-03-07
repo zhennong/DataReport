@@ -20,11 +20,11 @@ function check_login(){
         $('#password').focus();
         return false;
     }    
-    if(code == ''){
-        alert('验证码不能为空');
-        $('#code').focus();
-        return false;
-    }
+//    if(code == ''){
+//        alert('验证码不能为空');
+//        $('#code').focus();
+//        return false;
+//    }
     return true;
 }
 </script>
@@ -45,11 +45,11 @@ function check_login(){
             <label>密&nbsp;&nbsp;码: </label>
             <input type="password" name="password" id="password" value="">
         </p>
-        <p class="main">
-            <label>验证码: </label>
-            <img style="border:1px solid #D4E7F6; cursor:pointer;position:relative;top:0px;float: left;left:-5px;" width=60 height=25 title="点我刷新哦！" src="{:U('Public/verify')}" onclick="javascript:this.src=this.src+'?time='+Math.random()" />
-            <input type="text" name="code" id="code" value="" style="width: 50px;margin-left: 10px;" />	
-        </p>
+        <!--<p class="main">-->
+            <!--<label>验证码: </label>-->
+            <!--<img style="border:1px solid #D4E7F6; cursor:pointer;position:relative;top:0px;float: left;left:-5px;" width=60 height=25 title="点我刷新哦！" src="{:U('Public/verify')}" onclick="javascript:this.src=this.src+'?time='+Math.random()" />-->
+            <!--<input type="text" name="code" id="code" value="" style="width: 50px;margin-left: 10px;" />	-->
+        <!--</p>-->
         <p align="left" style="text-indent:7em;">
           <input type="submit" name="btn" class="btn" value="登陆" />	
           <input type="reset" name="btn" class="btn" value="重置" />	
