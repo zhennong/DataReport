@@ -21,7 +21,7 @@ class InformationController extends AdminController
     }
 
     /*
-     *
+     *月资讯总数
      * @Edwin
      */
     public function monthlyInformation()
