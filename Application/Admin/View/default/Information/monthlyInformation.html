@@ -8,7 +8,7 @@
             var trade_information = [];
             $.each(mouth_solt_trades, function (index, val) {
                 mouth_name[index - 1] = mouth_solt_trades[index]['mouth_name'];
-                trade_information[index-1] = mouth_solt_trades[index]['trade_information'];
+                trade_information[index-1] = mouth_solt_trades[index]['information_amount'];
             });
             option = {
                 title: {
@@ -46,7 +46,7 @@
             {
                 name: '资讯总量',
                 type: 'bar',
-                data: trade_information
+                data: information_amount
             }
                 ]
             };
