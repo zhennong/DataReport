@@ -15,10 +15,10 @@ use Common\Tools;
 class ProductController extends AuthController
 {
     /**
-     * 产品类别比例
-     */
+        * 产品类别比例
+        */
     public function categoryRatio(){
-        // 添加的产品
+            // 添加的产品
         $Product = D('Product');
         $map['addtime'] = [['gt',$this->date_start],['lt',$this->date_end]];
         $field = ['itemid','catid'];

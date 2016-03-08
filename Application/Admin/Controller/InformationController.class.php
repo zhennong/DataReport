@@ -10,6 +10,8 @@ namespace Admin\Controller;
 
 
 
+use Common\Tools;
+
 class InformationController extends AdminController
 {
     //默认配置 对栏目权限判断
@@ -18,42 +20,23 @@ class InformationController extends AdminController
         $this->display('information_index');
     }
 
-    /**
-     * 获取资讯日期
-     */
-    public function getInformationDate($map)
-    {
-        $informationDate = D("Information")->where($map)->field("addtime")->select();
-        return get_arr_k_amount($informationDate,'addtime');
-    }
     /*
-     * 获取时间设置
-     * @Edwin
-     */
-    private function getMouthSoltInformation($date_start,$date_end)
-    {
-        $Information = D('Information');
-        $mouth_solt = get_mouth_solt($date_start,$date_end);
-        $map['status'] = ['in','2,3,4'];
-        foreach($mouth_solt as $k => $v){
-            $map['paytime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
-            $mouth_solt_information[$k]['mouth_solt'] = $v;
-            $mouth_solt_information[$k]['information'] = $Information->field('itemid')->where($map)->select();
-            $mouth_solt_information[$k]['mouth_name'] = date("Y-m", $v['start']['ts']);
-            $mouth_solt_information[$k]['information_amount'] = get_arr_k_amount($mouth_solt_information[$k]['information'],'amount');
-            unset($mouth_solt_information[$k]['information']);
-        }
-        return $mouth_solt_information;
-    }
-
-    /**
-     * 月资讯总数
+     *
      * @Edwin
      */
     public function monthlyInformation()
     {
-        $this->assign('mouth_solt_information',$this->getMouthSoltInformation($this->date_start,$this->date_end));
-        $this->display();
+        //查询月资讯总数
+        $Information = D('Information');
+        $map['addtime'] = [['gt',$this->date_start],['lt',$this->date_end]];
+        $field = ['itemid','addtime'];
+        $sel_information = $Information->where($map)->field($field)->select();
+        foreach($sel_information as $k=>$v){
+            $x = Tools::str2arr($v['addtime']);
+            $sel_information[$k['addtime']]=$x[0];
+        }
+
+
     }
 
 }
