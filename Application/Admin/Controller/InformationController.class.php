@@ -31,12 +31,13 @@ class InformationController extends AdminController
         $map['addtime'] = [['gt',$this->date_start],['lt',$this->date_end]];
         $field = ['itemid','addtime'];
         $sel_information = $Information->where($map)->field($field)->select();
-        foreach($sel_information as $k=>$v){
-            $x = Tools::str2arr($v['addtime']);
-            $sel_information[$k['addtime']]=$x[0];
+        //var_dump($sel_information);
+        //数据重组
+        $legend_data = Tools::getCols($sel_information,'itemid',true);
+        $number = count($legend_data);
+        //}
+        //注入显示
+        $this->assign(['legend_data'=>$legend_data]);
+        $this->display();
         }
-
-
-    }
-
 }

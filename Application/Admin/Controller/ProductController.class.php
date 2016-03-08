@@ -51,7 +51,6 @@ class ProductController extends AuthController
             $series_data[] = "{value:".$v['count'].", name:'".$v['catname']."'}";
         }
         $series_data = Tools::arr2str($series_data);
-
         // 注入显示
         $this->assign(['legend_data'=>$legend_data,'series_data'=>$series_data]);
         $this->display();
