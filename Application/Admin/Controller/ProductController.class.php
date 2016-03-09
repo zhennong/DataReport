@@ -95,8 +95,20 @@ class ProductController extends AuthController
      * 产品上传月走势
      */
     public function uploadMonthlyTrend(){
+        $Product = D('Product');
         //数据查询
+        foreach($this->month_solt as $k => $v){
+            $upload_products[$k]['month'] = $v['start']['date'];
+            $map['addtime'] = [['gt',$v['start']['ts']],['lt',$v['end']['ts']]];
+            $upload_products[$k]['count'] = count($Product->where($map)->field('itemid')->select());
+        }
 
+        //数据重组
+        $xAxis_data = Tools::arr2str(Tools::getCols($upload_products,'month',true));
+        $series_data = Tools::arr2str(Tools::getCols($upload_products,'count'));
+
+        // 注入显示
+        $this->assign(['xAxis_data'=>$xAxis_data,'series_data'=>$series_data]);
         $this->display();
     }
 }
