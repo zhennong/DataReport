@@ -21,8 +21,8 @@ class InformationController extends AdminController
     }
 
     /**
-     * 月付款
-     * @author wodrow
+     * 月资讯总量
+     * @Edwin
      */
     public function monthlyInformation()
     {
