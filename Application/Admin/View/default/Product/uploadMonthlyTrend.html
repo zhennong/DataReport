@@ -1,0 +1,64 @@
+<extend name="Layout:ly2" />
+
+<block name="head">
+    <script>
+        $(document).ready(function () {
+            option = {
+                title: {
+                    text: '上传产品月走势图  （开始时间：<?= date("Y-m-d",$date_start )?> - 结束时间：<?= date("Y-m-d",$date_end ) ?>）'
+                },
+                tooltip : {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data:['上传产品']
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                toolbox: {
+                    feature: {
+                        saveAsImage: {}
+                    }
+                },
+                xAxis : [
+                    {
+                        type : 'category',
+                        boundaryGap : false,
+                        data : ['周一','周二','周三','周四','周五','周六','周日']
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value'
+                    }
+                ],
+                series : [
+                    {
+                        name:'上传产品',
+                        type:'line',
+                        stack: '总量',
+                        data:[120, 132, 101, 134, 90, 230, 210]
+                    }
+                ]
+            };
+            var chart = echarts.init(document.getElementById('chart'));
+            chart.setOption(option);
+            window.onresize = function(){
+                chart.resize();
+            };
+        });
+    </script>
+</block>
+</block>
+
+
+<block name="body">
+    <include file="Includes/dateSelect" />
+    <div class="col-lg-12">
+        <div id="chart"  class="charts_h600"></div>
+    </div>
+</block>
