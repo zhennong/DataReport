@@ -3,13 +3,13 @@
 <block name="head">
     <script type="text/javascript">
         $(function () {
-            var mouth_solt_information = <?=json_encode($mouth_solt_information) ?>;
+            /*var mouth_solt_information = <?=json_encode($mouth_solt_information) ?>;
             var mouth_name = [];
             var information_amount = [];
             $.each(mouth_solt_information, function (index, val) {
                 mouth_name[index - 1] = mouth_solt_information[index]['mouth_name'];
                 information_amount[index-1] = mouth_solt_information[index]['information_amount'];
-            });
+            });*/
             option = {
                 title: {
                 text: '月度资讯',
@@ -34,7 +34,7 @@
                 xAxis: [
             {
                 type: 'category',
-                data: mouth_name
+                data: [<?=$xAxis_data ?>]
             }
                 ],
                 yAxis: [
@@ -46,7 +46,7 @@
             {
                 name: '月度资讯',
                 type: 'bar',
-                data: information_amount
+                data: [<?=$series_data ?>]
             }
                 ]
             };

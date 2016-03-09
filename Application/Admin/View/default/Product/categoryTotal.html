@@ -11,7 +11,65 @@
             };
         });
     </script>
+    <script type="text/javascript">
+        $(function () {
+            var mouth_solt_information = <?=json_encode($mouth_solt_information) ?>;
+            var mouth_name = [];
+            var information_amount = [];
+            $.each(mouth_solt_information, function (index, val) {
+                mouth_name[index - 1] = mouth_solt_information[index]['mouth_name'];
+                information_amount[index-1] = mouth_solt_information[index]['information_amount'];
+            });
+            option = {
+                title: {
+                text: '月度资讯',
+                left: 'center'
+            },
+                tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                type: 'shadow'
+            }
+            },
+                legend: {
+                left: 'left',
+                data: ['月度资讯']
+            },
+                grid: {
+                left: '0',
+                right: '0',
+                bottom: '0',
+                containLabel: true
+            },
+                xAxis: [
+            {
+                type: 'category',
+                data: mouth_name
+            }
+                ],
+                yAxis: [
+            {
+                type: 'value'
+            }
+                ],
+                series: [
+            {
+                name: '月度资讯',
+                type: 'bar',
+                data: information_amount
+            }
+                ]
+            };
+            var Information = echarts.init(document.getElementById('Information'));
+            Information.setOption(option);
+            window.onresize = function(){
+                Information.resize();
+            };
+        })
+    </script>
 </block>
+</block>
+
 
 <block name="body">
     <include file="Includes/dateSelect" />
