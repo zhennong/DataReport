@@ -27,7 +27,7 @@ class MemberController extends AuthController
     public function memberReg()
     {
         $Member = D('Member');
-        $mouth_solt = get_mouth_solt($this->month_start, $this->month_end);
+        $mouth_solt = get_month_solt($this->month_start, $this->month_end);
         foreach ($mouth_solt as $k => $v) {
             $map['regtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
             $mouth_solt_member[$k]['mouth_sort'] = $v;
@@ -170,7 +170,7 @@ class MemberController extends AuthController
     public function memberRegApp()
     {
         $Member = D('Member');
-        $mouth_solt = get_mouth_solt($this->month_start, $this->month_end);
+        $mouth_solt = get_month_solt($this->month_start, $this->month_end);
         foreach ($mouth_solt as $k => $v) {
             $map['regtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
             $map['comefrom'] = [['eq', 'touch']];

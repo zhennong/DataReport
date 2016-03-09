@@ -18,7 +18,7 @@ class BusinessController extends AdminController{
      */
     public function businessTrend(){
         $Agent = D('Agent');
-        $mouth_solt = get_mouth_solt($this->month_start, $this->month_end);
+        $mouth_solt = get_month_solt($this->month_start, $this->month_end);
         foreach ($mouth_solt as $k => $v) {
             $map['addtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
             $mouth_solt_agent[$k]['mouth_sort'] = $v;

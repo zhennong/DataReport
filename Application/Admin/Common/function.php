@@ -158,7 +158,7 @@ function diffdate($date1, $date2){
  *      ]]
  * ]
  */
-function get_mouth_solt($start_ts,$end_ts){
+function get_month_solt($start_ts,$end_ts){
     $mouth_solt = [];
     $x = $start_ts;
     $i = 1;

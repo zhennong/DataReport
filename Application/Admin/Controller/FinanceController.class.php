@@ -47,7 +47,7 @@ class FinanceController extends AdminController
     private function getMouthSoltPayment($month_start,$month_end)
     {
         $Trade = D('Trade');
-        $mouth_solt = get_mouth_solt($month_start,$month_end);
+        $mouth_solt = get_month_solt($month_start,$month_end);
         $map['status'] = ['in','2,3,4'];
         foreach($mouth_solt as $k => $v){
             $map['paytime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];

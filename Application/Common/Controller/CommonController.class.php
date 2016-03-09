@@ -28,7 +28,7 @@ abstract class CommonController extends Controller
     protected $now_Y_start; //当前年开始时间戳
     protected $now_m_start;
     protected $now_d_start;
-    protected $mouth_solt; // 所选时间内各个月时间段
+    protected $month_solt; // 所选时间内各个月时间段
     protected $year_solt; // 所选时间内各个年时间段
 
 
@@ -65,6 +65,7 @@ abstract class CommonController extends Controller
             $this->month_start = strtotime($this->now_Y . "-01-01 00:00:00");
             $this->month_end = time();
         }
+        $this->month_solt = get_month_solt($this->month_start,$this->month_end);
         $this->assign(['month_start' => $this->month_start, 'month_end' => $this->month_end]);
         $this->mapDateRange = [['gt',$this->month_start],['lt',$this->month_end]];
 
@@ -75,6 +76,7 @@ abstract class CommonController extends Controller
             $this->year_start = strtotime($this->now_Y-1 . "-01-01 00:00:00");
             $this->year_end = time();
         }
+        $this->year_solt = get_year_solt($this->year_start,$this->year_end);
         $this->assign(['year_start' => $this->year_start, 'year_end' => $this->year_end]);
         $this->mapYearRange = [['gt',$this->year_start],['lt',$this->year_end]];
     }
