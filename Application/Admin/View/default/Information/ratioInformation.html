@@ -5,7 +5,7 @@
         $(function () {
             option = {
                 title : {
-                    text: '月度资讯比例图（开始时间：<?= date("Y-m-d",$date_start )?> - 结束时间：<?= date("Y-m-d",$date_end ) ?>',
+                    text: '月度资讯比例图（开始时间：<?= date("Y-m-d",$month_start )?> - 结束时间：<?= date("Y-m-d",$month_end ) ?>',
                     subtext: '按添加公历日期',
                     x:'center'
                 },
@@ -50,7 +50,7 @@
 </block>
 
 <block name="body">
-    <include file="Includes/dateSelect"/>
+    <include file="Includes/monthSelect"/>
     <div class="container-fluid">
         <div class="col-lg-12">
             <div id="ratio" class="charts_h600"></div>

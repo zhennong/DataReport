@@ -5,7 +5,7 @@
         $(document).ready(function () {
             option = {
                 title: {
-                    text: '上传产品月走势图  （开始时间：<?= date("Y-m-d",$date_start )?> - 结束时间：<?= date("Y-m-d",$date_end ) ?>）'
+                    text: '上传产品月走势图  （开始时间：<?= date("Y-m-d",$month_start )?> - 结束时间：<?= date("Y-m-d",$month_end ) ?>）'
                 },
                 tooltip : {
                     trigger: 'axis'
@@ -57,7 +57,7 @@
 
 
 <block name="body">
-    <include file="Includes/dateSelect" />
+    <include file="Includes/monthSelect" />
     <div class="col-lg-12">
         <div id="chart"  class="charts_h600"></div>
     </div>

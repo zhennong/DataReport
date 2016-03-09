@@ -12,7 +12,7 @@
             });
             option = {
                 title: {
-                    text: '发货时段（24小时）图 （开始时间：<?= date("Y-m-d",$date_start )?> - 结束时间：<?= date("Y-m-d",$date_end ) ?>）',
+                    text: '发货时段（24小时）图 （开始时间：<?= date("Y-m-d",$month_start )?> - 结束时间：<?= date("Y-m-d",$month_end ) ?>）',
                     left: 'center'
                 },
                 tooltip: {
@@ -61,7 +61,7 @@
 
 <block name="body">
     <div class="container-fluid">
-        <include file="Includes/dateSelect" />
+        <include file="Includes/monthSelect" />
         <div class="col-lg-12">
             <div id="order_time_chart"  class="charts_h600"></div>
         </div>

@@ -32,7 +32,7 @@ class InformationController extends AdminController
         $Information = D('Information');
         $map['status'] = ['in','2,3,4'];
         //查询数据
-        $mouth_solt = get_mouth_solt($this->date_start,$this->date_end);
+        $mouth_solt = get_mouth_solt($this->month_start,$this->month_end);
         foreach($mouth_solt as $k => $v){
             $map['addtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
             $mouth_solt_information[$k]['mouth_solt'] = $v;
@@ -85,10 +85,10 @@ class InformationController extends AdminController
     public function ratioInformation(){
 
         $Information = D('Information');
-        $map['addtime'] = [['gt',$this->date_start],['lt',$this->date_end]];
+        $map['addtime'] = [['gt',$this->month_start],['lt',$this->month_end]];
 
         //查询数据
-        $mouth_solt = get_mouth_solt($this->date_start,$this->date_end);
+        $mouth_solt = get_mouth_solt($this->month_start,$this->month_end);
         foreach($mouth_solt as $k => $v){
             $map['addtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
             $mouth_solt_information[$k]['mouth_solt'] = $v;

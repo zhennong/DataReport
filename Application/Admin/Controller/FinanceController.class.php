@@ -44,10 +44,10 @@ class FinanceController extends AdminController
         $this->display();
     }
 
-    private function getMouthSoltPayment($date_start,$date_end)
+    private function getMouthSoltPayment($month_start,$month_end)
     {
         $Trade = D('Trade');
-        $mouth_solt = get_mouth_solt($date_start,$date_end);
+        $mouth_solt = get_mouth_solt($month_start,$month_end);
         $map['status'] = ['in','2,3,4'];
         foreach($mouth_solt as $k => $v){
             $map['paytime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
@@ -66,7 +66,7 @@ class FinanceController extends AdminController
      */
     public function mouthSoltPayment()
     {
-        $this->assign('mouth_solt_trades',$this->getMouthSoltPayment($this->date_start,$this->date_end));
+        $this->assign('mouth_solt_trades',$this->getMouthSoltPayment($this->month_start,$this->month_end));
         $this->display();
     }
 

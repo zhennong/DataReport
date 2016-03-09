@@ -27,7 +27,7 @@ class TradeController extends AdminController
      */
     public function orderTrend()
     {
-        $mouth_solt = get_mouth_solt($this->date_start,$this->date_end);
+        $mouth_solt = get_mouth_solt($this->month_start,$this->month_end);
         $model = D('Trade');
         foreach ($mouth_solt as $k => $v) {
             $map['addtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];

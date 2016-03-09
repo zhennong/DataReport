@@ -27,7 +27,7 @@ class MemberController extends AuthController
     public function memberReg()
     {
         $Member = D('Member');
-        $mouth_solt = get_mouth_solt($this->date_start, $this->date_end);
+        $mouth_solt = get_mouth_solt($this->month_start, $this->month_end);
         foreach ($mouth_solt as $k => $v) {
             $map['regtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
             $mouth_solt_member[$k]['mouth_sort'] = $v;
@@ -65,7 +65,7 @@ class MemberController extends AuthController
             $member_info[$k]['amount'] = $v['b'];
             $member_info[$k]['rate'] = round($v['b'] / $all_amount_count * 100, 5);
         }
-        $this->assign(['member_info' => $member_info, 'day_s' => $this->date_start, 'day_e' => $this->date_end, 'show' => $show, 'count' => $count]);
+        $this->assign(['member_info' => $member_info, 'day_s' => $this->month_start, 'day_e' => $this->month_end, 'show' => $show, 'count' => $count]);
         $this->display();
     }
 
@@ -170,7 +170,7 @@ class MemberController extends AuthController
     public function memberRegApp()
     {
         $Member = D('Member');
-        $mouth_solt = get_mouth_solt($this->date_start, $this->date_end);
+        $mouth_solt = get_mouth_solt($this->month_start, $this->month_end);
         foreach ($mouth_solt as $k => $v) {
             $map['regtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
             $map['comefrom'] = [['eq', 'touch']];

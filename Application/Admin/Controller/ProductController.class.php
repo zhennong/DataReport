@@ -32,7 +32,7 @@ class ProductController extends AuthController
     public function categoryRatio(){
         // 查询添加的产品
         $Product = D('Product');
-        $map['addtime'] = [['gt',$this->date_start],['lt',$this->date_end]];
+        $map['addtime'] = [['gt',$this->month_start],['lt',$this->month_end]];
         $field = ['itemid','catid'];
         $sel_product_list = $Product->where($map)->field($field)->select();
         foreach($sel_product_list as $k => $v){

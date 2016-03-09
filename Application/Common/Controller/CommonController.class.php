@@ -12,8 +12,8 @@ use Think\Controller;
 abstract class CommonController extends Controller
 {
 
-    protected $date_start; // 获取公用开始时间
-    protected $date_end;   // 获取公用结束时间
+    protected $month_start; // 获取公用开始时间
+    protected $month_end;   // 获取公用结束时间
     protected $year_start; // 获取公用开始时间
     protected $year_end;   // 获取公用结束时间
     protected $mapDateRange; // 获取公用查询段
@@ -58,15 +58,15 @@ abstract class CommonController extends Controller
      *  公用查询时间
      */
     private function getRange(){
-        if (I('date_start') && I('date_end')) {
-            $this->date_start = strtotime(I('date_start') . "00:00:00");
-            $this->date_end = strtotime(I('date_end') . "23:59:59");
+        if (I('month_start') && I('month_end')) {
+            $this->month_start = strtotime(I('month_start') . "00:00:00");
+            $this->month_end = strtotime(I('month_end') . "23:59:59");
         } else {
-            $this->date_start = strtotime($this->now_Y . "-01-01 00:00:00");
-            $this->date_end = time();
+            $this->month_start = strtotime($this->now_Y . "-01-01 00:00:00");
+            $this->month_end = time();
         }
-        $this->assign(['date_start' => $this->date_start, 'date_end' => $this->date_end]);
-        $this->mapDateRange = [['gt',$this->date_start],['lt',$this->date_end]];
+        $this->assign(['month_start' => $this->month_start, 'month_end' => $this->month_end]);
+        $this->mapDateRange = [['gt',$this->month_start],['lt',$this->month_end]];
 
         if (I('year_start') && I('year_end')) {
             $this->year_start = strtotime(I('year_start') . "-01-01 00:00:00");

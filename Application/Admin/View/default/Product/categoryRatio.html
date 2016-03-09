@@ -5,7 +5,7 @@
         $(document).ready(function () {
             var option = {
                 title : {
-                    text: '产品类别比例  （开始时间：<?= date("Y-m-d",$date_start )?> - 结束时间：<?= date("Y-m-d",$date_end ) ?>）',
+                    text: '产品类别比例  （开始时间：<?= date("Y-m-d",$month_start )?> - 结束时间：<?= date("Y-m-d",$month_end ) ?>）',
                     subtext: '按上传公历时间',
                     x:'center'
                 },
@@ -50,7 +50,7 @@
 </block>
 
 <block name="body">
-    <include file="Includes/dateSelect" />
+    <include file="Includes/monthSelect" />
     <div class="col-lg-12">
         <div id="chart"  class="charts_h600"></div>
     </div>
