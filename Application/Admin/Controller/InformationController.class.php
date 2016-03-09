@@ -21,11 +21,14 @@ class InformationController extends AdminController
     }
 
     /**
-     * 月资讯总量
+     * 月资讯总量柱状图
      * @Edwin
      */
     public function monthlyInformation()
     {
+        /*
+         * 资讯总量
+         */
         $Information = D('Information');
         $map['status'] = ['in','2,3,4'];
         //查询数据
@@ -39,14 +42,13 @@ class InformationController extends AdminController
         }
 
         /*
-         * 月病虫害总量
+         * 病虫害总量
          */
         $Pests = D('Pests');
         foreach ($mouth_solt as $k => $v) {
             $map['addtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
             $mouth_solt_pests[$k]['mouth_solt'] = $v;
             $x = $Pests->field('itemid')->where($map)->select();
-            //mouth_solt_pests[$k]['mouth_name'] = date("Y-m", $v['start']['ts']);
             $mouth_solt_pests[$k]['pests_count'] = count($x);
         }
 
@@ -58,7 +60,6 @@ class InformationController extends AdminController
             $map['addtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
             $mouth_solt_poisoning[$k]['mouth_solt'] = $v;
             $x = $Poisoning->field('itemid')->where($map)->select();
-
             $mouth_solt_poisoning[$k]['poisoning_count'] = count($x);
         }
 
