@@ -16,7 +16,7 @@ abstract class CommonController extends Controller
     protected $month_end;   // 获取公用结束时间
     protected $year_start; // 获取公用开始时间
     protected $year_end;   // 获取公用结束时间
-    protected $mapDateRange; // 获取公用查询段
+    protected $mapMonthRange; // 获取公用查询段
     protected $mapYearRange; // 获取公用查询段
     protected $now; //当前时间戳
     protected $now_Y; //当前年
@@ -30,6 +30,23 @@ abstract class CommonController extends Controller
     protected $now_d_start;
     protected $month_solt; // 所选时间内各个月时间段
     protected $year_solt; // 所选时间内各个年时间段
+    /*public $price_range = [ // 价格区间
+        ['range_name'=>'少于100元','start_price'=>0,'end_price'=>100],
+        ['range_name'=>'101-200元','start_price'=>101,'end_price'=>200],
+        ['range_name'=>'201-300元','start_price'=>201,'end_price'=>300],
+        ['range_name'=>'301-400元','start_price'=>301,'end_price'=>400],
+        ['range_name'=>'401-500元','start_price'=>401,'end_price'=>500],
+        ['range_name'=>'501-600元','start_price'=>501,'end_price'=>600],
+        ['range_name'=>'601-700元','start_price'=>601,'end_price'=>700],
+        ['range_name'=>'701-800元','start_price'=>701,'end_price'=>800],
+        ['range_name'=>'801-900元','start_price'=>801,'end_price'=>900],
+        ['range_name'=>'901-1000元','start_price'=>901,'end_price'=>1000],
+        ['range_name'=>'1001-2000元','start_price'=>1001,'end_price'=>2000],
+        ['range_name'=>'2001-3000元','start_price'=>2001,'end_price'=>3000],
+        ['range_name'=>'3001-5000元','start_price'=>3001,'end_price'=>5000],
+        ['range_name'=>'5001-10000元','start_price'=>5001,'end_price'=>10000],
+        ['range_name'=>'多于10001元','start_price'=>10001],
+    ];*/
 
 
     public function _initialize()
@@ -67,7 +84,7 @@ abstract class CommonController extends Controller
         }
         $this->month_solt = get_month_solt($this->month_start,$this->month_end);
         $this->assign(['month_start' => $this->month_start, 'month_end' => $this->month_end]);
-        $this->mapDateRange = [['gt',$this->month_start],['lt',$this->month_end]];
+        $this->mapMonthRange = [['gt',$this->month_start],['lt',$this->month_end]];
 
         if (I('year_start') && I('year_end')) {
             $this->year_start = strtotime(I('year_start') . "-01-01 00:00:00");

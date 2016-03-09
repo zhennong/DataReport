@@ -35,7 +35,7 @@ class FinanceController extends AdminController
      */
     public function paymentTotal()
     {
-        $map['paytime'] = $this->mapDateRange;
+        $map['paytime'] = $this->mapMonthRange;
         $map['status'] = ['in','2,3,4'];
         $amount_total = $this->getSuccessPaymentByDate($map);
         $today_start = strtotime(date("Y-m-d",time())." 00:00:00");

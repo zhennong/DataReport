@@ -68,7 +68,7 @@ class TradeController extends AdminController
      * 下单时段（24小时制）
      */
     public function orderTime(){		
-        $map['addtime'] = $this->mapDateRange;;
+        $map['addtime'] = $this->mapMonthRange;;
         $map['status'] = ['in','2,3,4'];
         $trades = D('Trade')->where($map)->field("addtime")->select();
         for ($i = 0; $i < 24; $i++) {
@@ -88,7 +88,7 @@ class TradeController extends AdminController
      * @author iredbaby
      */
     public function orderPay(){	
-        $map['paytime'] = $this->mapDateRange;
+        $map['paytime'] = $this->mapMonthRange;
         $map['status'] = ['in','2,3,4'];
         $trades = D('Trade')->where($map)->field("paytime")->select();
         for ($i = 0; $i < 24; $i++) {
@@ -108,7 +108,7 @@ class TradeController extends AdminController
      * @author iredbaby
      */
     public function orderLogistics(){	
-        $map['addtime'] = $this->mapDateRange;;
+        $map['addtime'] = $this->mapMonthRange;;
         $map['status'] = ['in','2,3,4'];
         $Logistics = D('Logistics')->where($map)->field("addtime")->select();	
         for($i = 0;$i<24;$i++){
@@ -128,7 +128,7 @@ class TradeController extends AdminController
      * @author iredbaby
      */
     public function orderPaytype() {
-        $map['paytime'] = $this->mapDateRange;	
+        $map['paytime'] = $this->mapMonthRange;
         $map['status'] = ['in','2,3,4'];
 	$map['pay'] = ['neq',''];
         $trades = D('Trade')->where($map)->field('pay,count(pay) AS c')->group('pay')->select();	
@@ -152,10 +152,10 @@ class TradeController extends AdminController
      */
     public function orderRate(){	
 	$Trade = D('Trade');	
-        $map_a['addtime'] = $this->mapDateRange;
+        $map_a['addtime'] = $this->mapMonthRange;
         $map_a['status'] = ['in', '8,9'];
         $trades_a = $Trade->where($map_a)->count();
-        $map_b['addtime'] = $this->mapDateRange;
+        $map_b['addtime'] = $this->mapMonthRange;
         $map_b['status'] = ['in', '2,3,4'];
         $trades_b = $Trade->where($map_b)->count();
         $amount_rate = round($trades_a / $trades_b * 100, 3);

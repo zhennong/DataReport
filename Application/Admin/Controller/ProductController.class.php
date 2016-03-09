@@ -9,11 +9,14 @@
 namespace Admin\Controller;
 
 
+use Admin\FixedData;
 use Common\Controller\AuthController;
 use Common\Tools;
 
 class ProductController extends AuthController
 {
+    use FixedData;
+
     private $all_cate_list; // 所有分类
     private $all_cate_hash; // 所有分类hash
 
@@ -110,5 +113,37 @@ class ProductController extends AuthController
         // 注入显示
         $this->assign(['xAxis_data'=>$xAxis_data,'series_data'=>$series_data]);
         $this->display();
+    }
+
+    /**
+     * 价格区间分布图(销量 产量 交易额 订单总数)
+     */
+    public function price_range_information(){
+        $products = D('Product')->where("price > 0")->field(['itemid','price'])->select();
+        foreach($this->price_range as $k => $v){
+            $price_range_data[$k] = $v;
+            // 销量
+            // 产量
+            // 交易额
+            // 订单总数
+        }
+        // 注入显示
+        $this->assign([]);
+        $this->display();
+    }
+
+    /**
+     * 获取在一个价格段位的商品id数组
+     * @param $products [['itemid','price']]
+     * @param $range ['start_price'=>1,'end_price'=>100]
+     * @return array []
+     */
+    private function getPriceRangeProductIDs($products,$range = ['start_price'=>1,'end_price'=>100]){
+        foreach($products as $k => $v){
+            if($v['price']>$range['start_price']&&$v['price']<$range['end_price']){
+                $ids[] = $v['itemid'];
+            }
+        }
+        return $ids;
     }
 }
