@@ -28,6 +28,8 @@ abstract class CommonController extends Controller
     protected $now_Y_start; //当前年开始时间戳
     protected $now_m_start;
     protected $now_d_start;
+    protected $mouth_solt; // 所选时间内各个月时间段
+    protected $year_solt; // 所选时间内各个年时间段
 
 
     public function _initialize()
@@ -39,7 +41,7 @@ abstract class CommonController extends Controller
     /**
      * 获取当前时间
      */
-    public function getNow(){
+    private function getNow(){
         $this->now = time();
         $this->now_Y = date('Y',$this->now);
         $this->now_m = date('m',$this->now);
@@ -55,7 +57,7 @@ abstract class CommonController extends Controller
     /**
      *  公用查询时间
      */
-    public function getRange(){
+    private function getRange(){
         if (I('date_start') && I('date_end')) {
             $this->date_start = strtotime(I('date_start') . "00:00:00");
             $this->date_end = strtotime(I('date_end') . "23:59:59");
