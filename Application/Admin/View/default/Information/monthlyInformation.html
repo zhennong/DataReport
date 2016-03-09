@@ -3,52 +3,52 @@
 <block name="head">
     <script type="text/javascript">
         $(function () {
-            /*var mouth_solt_information = <?=json_encode($mouth_solt_information) ?>;
-            var mouth_name = [];
-            var information_amount = [];
-            $.each(mouth_solt_information, function (index, val) {
-                mouth_name[index - 1] = mouth_solt_information[index]['mouth_name'];
-                information_amount[index-1] = mouth_solt_information[index]['information_amount'];
-            });*/
             option = {
-                title: {
-                text: '月度资讯',
-                left: 'center'
-            },
-                tooltip: {
-                trigger: 'axis',
-                axisPointer: {
-                type: 'shadow'
-            }
-            },
+                tooltip : {
+                    trigger: 'axis',
+                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                    }
+                },
                 legend: {
-                left: 'left',
-                data: ['月度资讯']
-            },
+                    data:['月度资讯','病虫害','农药中毒']
+                },
                 grid: {
-                left: '0',
-                right: '0',
-                bottom: '0',
-                containLabel: true
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis : [
+                    {
+                        type : 'category',
+                        data : [<?=$xAxis_data ?>]
+            }
+            ],
+            yAxis : [
+            {
+                type : 'value'
+            }
+            ],
+            series : [
+            {
+                name:'月度资讯',
+                type:'bar',
+                data:[<?=$series_data_information ?>]
             },
-                xAxis: [
             {
-                type: 'category',
-                data: [<?=$xAxis_data ?>]
-            }
-                ],
-                yAxis: [
+                name:'病虫害',
+                type:'bar',
+                stack: '广告',
+                data:[<?=$series_data_pests ?>]
+            },
             {
-                type: 'value'
+                name:'农药中毒',
+                type:'bar',
+                stack: 'bar',
+                data:[<?=$series_data_poisoning ?>]
             }
-                ],
-                series: [
-            {
-                name: '月度资讯',
-                type: 'bar',
-                data: [<?=$series_data ?>]
-            }
-                ]
+            ]
             };
             var Information = echarts.init(document.getElementById('Information'));
             Information.setOption(option);

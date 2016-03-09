@@ -38,12 +38,42 @@ class InformationController extends AdminController
             $mouth_solt_information[$k]['information_count'] = count($x);
         }
 
-        //重组数据
-        $xAxis_data = Tools::arr2str(Tools::getCols($mouth_solt_information,'mouth_name',true));
-        $series_data = Tools::arr2str(Tools::getCols($mouth_solt_information,'information_count'));
+        /*
+         * 月病虫害总量
+         */
+        $Pests = D('Pests');
+        foreach ($mouth_solt as $k => $v) {
+            $map['addtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
+            $mouth_solt_pests[$k]['mouth_solt'] = $v;
+            $x = $Pests->field('itemid')->where($map)->select();
+            //mouth_solt_pests[$k]['mouth_name'] = date("Y-m", $v['start']['ts']);
+            $mouth_solt_pests[$k]['pests_count'] = count($x);
+        }
 
-        //注入显示
-        $this->assign(['xAxis_data'=>$xAxis_data,'series_data'=>$series_data]);
+        /*
+        * 月农药中毒总量
+        */
+        $Poisoning = D('Poisoning');
+        foreach ($mouth_solt as $k => $v) {
+            $map['addtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
+            $mouth_solt_poisoning[$k]['mouth_solt'] = $v;
+            $x = $Poisoning->field('itemid')->where($map)->select();
+
+            $mouth_solt_poisoning[$k]['poisoning_count'] = count($x);
+        }
+
+        //重组数据_月资讯数据
+        $xAxis_data = Tools::arr2str(Tools::getCols($mouth_solt_information,'mouth_name',true));
+        $series_data_information = Tools::arr2str(Tools::getCols($mouth_solt_information,'information_count'));
+
+        //重组数据_月病虫害数据
+        $series_data_pests = Tools::arr2str(Tools::getCols($mouth_solt_pests,'pests_count'));
+
+        //重组数据_月农药中毒数据
+        $series_data_poisoning = Tools::arr2str(Tools::getCols($mouth_solt_poisoning,'poisoning_count'));
+
+        //注入显示_月资讯数据/月病虫害数据/月农药中毒数据
+        $this->assign(['xAxis_data'=>$xAxis_data,'series_data_information'=>$series_data_information,'series_data_pests'=>$series_data_pests,'series_data_poisoning'=>$series_data_poisoning]);
         $this->display();
     }
 }

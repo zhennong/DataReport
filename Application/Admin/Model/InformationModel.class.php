@@ -13,5 +13,6 @@ use Common\Model\BusinessModel;
 
 class InformationModel extends BusinessModel
 {
-    protected $tableName = 'know';
+    //资讯表
+    protected $tableName = 'article_21';
 }
