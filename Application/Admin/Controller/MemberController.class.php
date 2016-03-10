@@ -126,20 +126,21 @@ class MemberController extends AuthController
         //日付款新会员
         $map['paytime'] = [['lt', $this->now_d_start]];
         $buyer_all_before_day = Tools::getCols($Trade->where($map)->field("buyer")->group('buyer')->select(),'buyer');
-        $map['paytime'] = [['gt', $this->now_d_start],['lt', $this->now]];
+        $map['paytime'] = [['gt', $this->now_d_start]];
         $buyer_after_day = $Trade->where($map)->field("buyer")->group('buyer')->select();
+        Tools::_vp($Trade->fetchSql());
         foreach($buyer_after_day as $k => $v){
-            if(in_array($v['buyer'],$buyer_all_before_day)){
+            if(!in_array($v['buyer'],$buyer_all_before_day)){
                 $day_new ++;
             }
         }
         //月付款新会员
         $map['paytime'] = [['lt', $this->now_m_start]];
         $buyer_all_before_month = Tools::getCols($Trade->where($map)->field("buyer")->group('buyer')->select(),'buyer');
-        $map['paytime'] = [['gt', $this->now_m_start],['lt', $this->now]];
+        $map['paytime'] = [['gt', $this->now_m_start]];
         $buyer_after_month = $Trade->where($map)->field("buyer")->group('buyer')->select();
         foreach($buyer_after_month as $k => $v){
-            if(in_array($v['buyer'],$buyer_all_before_month)){
+            if(!in_array($v['buyer'],$buyer_all_before_month)){
                 $month_new ++;
             }
         }
