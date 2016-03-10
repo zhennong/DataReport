@@ -3,7 +3,7 @@
 <block name="head">
     <script>
         $(document).ready(function () {
-            option = {
+            option1 = {
                 tooltip : {
                     trigger: 'axis',
                     axisPointer : {            // 坐标轴指示器，坐标轴触发有效
@@ -11,7 +11,7 @@
                     }
                 },
                 legend: {
-                    data:['直接访问','邮件营销']
+                    data:['<?=$legend_data[0] ?>']
                 },
                 grid: {
                     left: '3%',
@@ -22,7 +22,7 @@
                 xAxis : [
                     {
                         type : 'category',
-                        data : ['周一','周二','周三','周四','周五','周六','周日']
+                        data : [<?=$xAxis_data ?>]
                     }
                 ],
                 yAxis : [
@@ -30,33 +30,136 @@
                         type : 'value'
                     }
                 ],
-                series : [
-                    {
-                        name:'直接访问',
-                        type:'bar',
-                        data:[320, 332, 301, 334, 390, 330, 320]
-                    },
-                    {
-                        name:'邮件营销',
-                        type:'bar',
-                        data:[120, 132, 101, 134, 90, 230, 210]
-                    }
-                ]
+                series : [{name:'<?=$legend_data[0] ?>',type:'bar',data:[<?=$series['product_count'] ?>]}]
             };
-            var chart = echarts.init(document.getElementById('chart'));
-            chart.setOption(option);
-            window.onresize = function(){
-                chart.resize();
+            option2 = {
+                tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            }
+            },
+                legend: {
+                data:['<?=$legend_data[1] ?>']
+            },
+                grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+                xAxis : [
+            {
+                type : 'category',
+                data : [<?=$xAxis_data ?>]
+            }
+                ],
+                yAxis : [
+            {
+                type : 'value'
+            }
+                ],
+                series : [{name:'<?=$legend_data[1] ?>',type:'bar',data:[<?=$series['trade_count'] ?>]}]
             };
+            option3 = {
+                tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            }
+            },
+                legend: {
+                data:['<?=$legend_data[2] ?>']
+            },
+                grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+                xAxis : [
+            {
+                type : 'category',
+                data : [<?=$xAxis_data ?>]
+            }
+                ],
+                yAxis : [
+            {
+                type : 'value'
+            }
+                ],
+                series : [{name:'<?=$legend_data[2] ?>',type:'bar',data:[<?=$series['trade_total'] ?>]}]
+            };
+            option4 = {
+                tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            }
+            },
+                legend: {
+                data:['<?=$legend_data[3] ?>']
+            },
+                grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+                xAxis : [
+            {
+                type : 'category',
+                data : [<?=$xAxis_data ?>]
+            }
+                ],
+                yAxis : [
+            {
+                type : 'value'
+            }
+                ],
+                series : [{name:'<?=$legend_data[3] ?>',type:'bar',data:[<?=$series['trade_amount'] ?>]}]
+            };
+            $("button.select_chart").on('click',function(){
+                var sel_id = $(this).data('id');
+                var chart = echarts.init(document.getElementById('chart'));
+                switch(sel_id){
+                    case 1:
+                    chart.setOption(option1);
+                    break;
+
+                    case 2:
+                    chart.setOption(option2);
+                    break;
+
+                    case 3:
+                    chart.setOption(option3);
+                    break;
+
+                    case 4:
+                    chart.setOption(option4);
+                    break;
+                }
+                window.onresize = function(){
+                    chart.resize();
+                };
+            });
+            $("button.select_chart").first().trigger('click');
         });
     </script>
-</block>
 </block>
 
 
 <block name="body">
+    <div class="btn-group" role="group" aria-label="...">
+        <button data-id="1" type="button" class="btn btn-default select_chart">产品数量</button>
+        <button data-id="2" type="button" class="btn btn-default select_chart">订单总数</button>
+        <button data-id="3" type="button" class="btn btn-default select_chart">销量</button>
+        <button data-id="4" type="button" class="btn btn-default select_chart">交易额</button>
+    </div>
     <div class="container-fluid padding"></div>
     <div class="col-lg-12">
-        <div id="chart"  class="charts_h600"></div>
+        <div class="chart_show">
+            <div id="chart"  class="charts_h600"></div>
+        </div>
     </div>
 </block>

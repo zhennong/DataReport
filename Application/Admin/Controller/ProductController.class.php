@@ -116,19 +116,53 @@ class ProductController extends AuthController
     }
 
     /**
-     * 价格区间分布图(销量 产量 交易额 订单总数)
+     * 价格区间分布图(销量 产品数量 交易额 订单总数)
      */
     public function price_range_information(){
-        $products = D('Product')->where("price > 0")->field(['itemid','price'])->select();
+        $map['status'] = 3;
+        $map['price'] = ['gt',0];
+        $Product = D('Product');
+        $Trade = D('Trade');
+        $products = $Product->where($map)->field(['itemid','price'])->select();
+        $trades = $Trade->where(['status'=>['in',[2,3,4]]])->field(['itemid','p_id','price','total','amount'])->select(); // 订单
         foreach($this->price_range as $k => $v){
             $price_range_data[$k] = $v;
-            // 销量
-            // 产量
-            // 交易额
+            // 产品数量
+            $product_ids = $this->getPriceRangeProductIDs($products,$v);
+            $price_range_data[$k]['product_count'] = count($product_ids);
+
+            $sel_trades = $this->getPriceRangeTrades($trades,$v);
             // 订单总数
+            $price_range_data[$k]['trade_count'] = count($sel_trades);
+            // 销量
+            $price_range_data[$k]['trade_total'] = get_arr_k_amount($sel_trades,'total');
+            // 交易额
+            $price_range_data[$k]['trade_amount'] = get_arr_k_amount($sel_trades,'amount');
         }
+
+        // 数据重组
+        /*$xAxis_data = "'产品数量','订单总数','销量','交易额'";
+        $legend_data = Tools::getCols($this->price_range,'range_name',true);
+        foreach($price_range_data as $k => $v){
+            $sel_trades[] = "{name:'".$v['range_name']."',type:'bar',data:[".$v['product_count'].",".$v['trade_count'].",".$v['trade_total'].",".$v['trade_amount']."]}";
+        }
+        $series = Tools::arr2str($sel_trades);
+        $this->assign(['legend_data'=>$legend_data,'xAxis_data'=>$xAxis_data,'series'=>$series]);*/
+//        foreach($price_range_data as $k => $v){
+//            $series_product_count[] = $v['product_count'];
+//            $series_trade_count[] = $v['trade_count'];
+//            $series_trade_total[] = $v['trade_total'];
+//            $series_trade_amount[] = $v['trade_amount'];
+//        }
+        $legend_data = ['产品数量','订单总数','销量','交易额'];
+        $xAxis_data = Tools::arr2str(Tools::getCols($this->price_range,'range_name',true));
+        $series['product_count'] = Tools::arr2str(Tools::getCols($price_range_data,'product_count'));
+        $series['trade_count'] = Tools::arr2str(Tools::getCols($price_range_data,'trade_count'));
+        $series['trade_total'] = Tools::arr2str(Tools::getCols($price_range_data,'trade_total'));
+        $series['trade_amount'] = Tools::arr2str(Tools::getCols($price_range_data,'trade_amount'));
+
         // 注入显示
-        $this->assign([]);
+        $this->assign(['legend_data'=>$legend_data,'xAxis_data'=>$xAxis_data,'series'=>$series]);
         $this->display();
     }
 
@@ -145,5 +179,20 @@ class ProductController extends AuthController
             }
         }
         return $ids;
+    }
+
+    /**
+     * 根获取在一个价格段位的订单
+     * @param $trades
+     * @param $product_ids
+     * @return array [[]]
+     */
+    private function getPriceRangeTrades($trades,$range = ['start_price'=>1,'end_price'=>100]){
+        foreach($trades as $k => $v){
+            if($v['price']>$range['start_price']&&$v['price']<$range['end_price']){
+                $sel_trades[] = $v;
+            }
+        }
+        return $sel_trades;
     }
 }
