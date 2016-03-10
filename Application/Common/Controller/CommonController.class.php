@@ -50,8 +50,8 @@ abstract class CommonController extends Controller
         $this->now_i = date('i',$this->now);
         $this->now_s = date('s',$this->now);
         $this->now_Y_start = strtotime($this->now_Y . '-01-01 00:00:00');
-        $this->now_m_start = strtotime($this->now_m . '-01 00:00:00');
-        $this->now_d_start = strtotime($this->now_d . ' 00:00:00');
+        $this->now_m_start = strtotime($this->now_Y . '-' . $this->now_m . '-01 00:00:00');
+        $this->now_d_start = strtotime($this->now_Y . '-' . $this->now_m . '-' .$this->now_d . ' 00:00:00');
     }
 
     /**

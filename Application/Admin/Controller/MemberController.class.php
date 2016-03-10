@@ -128,7 +128,6 @@ class MemberController extends AuthController
         $buyer_all_before_day = Tools::getCols($Trade->where($map)->field("buyer")->group('buyer')->select(),'buyer');
         $map['paytime'] = [['gt', $this->now_d_start]];
         $buyer_after_day = $Trade->where($map)->field("buyer")->group('buyer')->select();
-        Tools::_vp($Trade->fetchSql());
         foreach($buyer_after_day as $k => $v){
             if(!in_array($v['buyer'],$buyer_all_before_day)){
                 $day_new ++;
