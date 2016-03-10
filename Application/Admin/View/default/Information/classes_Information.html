@@ -5,7 +5,7 @@
         $(function () {
             option = {
                 title : {
-                    text: '咨询分类饼形图',
+                    text: '资讯分类饼形图',
                     x:'center'
                 },
                 tooltip : {
@@ -35,19 +35,126 @@
                 ]
             };
 
-            var information = echarts.init(document.getElementById('information'));
-            information.setOption(option);
+            var information_ratio = echarts.init(document.getElementById('information_ratio'));
+            information_ratio.setOption(option);
             window.onresize = function(){
-                information.resize();
+                information_ratio.resize();
             };
-        })
+        });
+        /*
+         虫害资讯比例图
+         */
+        $(function () {
+
+            option = {
+                title : {
+                    text: '虫害资讯比例图',
+                    x:'center'
+                },
+                tooltip : {
+                    trigger: 'item',
+                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left',
+                    data: ['直接访问','邮件营销','联盟广告','视频广告','搜索引擎']
+                },
+                series : [
+                    {
+                        name: '访问来源',
+                        type: 'pie',
+                        radius : '55%',
+                        center: ['50%', '60%'],
+                        data:[
+                            {value:335, name:'直接访问'},
+                            {value:310, name:'邮件营销'},
+                            {value:234, name:'联盟广告'},
+                            {value:135, name:'视频广告'},
+                            {value:1548, name:'搜索引擎'}
+                        ],
+                        itemStyle: {
+                            emphasis: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+
+            var ratio = echarts.init(document.getElementById('pest_ratio'));
+            ratio.setOption(option);
+            window.onresize = function(){
+                ratio.resize();
+            };
+        });
+        /*
+         农药中毒资讯比例图
+         */
+        $(function () {
+
+            option = {
+                title : {
+                    text: '农药中毒资讯比例图',
+                    x:'center'
+                },
+                tooltip : {
+                    trigger: 'item',
+                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left',
+                    data: ['直接访问','邮件营销','联盟广告','视频广告','搜索引擎']
+                },
+                series : [
+                    {
+                        name: '访问来源',
+                        type: 'pie',
+                        radius : '55%',
+                        center: ['50%', '60%'],
+                        data:[
+                            {value:335, name:'直接访问'},
+                            {value:310, name:'邮件营销'},
+                            {value:234, name:'联盟广告'},
+                            {value:135, name:'视频广告'},
+                            {value:1548, name:'搜索引擎'}
+                        ],
+                        itemStyle: {
+                            emphasis: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+
+
+            var ratio = echarts.init(document.getElementById('poisoning_ratio'));
+            ratio.setOption(option);
+            window.onresize = function(){
+                ratio.resize();
+            };
+        });
+
+
     </script>
 </block>
 
 <block name="body">
     <div class="container-fluid "style="padding-top: 20px">
-        <div class="col-lg-12">
-            <div id="information" class="charts_h600"></div>
+        <div class="col-lg-4">
+            <div id="information_ratio" class="charts_h600"></div>
+        </div>
+        <div class="col-lg-4">
+            <div id="pest_ratio" class="charts_h600"></div>
+        </div>
+        <div class="col-lg-4">
+            <div id="poisoning_ratio" class="charts_h600"></div>
         </div>
     </div>
 </block>

@@ -149,7 +149,7 @@ class InformationController extends AdminController
 
         }
 
-        public function classes_Information(){
+    public function classes_Information(){
             // 查询资讯
             $Information = D('Information');
             $field = ['itemid','catid'];
@@ -161,27 +161,27 @@ class InformationController extends AdminController
             // 分类hash
             $this->getCateHash();
 
-        // 分类详情
-        $sel_cat_info = Tools::groupBy($sel_information_list,'catid');
-        foreach($sel_cat_info as $k =>$v){
-            unset($sel_cat_info[$k]);
-            if($this->all_information_hash[$k]){
-                $sel_cat_info[$k]['catid'] = $k;
-                $sel_cat_info[$k]['catname'] = $this->all_information_hash[$k];
-                $sel_cat_info[$k]['count'] = count($v);
+            // 分类详情
+            $sel_cat_info = Tools::groupBy($sel_information_list,'catid');
+            foreach($sel_cat_info as $k =>$v){
+                unset($sel_cat_info[$k]);
+                if($this->all_information_hash[$k]){
+                    $sel_cat_info[$k]['catid'] = $k;
+                    $sel_cat_info[$k]['catname'] = $this->all_information_hash[$k];
+                    $sel_cat_info[$k]['count'] = count($v);
+                }
             }
-        }
-        sort($sel_cat_info);
+            sort($sel_cat_info);
 
-        // 数据重组
-        $legend_data = Tools::arr2str(Tools::getCols($sel_cat_info,'catname',true));
-        foreach($sel_cat_info as $k => $v){
-            $series_data[] = "{value:".$v['count'].", name:'".$v['catname']."'}";
-        }
-        $series_data = Tools::arr2str($series_data);
+            // 数据重组
+            $legend_data = Tools::arr2str(Tools::getCols($sel_cat_info,'catname',true));
+            foreach($sel_cat_info as $k => $v){
+                $series_data[] = "{value:".$v['count'].", name:'".$v['catname']."'}";
+            }
+            $series_data = Tools::arr2str($series_data);
 
-        // 注入显示
-        $this->assign(['legend_data'=>$legend_data,'series_data'=>$series_data]);
-        $this->display();
-    }
+            // 注入显示
+            $this->assign(['legend_data'=>$legend_data,'series_data'=>$series_data]);
+            $this->display();
+            }
 }
