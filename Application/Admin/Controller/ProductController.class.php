@@ -148,12 +148,6 @@ class ProductController extends AuthController
         }
         $series = Tools::arr2str($sel_trades);
         $this->assign(['legend_data'=>$legend_data,'xAxis_data'=>$xAxis_data,'series'=>$series]);*/
-//        foreach($price_range_data as $k => $v){
-//            $series_product_count[] = $v['product_count'];
-//            $series_trade_count[] = $v['trade_count'];
-//            $series_trade_total[] = $v['trade_total'];
-//            $series_trade_amount[] = $v['trade_amount'];
-//        }
         $legend_data = ['产品数量','订单总数','销量','交易额'];
         $xAxis_data = Tools::arr2str(Tools::getCols($this->price_range,'range_name',true));
         $series['product_count'] = Tools::arr2str(Tools::getCols($price_range_data,'product_count'));
