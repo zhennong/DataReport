@@ -5,8 +5,7 @@
         $(function () {
             option = {
                 title : {
-                    text: '某站点用户访问来源',
-                    subtext: '纯属虚构',
+                    text: '咨询分类饼形图',
                     x:'center'
                 },
                 tooltip : {
@@ -24,10 +23,7 @@
                         type: 'pie',
                         radius : '55%',
                         center: ['50%', '60%'],
-                        data:[
-
-                            <?=$series_data ?>
-                        ],
+                        data:[<?=$series_data ?>],
                         itemStyle: {
                             emphasis: {
                                 shadowBlur: 10,
@@ -49,7 +45,7 @@
 </block>
 
 <block name="body">
-    <div class="container-fluid">
+    <div class="container-fluid "style="padding-top: 20px">
         <div class="col-lg-12">
             <div id="information" class="charts_h600"></div>
         </div>
