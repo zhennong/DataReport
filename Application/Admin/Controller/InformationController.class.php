@@ -132,9 +132,9 @@ class InformationController extends AdminController
         $this->display();
     }
 
-        /*
-         * 资讯分类
-         */
+    /*
+     * 资讯分类
+     */
     private $all_information_list; // 所有分类
     private $all_information_hash; // 所有分类hash
 
