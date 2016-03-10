@@ -27,6 +27,7 @@ class ProductController extends AuthController
         $Category = D('Category');
         $this->all_cate_list = $Category->where(['moduleid'=>5])->field(['catid','catname'])->select();
         $this->all_cate_hash = Tools::toHashmap($this->all_cate_list,'catid','catname');
+
     }
 
     /**
@@ -42,7 +43,6 @@ class ProductController extends AuthController
             $x = Tools::str2arr($v['catid']);
             $sel_product_list[$k]['catid'] = $x[0];
         }
-
         // 分类hash
         $this->getCateHash();
 

@@ -131,4 +131,57 @@ class InformationController extends AdminController
         $this->assign(['series_data_information'=>$series_data_information,'series_data_pests'=>$series_data_pests,'series_data_poisoning'=>$series_data_poisoning]);
         $this->display();
     }
+
+    /*
+     * 资讯分类
+     */
+    private $all_information_list; // 所有分类
+    private $all_information_hash; // 所有分类hash
+
+    /**
+     * 获取分类hash
+     */
+    private function getCateHash(){
+            $Category = D('Category');
+            $map['catid'] = 12805;
+            $this->all_information_list = $Category->where($map)->field(['catid','catname'])->select();
+            $this->all_information_hash = Tools::toHashmap($this->all_information_list,'catid','catname');
+
+        }
+
+    public function classes_Information(){
+            // 查询资讯
+            $Information = D('Information');
+            $field = ['itemid','catid'];
+            $sel_information_list = $Information->field($field)->select();
+            foreach($sel_information_list as $k => $v){
+                $x = Tools::str2arr($v['catid']);
+                $sel_information_list[$k]['catid'] = $x[0];
+            }
+            // 分类hash
+            $this->getCateHash();
+
+            // 分类详情
+            $sel_cat_info = Tools::groupBy($sel_information_list,'catid');
+            foreach($sel_cat_info as $k =>$v){
+                unset($sel_cat_info[$k]);
+                if($this->all_information_hash[$k]){
+                    $sel_cat_info[$k]['catid'] = $k;
+                    $sel_cat_info[$k]['catname'] = $this->all_information_hash[$k];
+                    $sel_cat_info[$k]['count'] = count($v);
+                }
+            }
+            sort($sel_cat_info);
+
+            // 数据重组
+            $legend_data = Tools::arr2str(Tools::getCols($sel_cat_info,'catname',true));
+            foreach($sel_cat_info as $k => $v){
+                $series_data[] = "{value:".$v['count'].", name:'".$v['catname']."'}";
+            }
+            $series_data = Tools::arr2str($series_data);
+
+            // 注入显示
+            $this->assign(['legend_data'=>$legend_data,'series_data'=>$series_data]);
+            $this->display();
+            }
 }
