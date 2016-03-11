@@ -1,3 +1,5 @@
+#[PSR-*](http://www.kancloud.cn/thinkphp/php-fig-psr/3139)
+
 #数据库规范
 
 ##数据库命名总规则
