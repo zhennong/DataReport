@@ -15,15 +15,15 @@
                 legend: {
                     orient: 'vertical',
                     left: 'left',
-                    data: [<?=$legend_data ?>]
+                    data: [<?=$legend_data_information ?>]
                 },
                 series : [
                     {
-                        name: '访问来源',
+                        name: '咨询分类',
                         type: 'pie',
                         radius : '55%',
                         center: ['50%', '60%'],
-                        data:[<?=$series_data ?>],
+                        data:[<?=$series_data_information ?>],
                         itemStyle: {
                             emphasis: {
                                 shadowBlur: 10,
@@ -58,21 +58,15 @@
                 legend: {
                     orient: 'vertical',
                     left: 'left',
-                    data: ['直接访问','邮件营销','联盟广告','视频广告','搜索引擎']
+                    data: [<?=$legend_data_pests ?>]
                 },
                 series : [
                     {
-                        name: '访问来源',
+                        name: '咨询分类',
                         type: 'pie',
                         radius : '55%',
                         center: ['50%', '60%'],
-                        data:[
-                            {value:335, name:'直接访问'},
-                            {value:310, name:'邮件营销'},
-                            {value:234, name:'联盟广告'},
-                            {value:135, name:'视频广告'},
-                            {value:1548, name:'搜索引擎'}
-                        ],
+                        data:[<?=$series_data_pests ?>],
                         itemStyle: {
                             emphasis: {
                                 shadowBlur: 10,
@@ -107,21 +101,15 @@
                 legend: {
                     orient: 'vertical',
                     left: 'left',
-                    data: ['直接访问','邮件营销','联盟广告','视频广告','搜索引擎']
+                    data: [<?=$legend_data_poisoning ?>]
                 },
                 series : [
                     {
-                        name: '访问来源',
+                        name: '咨询分类',
                         type: 'pie',
                         radius : '55%',
                         center: ['50%', '60%'],
-                        data:[
-                            {value:335, name:'直接访问'},
-                            {value:310, name:'邮件营销'},
-                            {value:234, name:'联盟广告'},
-                            {value:135, name:'视频广告'},
-                            {value:1548, name:'搜索引擎'}
-                        ],
+                        data:[<?=$series_data_poisoning ?>],
                         itemStyle: {
                             emphasis: {
                                 shadowBlur: 10,
@@ -147,13 +135,13 @@
 
 <block name="body">
     <div class="container-fluid "style="padding-top: 50px">
-        <div class="col-lg-4">
+        <div class="col-lg-12" style="padding-top: 50px">
             <div id="information_ratio" class="charts_h600"></div>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-12" style="padding-top: 50px">
             <div id="pest_ratio" class="charts_h600"></div>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-12" style="padding-top: 50px">
             <div id="poisoning_ratio" class="charts_h600"></div>
         </div>
     </div>

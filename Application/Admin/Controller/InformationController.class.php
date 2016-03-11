@@ -9,7 +9,6 @@
 namespace Admin\Controller;
 
 
-
 use Common\Tools;
 
 class InformationController extends AdminController
@@ -30,10 +29,10 @@ class InformationController extends AdminController
          * 月资讯总量
          */
         $Information = D('Information');
-        $map['status'] = ['in','2,3,4'];
+        $map['status'] = ['in', '2,3,4'];
         //查询数据
-        $mouth_solt = get_month_solt($this->month_start,$this->month_end);
-        foreach($mouth_solt as $k => $v){
+        $mouth_solt = get_month_solt($this->month_start, $this->month_end);
+        foreach ($mouth_solt as $k => $v) {
             $map['addtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
             $mouth_solt_information[$k]['mouth_solt'] = $v;
             $x = $Information->field('itemid')->where($map)->select();
@@ -64,17 +63,17 @@ class InformationController extends AdminController
         }
 
         //重组数据_月资讯数据
-        $xAxis_data = Tools::arr2str(Tools::getCols($mouth_solt_information,'mouth_name',true));
-        $series_data_information = Tools::arr2str(Tools::getCols($mouth_solt_information,'information_count'));
+        $xAxis_data = Tools::arr2str(Tools::getCols($mouth_solt_information, 'mouth_name', true));
+        $series_data_inforamtion_information = Tools::arr2str(Tools::getCols($mouth_solt_information, 'information_count'));
 
         //重组数据_月病虫害数据
-        $series_data_pests = Tools::arr2str(Tools::getCols($mouth_solt_pests,'pests_count'));
+        $series_data_inforamtion_pests = Tools::arr2str(Tools::getCols($mouth_solt_pests, 'pests_count'));
 
         //重组数据_月农药中毒数据
-        $series_data_poisoning = Tools::arr2str(Tools::getCols($mouth_solt_poisoning,'poisoning_count'));
+        $series_data_inforamtion_poisoning = Tools::arr2str(Tools::getCols($mouth_solt_poisoning, 'poisoning_count'));
 
         //注入显示_月资讯数据/月病虫害数据/月农药中毒数据
-        $this->assign(['xAxis_data'=>$xAxis_data,'series_data_information'=>$series_data_information,'series_data_pests'=>$series_data_pests,'series_data_poisoning'=>$series_data_poisoning]);
+        $this->assign(['xAxis_data' => $xAxis_data, 'series_data_information' => $series_data_inforamtion_information, 'series_data_pests' => $series_data_inforamtion_pests, 'series_data_poisoning' => $series_data_inforamtion_poisoning]);
         $this->display();
     }
 
@@ -82,14 +81,15 @@ class InformationController extends AdminController
      * 资讯/病虫害/农药中毒饼形图
      * @Edwin
      */
-    public function ratioInformation(){
+    public function ratioInformation()
+    {
 
         $Information = D('Information');
-        $map['addtime'] = [['gt',$this->month_start],['lt',$this->month_end]];
+        $map['addtime'] = [['gt', $this->month_start], ['lt', $this->month_end]];
 
         //查询数据
-        $mouth_solt = get_month_solt($this->month_start,$this->month_end);
-        foreach($mouth_solt as $k => $v){
+        $mouth_solt = get_month_solt($this->month_start, $this->month_end);
+        foreach ($mouth_solt as $k => $v) {
             $map['addtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
             $mouth_solt_information[$k]['mouth_solt'] = $v;
             $x = $Information->field('itemid')->where($map)->select();
@@ -119,69 +119,107 @@ class InformationController extends AdminController
         }
 
         //重组数据_查询月份资讯总数据
-        $series_data_information = get_arr_k_amount($mouth_solt_information,'information_count');
+        $series_data_inforamtion_information = get_arr_k_amount($mouth_solt_information, 'information_count');
 
         //重组数据_查询月份病虫害数总数据
-        $series_data_pests = get_arr_k_amount($mouth_solt_pests,'pests_count');
+        $series_data_inforamtion_pests = get_arr_k_amount($mouth_solt_pests, 'pests_count');
 
         //重组数据_查询月份农药中毒总数据
-        $series_data_poisoning = get_arr_k_amount($mouth_solt_poisoning,'poisoning_count');
+        $series_data_inforamtion_poisoning = get_arr_k_amount($mouth_solt_poisoning, 'poisoning_count');
 
         //注入显示
-        $this->assign(['series_data_information'=>$series_data_information,'series_data_pests'=>$series_data_pests,'series_data_poisoning'=>$series_data_poisoning]);
+        $this->assign(['series_data_information' => $series_data_inforamtion_information, 'series_data_pests' => $series_data_inforamtion_pests, 'series_data_poisoning' => $series_data_inforamtion_poisoning]);
         $this->display();
     }
 
     /*
-     * 资讯分类
+     * 资讯分类饼形图
+     * @Edwin
      */
     private $all_information_list; // 所有分类
     private $all_information_hash; // 所有分类hash
 
     /**
-     * 获取分类hash
+     * 获取资讯分类hash
      */
-    private function getCateHash(){
-            $Category = D('Category');
-            $map['catid'] = 12805;
-            $this->all_information_list = $Category->where($map)->field(['catid','catname'])->select();
-            $this->all_information_hash = Tools::toHashmap($this->all_information_list,'catid','catname');
+    private function getCateHash()
+    {
+        $Category = D('Category');
+        $map['moduleid'] = ['in',[21,23,26]];
+        $this->all_information_list = $Category->where($map)->field(['catid', 'catname'])->select();
+        $this->all_information_hash = Tools::toHashmap($this->all_information_list, 'catid', 'catname');
+    }
 
+
+    /**
+     * 三个栏目下的文章类别比例图 (以顶级分类为单位进行区分) (三个饼形图)
+     */
+    public function classes_Information()
+    {
+        $this->getCateHash();
+        // 查询资讯
+        $Information = D('Information');
+        $field = ['itemid', 'catid'];
+        $sel_information_list = $Information->where()->field($field)->select();
+        $cat_group = Tools::groupBy($sel_information_list,'catid');
+        foreach($cat_group as $k => $v){
+            $x[$k]['catid'] = $v[0]['catid'];
+            $x[$k]['catname'] = $this->all_information_hash[$v[0]['catid']];
+            $x[$k]['count'] = count($v);
         }
+        sort($x);
 
-    public function classes_Information(){
-            // 查询资讯
-            $Information = D('Information');
-            $field = ['itemid','catid'];
-            $sel_information_list = $Information->field($field)->select();
-            foreach($sel_information_list as $k => $v){
-                $x = Tools::str2arr($v['catid']);
-                $sel_information_list[$k]['catid'] = $x[0];
-            }
-            // 分类hash
-            $this->getCateHash();
+        // 查询虫害资讯
+        $Pests = D('Pests');
+        $field = ['itemid', 'catid'];
+        $map['catid'] = ['in',[6086,6324,6087,6088,6318,6319,6092,6093,6096,14408]];
+        $sel_pests_list = $Pests->where($map)->field($field)->select();
+        $cat_group = Tools::groupBy($sel_pests_list,'catid');
+        foreach($cat_group as $k => $v){
+            $x_pests[$k]['catid'] = $v[0]['catid'];
+            $x_pests[$k]['catname'] = $this->all_information_hash[$v[0]['catid']];
+            $x_pests[$k]['count'] = count($v);
+        }
+        sort($x_pests);
 
-            // 分类详情
-            $sel_cat_info = Tools::groupBy($sel_information_list,'catid');
-            foreach($sel_cat_info as $k =>$v){
-                unset($sel_cat_info[$k]);
-                if($this->all_information_hash[$k]){
-                    $sel_cat_info[$k]['catid'] = $k;
-                    $sel_cat_info[$k]['catname'] = $this->all_information_hash[$k];
-                    $sel_cat_info[$k]['count'] = count($v);
-                }
-            }
-            sort($sel_cat_info);
+        // 查询中毒资讯
+        $Poisoning = D('Poisoning');
+        $field = ['itemid', 'catid'];
+        $map['catid'] = ['in',[12749,12750,12751,12752,12753,12776]];
+        $sel_poisoning_list = $Poisoning->where($map)->field($field)->select();
+        $cat_group = Tools::groupBy($sel_poisoning_list,'catid');
+        foreach($cat_group as $k => $v){
+            $x_poisoning[$k]['catid'] = $v[0]['catid'];
+            $x_poisoning[$k]['catname'] = $this->all_information_hash[$v[0]['catid']];
+            $x_poisoning[$k]['count'] = count($v);
+        }
+        sort($x_poisoning);
 
-            // 数据重组
-            $legend_data = Tools::arr2str(Tools::getCols($sel_cat_info,'catname',true));
-            foreach($sel_cat_info as $k => $v){
-                $series_data[] = "{value:".$v['count'].", name:'".$v['catname']."'}";
-            }
-            $series_data = Tools::arr2str($series_data);
+        //重组资讯数据
+        $legend_data_inforamtion = Tools::arr2str(Tools::getCols($x, 'catname', true));
+        foreach ($x as $k => $v) {
+            $series_data_inforamtion[] = "{value:" . $v['count'] . ", name:'" . $v['catname'] . "'}";
+        }
+        $series_data_inforamtion = Tools::arr2str($series_data_inforamtion);
 
-            // 注入显示
-            $this->assign(['legend_data'=>$legend_data,'series_data'=>$series_data]);
-            $this->display();
-            }
+
+        //重组病虫害数据
+        $legend_data_pests = Tools::arr2str(Tools::getCols($x_pests, 'catname', true));
+        foreach ($x_pests as $k => $v) {
+            $series_data_pests[] = "{value:" . $v['count'] . ", name:'" . $v['catname'] . "'}";
+        }
+        $series_data_pests = Tools::arr2str($series_data_pests);
+
+        //重组农药中毒资讯数据
+        $legend_data_poisoning = Tools::arr2str(Tools::getCols($x_poisoning, 'catname', true));
+        foreach ($x_poisoning as $k => $v) {
+            $series_data_poisoning[] = "{value:" . $v['count'] . ", name:'" . $v['catname'] . "'}";
+        }
+        $series_data_poisoning = Tools::arr2str($series_data_poisoning);
+
+
+        //注入显示
+        $this->assign(['legend_data_information' => $legend_data_inforamtion,'series_data_information' => $series_data_inforamtion,'legend_data_pests' => $legend_data_pests,'series_data_pests' => $series_data_pests,'legend_data_poisoning' => $legend_data_poisoning,'series_data_poisoning' => $series_data_poisoning]);
+        $this->display();
+    }
 }
