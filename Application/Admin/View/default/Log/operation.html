@@ -1,0 +1,32 @@
+<extend name="Layout:ly2" />
+
+<block name="head">
+
+</block>
+
+<block name="body">
+    <div class="panel panel-primary">
+        <h3 class="panel-header">后台操作日志</h3>
+        <div class="panel-body">
+            <table class="table table-hover table-bordered table-condensed form-inline">
+                <tr>
+                    <th>URL</th>
+                    <th>ID</th>
+                    <th>IP</th>
+                    <th>操作账号</th>
+                    <th>时间</th>
+                </tr>
+                <foreach name="list" item="vo" >
+                    <tr>
+                        <td>{$vo.qstring}</td>
+                        <td>{$vo.logid}</td>
+                        <td>{$vo.ip}</td>
+                        <td>{$vo.username}</td>
+                        <td>{$vo.logtime|date="Y-m-d H:i:s",###}</td>
+                    </tr>
+                </foreach>
+            </table>
+            <div>{$pages}</div>
+        </div>
+    </div>
+</block>

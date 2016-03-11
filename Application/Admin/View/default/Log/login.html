@@ -1,0 +1,39 @@
+<extend name="Layout:ly2" />
+
+<block name="head">
+
+</block>
+
+<block name="body">
+    <div class="panel panel-primary">
+        <h3 class="panel-header">登录日志</h3>
+
+            <div class="panel-body">
+                <table class="table table-hover table-bordered table-condensed form-inline">
+                    <tr>
+                        <th>日志ID</th>
+                        <th>会员名</th>
+                        <th>密码[已加密]</th>
+                        <th>时间</th>
+                        <th>后台</th>
+                        <th>结果</th>
+                        <th>IP</th>
+                        <th>客户端</th>
+                    </tr>
+                    <foreach name="list" item="vo" >
+                        <tr>
+                            <td>{$vo.logid}</td>
+                            <td>{$vo.username}</td>
+                            <td>{$vo.password}</td>
+                            <td>{$vo.logintime|date="Y-m-d H:i:s",###}</td>
+                            <td><if condition="$vo.admin eq 1">是<else />否</if></td>
+                        <td>{$vo.message}</td>
+                        <td>{$vo.loginip}</td>
+                        <td>{$vo.agent}</td>
+                        </tr>
+                    </foreach>
+                </table>
+                <div>{$pages}</div>
+            </div>
+    </div>
+</block>
