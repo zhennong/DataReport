@@ -31,6 +31,36 @@ class ProductController extends AuthController
     }
 
     /**
+     * 获取在一个价格段位的商品id数组
+     * @param $products [['itemid','price']]
+     * @param $range ['start_price'=>1,'end_price'=>100]
+     * @return array []
+     */
+    private function getPriceRangeProductIDs($products,$range = ['start_price'=>1,'end_price'=>100]){
+        foreach($products as $k => $v){
+            if($v['price']>$range['start_price']&&$v['price']<$range['end_price']){
+                $ids[] = $v['itemid'];
+            }
+        }
+        return $ids;
+    }
+
+    /**
+     * 根获取在一个价格段位的订单
+     * @param $trades
+     * @param $product_ids
+     * @return array [[]]
+     */
+    private function getPriceRangeTrades($trades,$range = ['start_price'=>1,'end_price'=>100]){
+        foreach($trades as $k => $v){
+            if($v['price']>$range['start_price']&&$v['price']<$range['end_price']){
+                $sel_trades[] = $v;
+            }
+        }
+        return $sel_trades;
+    }
+
+    /**
         * 产品类别比例
         */
     public function categoryRatio(){
@@ -161,32 +191,37 @@ class ProductController extends AuthController
     }
 
     /**
-     * 获取在一个价格段位的商品id数组
-     * @param $products [['itemid','price']]
-     * @param $range ['start_price'=>1,'end_price'=>100]
-     * @return array []
+     * 厂家会员出货统计 member username trade sell
+     * 订单数 出货数 在售产品数sell 销售总额
      */
-    private function getPriceRangeProductIDs($products,$range = ['start_price'=>1,'end_price'=>100]){
-        foreach($products as $k => $v){
-            if($v['price']>$range['start_price']&&$v['price']<$range['end_price']){
-                $ids[] = $v['itemid'];
-            }
-        }
-        return $ids;
+    public function shipmentStatistics(){
+        // 查询
+        $sells = $this->getSellShipmentStatistics();
+
+        // 注入显示
+        $this->assign(['sells'=>$sells]);
+        $this->display();
     }
 
     /**
-     * 根获取在一个价格段位的订单
-     * @param $trades
-     * @param $product_ids
-     * @return array [[]]
+     * 获取厂家会员出货统计
+     * @param int $start
+     * @param int $limit
+     * @param $order
+     * @return [[]]
      */
-    private function getPriceRangeTrades($trades,$range = ['start_price'=>1,'end_price'=>100]){
-        foreach($trades as $k => $v){
-            if($v['price']>$range['start_price']&&$v['price']<$range['end_price']){
-                $sel_trades[] = $v;
-            }
+    private function getSellShipmentStatistics($start=0,$limit=10,$order){
+        $Member = D('Member');
+        $Trade = D('Trade');
+        $Product = D('Product');
+        $sells = $Member->where(['groupid'=>6])->field(['userid','username','company'])->select();
+        foreach($sells as $k => $v){
+            $trades = $Trade->field(['itemid','total','amount'])->where(['seller'=>$v['username'],['status'=>['in',[1,2,3,4]]]])->select();
+            $sells[$k]['trade_count'] = count($trades); //订单数
+            $sells[$k]['trade_total'] = get_arr_k_amount($trades,'total'); //出货数
+            $sells[$k]['trade_amount'] = get_arr_k_amount($trades,'amount'); //销售总额
+            $sells[$k]['product_total'] = count($Product->where([['price'=>['gt',0]],['status'=>3],['username'=>$v['username']]])->field(['itemid'])->select()); //在售产品数
         }
-        return $sel_trades;
+        return $sells;
     }
 }

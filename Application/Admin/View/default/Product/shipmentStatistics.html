@@ -1,0 +1,48 @@
+<extend name="Layout:ly2"/>
+
+<block name="head">
+    <script>
+        $(document).ready(function () {
+            var Table = $('table');
+            var DataTable = Table.dataTable({
+                language: dataTables_zh_CN
+            });
+        });
+    </script>
+</block>
+
+<block name="body">
+    <div class="container-fluid padding-top">
+        <h1>厂家会员出货统计（全部）：</h1>
+        <div class="col-lg-12">
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>用户id</th>
+                    <th>用户名</th>
+                    <th>公司</th>
+                    <th>在售产品数</th>
+                    <th>订单数</th>
+                    <th>出货数</th>
+                    <th>销售总额</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach($sells as $k => $v): ?>
+                <tr>
+                    <td scope="row"></td>
+                    <td>{$v['userid']}</td>
+                    <td>{$v['username']}</td>
+                    <td>{$v['company']}</td>
+                    <td>{$v['product_total']}</td>
+                    <td>{$v['trade_count']}</td>
+                    <td>{$v['trade_total']}</td>
+                    <td>{$v['trade_amount']}</td>
+                </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</block>
