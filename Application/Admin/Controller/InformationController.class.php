@@ -154,7 +154,7 @@ class InformationController extends AdminController
     /**
      * 三个栏目下的文章类别比例图 (以顶级分类为单位进行区分) (三个饼形图)
      */
-    public function classes_Information()
+    public function classesInformation()
     {
         $this->getCateHash();
         // 查询资讯

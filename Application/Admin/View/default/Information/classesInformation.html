@@ -16,23 +16,23 @@
                     orient: 'vertical',
                     left: 'left',
                     data: [<?=$legend_data_information ?>]
-                },
-                series : [
-                    {
-                        name: '咨询分类',
-                        type: 'pie',
-                        radius : '55%',
-                        center: ['50%', '60%'],
-                        data:[<?=$series_data_information ?>],
-                        itemStyle: {
-                            emphasis: {
-                                shadowBlur: 10,
-                                shadowOffsetX: 0,
-                                shadowColor: 'rgba(0, 0, 0, 0.5)'
-                            }
-                        }
-                    }
-                ]
+            },
+            series : [
+            {
+                name: '咨询分类',
+                type: 'pie',
+                radius : '55%',
+                center: ['50%', '60%'],
+                data:[<?=$series_data_information ?>],
+                itemStyle: {
+                emphasis: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)'
+            }
+            }
+            }
+            ]
             };
 
             var information_ratio = echarts.init(document.getElementById('information_ratio'));
@@ -59,23 +59,23 @@
                     orient: 'vertical',
                     left: 'left',
                     data: [<?=$legend_data_pests ?>]
-                },
-                series : [
-                    {
-                        name: '咨询分类',
-                        type: 'pie',
-                        radius : '55%',
-                        center: ['50%', '60%'],
-                        data:[<?=$series_data_pests ?>],
-                        itemStyle: {
-                            emphasis: {
-                                shadowBlur: 10,
-                                shadowOffsetX: 0,
-                                shadowColor: 'rgba(0, 0, 0, 0.5)'
-                            }
-                        }
-                    }
-                ]
+            },
+            series : [
+            {
+                name: '咨询分类',
+                type: 'pie',
+                radius : '55%',
+                center: ['50%', '60%'],
+                data:[<?=$series_data_pests ?>],
+                itemStyle: {
+                emphasis: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)'
+            }
+            }
+            }
+            ]
             };
 
             var ratio = echarts.init(document.getElementById('pest_ratio'));
@@ -102,23 +102,23 @@
                     orient: 'vertical',
                     left: 'left',
                     data: [<?=$legend_data_poisoning ?>]
-                },
-                series : [
-                    {
-                        name: '咨询分类',
-                        type: 'pie',
-                        radius : '55%',
-                        center: ['50%', '60%'],
-                        data:[<?=$series_data_poisoning ?>],
-                        itemStyle: {
-                            emphasis: {
-                                shadowBlur: 10,
-                                shadowOffsetX: 0,
-                                shadowColor: 'rgba(0, 0, 0, 0.5)'
-                            }
-                        }
-                    }
-                ]
+            },
+            series : [
+            {
+                name: '咨询分类',
+                type: 'pie',
+                radius : '55%',
+                center: ['50%', '60%'],
+                data:[<?=$series_data_poisoning ?>],
+                itemStyle: {
+                emphasis: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)'
+            }
+            }
+            }
+            ]
             };
 
 
