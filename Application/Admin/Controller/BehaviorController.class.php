@@ -19,7 +19,7 @@ class BehaviorController extends AdminController
 
     /*
      * 改价记录
-     * @Edwin
+     * @author Edwin
      */
     public function ChangePrice()
     {
@@ -28,7 +28,7 @@ class BehaviorController extends AdminController
         $Page = new \Think\Page($count, 25);
         $pages = $Page->show();
         $_GET['p'] = $_GET['p'] ? $_GET['p'] : 1;
-        $list = $change->order('addtime DESC')->limit($_GET['p'] . ',25')->select();
+        $list = $change->order('addtime DESC')->limit($_GET['p'],25)->select();
         $this->assign('list', $list);
         $this->assign('pages', $pages);
         $this->display();
@@ -36,6 +36,7 @@ class BehaviorController extends AdminController
 
     /*
      * 订单操作记录
+     * author Edwin
      */
     public function OrderOperation()
     {
@@ -44,7 +45,7 @@ class BehaviorController extends AdminController
         $Page = new \Think\Page($count, 25);
         $pages = $Page->show();
         $_GET['p'] = $_GET['p'] ? $_GET['p'] : 1;
-        $list = $orderOperation->order('addtime DESC')->limit($_GET['p'] . ',25')->select();
+        $list = $orderOperation->order('addtime DESC')->limit($_GET['p'],25)->select();
         $this->assign('list', $list);
         $this->assign('pages', $pages);
         $this->display();

@@ -9,8 +9,8 @@
 namespace Admin\Model;
 
 use Common\Model\BusinessModel;
-class LoglookModel extends BusinessModel
+class LogIntegralWaterModel extends BusinessModel
 {
     //积分流水记录表
-    protected $tableName = 'log_look';
+    protected $tableName = 'finance_credit';
 }
