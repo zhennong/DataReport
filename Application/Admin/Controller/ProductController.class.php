@@ -11,6 +11,7 @@ namespace Admin\Controller;
 
 use Admin\FixedData;
 use Common\Controller\AuthController;
+use Common\MallDb;
 use Common\Tools;
 
 class ProductController extends AuthController
@@ -196,7 +197,7 @@ class ProductController extends AuthController
      */
     public function shipmentStatistics(){
         // 查询
-        $sells = $this->getSellShipmentStatistics();
+        $sells = $this->getSellShipmentStatistics(0,10);
 
         // 注入显示
         $this->assign(['sells'=>$sells]);
@@ -210,11 +211,26 @@ class ProductController extends AuthController
      * @param $order
      * @return [[]]
      */
-    private function getSellShipmentStatistics($start=0,$limit=10,$order){
+    private function getSellShipmentStatistics($start=0,$limit=10,$order="trade_total DESC"){
         $Member = D('Member');
         $Trade = D('Trade');
         $Product = D('Product');
-        $sells = $Member->where(['groupid'=>6])->field(['userid','username','company'])->select();
+        if($limit){
+            $limit = "{$start},{$limit}";
+        }else{
+            $limit = null;
+        }
+
+        /*$trades = $Trade->where(['status'=>['in',[1,2,3,4]]])->field("seller,COUNT(itemid) AS trade_count,SUM(total) AS trade_total,SUM(amount) AS trade_amount")->group('seller')->limit($limit)->order($order)->select();
+        foreach($trades as $k => $v){
+            $sells[$k] = $v;
+            $x = $Member->where(['groupid'=>6,])->select();
+        }
+        return $sells;
+        Tools::_vp($sells);*/
+        $sql = "SELECT sell.*,trade.*,product.* FROM __MALL_finance_trade AS trade";
+
+        /*$sells = $Member->where(['groupid'=>6])->limit($limit)->field(['userid','username','company'])->select();
         foreach($sells as $k => $v){
             $trades = $Trade->field(['itemid','total','amount'])->where(['seller'=>$v['username'],['status'=>['in',[1,2,3,4]]]])->select();
             $sells[$k]['trade_count'] = count($trades); //订单数
@@ -222,6 +238,6 @@ class ProductController extends AuthController
             $sells[$k]['trade_amount'] = get_arr_k_amount($trades,'amount'); //销售总额
             $sells[$k]['product_total'] = count($Product->where([['price'=>['gt',0]],['status'=>3],['username'=>$v['username']]])->field(['itemid'])->select()); //在售产品数
         }
-        return $sells;
+        return $sells;*/
     }
 }
