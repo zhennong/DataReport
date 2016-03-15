@@ -196,18 +196,24 @@ class MemberController extends AuthController
         if ($provice_id == "") {
             $provice_id = 17;
         } //默认河南省
+
         $data = $Area->where('parentid =' . $provice_id)->select();
-        foreach ($data as $k => $v) {
-            $sql = "select a.areaid as areaid,a.areaname as areaname,b.areaid as areaids,COUNT(b.areaid) as total from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.parentid='" . $v['areaid'] . "' group by b.areaid";
-            $data[$k]['sub'] = queryMysql($sql);
-        }
-        //特殊城市处理 1、北京 2、上海 3、天津 4、重庆
-        if ($provice_id == '1' | $provice_id == '2' | $provice_id == '3' | $provice_id == '4') {
+        if($provice_id > 4 && $provice_id < 33) {
             foreach ($data as $k => $v) {
-                $sql = "select a.areaid as areaid,a.areaname as areaname,b.areaid as areaids,COUNT(b.areaid) as total from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.areaid='" . $v['areaid'] . "' group by b.areaid";
+                $sql = "select a.areaid as areaid,a.areaname as areaname,b.areaid as areaids,COUNT(b.areaid) as total from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.parentid='" . $v['areaid'] . "' group by b.areaid";
                 $data[$k]['sub'] = queryMysql($sql);
             }
+        }else{
+            foreach ($data as $k => $v) {
+                if($k > 0){
+                    unset($data[$k]);
+                }else{
+                    $sql = "select a.areaid as areaid,a.areaname as areaname,b.areaid as areaids,COUNT(b.areaid) as total from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.parentid='" . $v['parentid'] . "' group by b.areaid";
+                    $data[$k]['sub'] = queryMysql($sql);
+                }
+            }
         }
+
         $this->assign('data', $data);
         $this->assign('provice', $provice);
         $this->assign('provice_name', $provice_name[0]['areaname']);
