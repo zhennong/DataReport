@@ -69,35 +69,28 @@ class BusinessController extends AdminController{
         $this->assign('data',$data);
         $this->display();
     }
+
+    //各县合作商
+    public function businessAgentTotal(){
+        $Agent = D('Agent');
+        $areaid = I('get.areaid');
+        if(!empty($areaid)){
+            $where['agareaid'] = array('eq',$areaid);
+            $data = $Agent->field('id,agusername,totalmoney')->where($where)->order('totalmoney DESC')->select();
+        }else{
+            $data = "暂无数据";
+        }
+
+        $this->assign('areaname',I('get.areaname'));
+        $this->assign('data',$data);
+        $this->display();
+    }
     
     /**
      * 导出数据
      */
     public function businessExport() {
         if (I('get.type') == 'export') {
-            $pid = I('get.pid');
-
-            $area = D('area');
-            $where['parentid'] = $pid;
-            $data  = $area->field('areaid,parentid,areaname')->where($where)->select();
-            if($pid > 4 && $pid < 33){
-                foreach($data AS $k=>$v){
-                    $sql = "select a.areaid as areaid,a.areaname as areaname,SUM(b.money) as total from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.parentid='".$v['areaid']."' group by areaid order by total desc";
-                    $data[$k]['sub'] = queryMysql($sql);
-                }
-            }else{ //特殊城市处理
-                foreach($data AS $k=>$v){
-                    if($k > 0){
-                        unset($data[$k]);
-                    }else{
-                        $sql = "select a.areaid as areaid,a.areaname as areaname,SUM(b.money) as total from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.parentid='".$v['parentid']."' group by areaid order by total desc";
-                        $data[$k]['sub'] = queryMysql($sql);
-                    }
-                }
-            }
-
-            dump($data);
-
 
 //            $fileName = "各县交易额统计";
 //            $headArr = array('ID', '城市', '区县', '交易额');
