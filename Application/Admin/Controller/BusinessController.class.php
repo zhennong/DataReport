@@ -47,7 +47,6 @@ class BusinessController extends AdminController{
         $area = D('area');
         $where['parentid'] = $pid;
         $data  = $area->field('areaid,parentid,areaname')->where($where)->select();
-
         if($pid > 4 && $pid < 33){
             foreach($data AS $k=>$v){
                 $sql = "select a.areaid as areaid,a.areaname as areaname,SUM(b.money) as total from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.parentid='".$v['areaid']."' group by areaid order by total desc";
@@ -55,17 +54,13 @@ class BusinessController extends AdminController{
             }
         }else{ //特殊城市处理
             foreach($data AS $k=>$v){
-                if($k>0){
+                if($k > 0){
                     unset($data[$k]);
                 }else{
                     $sql = "select a.areaid as areaid,a.areaname as areaname,SUM(b.money) as total from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.parentid='".$v['parentid']."' group by areaid order by total desc";
                     $data[$k]['sub'] = queryMysql($sql);
                 }
             }
-
-            dump($data);
-
-
         }
 
         $this->assign('provice',$provice);
