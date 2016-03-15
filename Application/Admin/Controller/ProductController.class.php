@@ -228,7 +228,7 @@ class ProductController extends AuthController
         }
         return $sells;
         Tools::_vp($sells);*/
-        $sql = "SELECT sell.*,trade.*,product.* FROM __MALL_finance_trade AS trade";
+        $sql = "SELECT sell.*, trade.*, product.* FROM __MALL_finance_trade AS trade, __MALL_sell_5 AS sell, __MALL_";
 
         /*$sells = $Member->where(['groupid'=>6])->limit($limit)->field(['userid','username','company'])->select();
         foreach($sells as $k => $v){
