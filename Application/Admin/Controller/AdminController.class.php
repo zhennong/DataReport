@@ -12,7 +12,7 @@ use Think\Auth;
 class AdminController extends AuthController{
     //默认配置 对栏目权限判断
     public function admin_index(){
-	$this->display('Admin/admin_list');
+		$this->display('Admin/admin_list');
     }
 
     //用户列表
