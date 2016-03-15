@@ -1,6 +1,20 @@
 <extend name="Layout:ly2"/>
 
-<block name="head">     
+<block name="head">
+<div class="container-fluid padding10">
+    <div class="dropdown">
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <font> {$count_id|default="50"} </font>
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            <foreach name="count" item="vo">
+                <li><a href="{:U('Business/businessHot',array('id'=>$vo))}">{$vo}</a></li>
+            </foreach>
+        </ul>
+    </div>
+</div>
+
 <script type="text/javascript">  
     $(function () {             
         option = {
@@ -19,7 +33,7 @@
             },
             visualMap: {
                 min: 0,
-                max: 10000,
+                max: {$count_id|default="50"},
                 left: 'left',
                 top: 'bottom',
                 text:['高','低'],           // 文本，默认为数值文本
@@ -55,6 +69,7 @@
                 }
             ]
         };
+
         var agent_hot_chart = echarts.init(document.getElementById('agent_hot_chart'));
         agent_hot_chart.setOption(option);
         window.onresize = function(){
@@ -70,4 +85,4 @@
             <div id="agent_hot_chart" class="charts_h750"></div>
         </div>
     </div>
-</block>        
+</block>

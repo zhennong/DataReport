@@ -16,7 +16,7 @@
       </ul>        
     </div>
     
-    <button type="button" class="btn btn-success pos-right" onclick="location.href='{:U('Business/businessExport',array('type'=>'export'))}'">导出Excel表</button>
+    <button type="button" class="btn btn-success pos-right" onclick="location.href='{:U('Business/businessExport',array('type'=>'export','pid'=>18))}'">导出Excel表</button>
 
     
 </div>
@@ -43,6 +43,8 @@
                                 <case value="2">上海</case>
                                 <case value="3">天津</case>
                                 <case value="4">重庆</case>
+                                <case value="33">香港</case>
+                                <case value="34">澳门</case>
                                 <default />{$vo.areaname}
                             </switch>
                             

@@ -1,0 +1,63 @@
+<extend name="Layout:ly2"/>
+
+<block name="head">
+    <script type="text/javascript">
+        $(function () {
+            option = {
+                title: {
+                    text: '合作商提成走势图',
+                    x:'center'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data:['合作商提成'],
+                    left:'left'
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                toolbox: {
+                    feature: {
+                        saveAsImage: {}
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: [<?=$xAxis_data ?>]
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                    {
+                        name:'合作商提成',
+                        type:'line',
+                        stack: '总量',
+                        data:[<?=$series_data ?>]
+                    },
+
+                ]
+            };
+            var parther = echarts.init(document.getElementById('parther'));
+            parther.setOption(option);
+            window.onresize = function(){
+                parther.resize();
+            };
+        })
+    </script>
+</block>
+
+<block name="body">
+    <include file="Includes/monthSelect"/>
+    <div class="container-fluid">
+        <div class="col-lg-12">
+            <div id="parther" class="charts_h600"></div>
+        </div>
+    </div>
+</block>
