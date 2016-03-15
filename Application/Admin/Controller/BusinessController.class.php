@@ -64,6 +64,7 @@ class BusinessController extends AdminController{
         }
 
         $this->assign('provice',$provice);
+        $this->assign('provice_id',$pid);
         $this->assign('provice_name',$provice_name[0]['areaname']);
         $this->assign('data',$data);
         $this->display();
@@ -72,8 +73,36 @@ class BusinessController extends AdminController{
     /**
      * 导出数据
      */
-    public function businessExport() {	
-		//
+    public function businessExport() {
+        if (I('get.type') == 'export') {
+            $pid = I('get.pid');
+
+            $area = D('area');
+            $where['parentid'] = $pid;
+            $data  = $area->field('areaid,parentid,areaname')->where($where)->select();
+            if($pid > 4 && $pid < 33){
+                foreach($data AS $k=>$v){
+                    $sql = "select a.areaid as areaid,a.areaname as areaname,SUM(b.money) as total from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.parentid='".$v['areaid']."' group by areaid order by total desc";
+                    $data[$k]['sub'] = queryMysql($sql);
+                }
+            }else{ //特殊城市处理
+                foreach($data AS $k=>$v){
+                    if($k > 0){
+                        unset($data[$k]);
+                    }else{
+                        $sql = "select a.areaid as areaid,a.areaname as areaname,SUM(b.money) as total from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.parentid='".$v['parentid']."' group by areaid order by total desc";
+                        $data[$k]['sub'] = queryMysql($sql);
+                    }
+                }
+            }
+
+            dump($data);
+
+
+//            $fileName = "各县交易额统计";
+//            $headArr = array('ID', '城市', '区县', '交易额');
+//            exportExcel($fileName, $headArr, $data); //数据导出
+        }
     }
 
 
@@ -86,6 +115,15 @@ class BusinessController extends AdminController{
 		foreach($Agent_area_id AS $k=>$v){
 			$Province[$k] = getAreaFullNameFromAreaID($v['agareaid']);
 		}
+
+        $id = I('get.id');
+        if(empty($id)){
+           $id = 50;
+        }
+        $count = array(50,100,150,200,300,400,500,1000,2000,5000,10000);
+
+        $this->assign('count',$count);
+        $this->assign('count_id',$id);
 		$this->assign('data',array_count_values($Province));
 		$this->display();
     }

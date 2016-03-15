@@ -203,7 +203,7 @@ class MemberController extends AuthController
                 $sql = "select a.areaid as areaid,a.areaname as areaname,b.areaid as areaids,COUNT(b.areaid) as total from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.parentid='" . $v['areaid'] . "' group by b.areaid";
                 $data[$k]['sub'] = queryMysql($sql);
             }
-        }else{
+        }else{ //特殊城市处理
             foreach ($data as $k => $v) {
                 if($k > 0){
                     unset($data[$k]);
