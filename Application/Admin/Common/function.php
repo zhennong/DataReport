@@ -284,3 +284,24 @@ function queryMysql($sql){
     $data = $CountData->query($sql);
     return $data;
 }
+
+//通过ID获取省份
+function getAreaFullNameFromAreaID($areaid,$x){
+    $y = getAreaInfoFromAreaID($areaid,$x);
+    $province = array_reverse($y);
+    return $province[0];
+}
+
+function getAreaInfoFromAreaID($areaid,&$areaInfo){
+    $Area = D('Area');
+    $data = $Area->where('areaid='.$areaid)->select();
+    foreach($data AS $k=>$v){
+        if($v['parentid'] == 0){
+            $areaInfo[] = $v['areaname'];
+        }else{
+            $areaInfo[] = $v['areaname'];
+            getAreaInfoFromAreaID($v['parentid'],$areaInfo);
+        }
+    }
+    return $areaInfo;
+}

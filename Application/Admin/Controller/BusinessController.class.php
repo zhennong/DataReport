@@ -7,6 +7,8 @@
  */
 namespace Admin\Controller;
 
+use Common\Tools;
+
 class BusinessController extends AdminController{
     public function businessIndex(){
         $this->display();
@@ -35,52 +37,61 @@ class BusinessController extends AdminController{
      * 各县的交易额
      */
     public function businessTotal(){	
-	$Area = D('Area');	
-	$provice_id = I('pid');	
-	$provice = R('Member/getProvice');	
-	$provice_name = R('Member/getProvice',array(1,$provice_id));	
-	if($provice_id == ""){$provice_id = 17; } //默认河南省
-	$data = $Area->where('parentid =' .$provice_id)->select();
-	foreach ($data as $k=>$v){    
-	   $sql = "select a.areaid as areaid,a.areaname as areaname,b.areaid as areaids,SUM(b.money) as total from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.parentid='".$v['areaid']."' group by b.areaid order by total desc";		   
-	   $data[$k]['sub'] = queryMysql($sql);	
-	}	
-	//特殊城市处理 1、北京 2、上海 3、天津 4、重庆
-	if($provice_id == '1' |$provice_id == '2' |$provice_id == '3' |$provice_id == '4'){
-	    foreach ($data as $k=>$v){    
-	       $sql = "select a.areaid as areaid,a.areaname as areaname,b.areaid as areaids,SUM(b.money) as total from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.areaid='".$v['areaid']."' group by b.areaid order by total desc";		   
-	       $data[$k]['sub'] = queryMysql($sql);	
-	    }
-	}			
-	$this->assign('data',$data);
-	$this->assign('provice',$provice);
-	$this->assign('provice_name',$provice_name[0]['areaname']);
-        $this->display();
+//		$Area = D('Area');
+//		$provice_id = I('pid');
+//		$provice = R('Member/getProvice');
+//		$provice_name = R('Member/getProvice',array(1,$provice_id));
+//		if($provice_id == ""){$provice_id = 17; } //默认河南省
+//		$data = $Area->where('parentid =' .$provice_id)->select();
+//		foreach ($data as $k=>$v){
+//		   $sql = "select a.areaid as areaid,a.areaname as areaname,b.areaid as areaids,SUM(b.money) as total from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.parentid='".$v['areaid']."' group by b.areaid order by total desc";
+//		   $data[$k]['sub'] = queryMysql($sql);
+//		}
+//		//特殊城市处理 1、北京 2、上海 3、天津 4、重庆
+//		if($provice_id == '1' |$provice_id == '2' |$provice_id == '3' |$provice_id == '4'){
+//			foreach ($data as $k=>$v){
+//			   $sql = "select a.areaid as areaid,a.areaname as areaname,b.areaid as areaids,SUM(b.money) as total from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.areaid='".$v['areaid']."' group by b.areaid order by total desc";
+//			   $data[$k]['sub'] = queryMysql($sql);
+//			}
+//		}
+//		$this->assign('data',$data);
+//		$this->assign('provice',$provice);
+//		$this->assign('provice_name',$provice_name[0]['areaname']);
+//        $this->display();
+
+
     }
     
     /**
      * 导出数据
      */
     public function businessExport() {	
-	//
-    } 
-    
-    /**
+		//
+    }
+
+
+	/**
      * 合作商热力图
      */
     public function businessHot() {
-	$Area = D('Area');	
-	$Agent = D('Agent');
-	
-	//$data = $Agent->field('agareaid,COUNT(agareaid) AS total')->group('agareaid')->select();
-	
-	$data_area = $Area->where('parentid=0')->select();
-	foreach ($data_area as $k=>$v){
-	    $data_area[$k]['sub'] = $Area->where('parentid='.$v['areaid'])->select();
-	}
-	dump($data_area);
-	//$this->assign('data',$data);
-	$this->display();
+		$Agent = D('Agent');
+		$Agent_area_id = $Agent->select();
+		foreach($Agent_area_id AS $k=>$v){
+			$Province[$k] = getAreaFullNameFromAreaID($v['agareaid']);
+		}
+		$this->assign('data',array_count_values($Province));
+		$this->display();
     }
-    
 }
+
+
+
+
+
+
+
+
+
+
+
+
