@@ -1,6 +1,7 @@
 <?php
 namespace Common\Controller;
 
+use Common\MallDb;
 use Common\Tools;
 use Think\Controller;
 
@@ -11,7 +12,8 @@ use Think\Controller;
  */
 abstract class CommonController extends Controller
 {
-
+    protected $MallDb;
+    protected $malldb; //商城数据库链接
     protected $month_start; // 获取公用开始时间
     protected $month_end;   // 获取公用结束时间
     protected $year_start; // 获取公用开始时间
@@ -34,8 +36,20 @@ abstract class CommonController extends Controller
 
     public function _initialize()
     {
+        $this->getMallDb();
         $this->getNow();
         $this->getRange();
+    }
+
+    /**
+     * 获取商城数据库连接
+     */
+    private function getMallDb(){
+        if(!$this->MallDb){
+            $MallDb = new MallDb();
+            $this->MallDb = $MallDb;
+            $this->malldb = $MallDb->db;
+        }
     }
 
     /**
