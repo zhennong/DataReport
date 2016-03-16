@@ -11,7 +11,6 @@ namespace Admin\Controller;
 
 use Admin\FixedData;
 use Common\Controller\AuthController;
-use Common\MallDb;
 use Common\Tools;
 
 class ProductController extends AuthController
@@ -205,16 +204,14 @@ class ProductController extends AuthController
      */
     public function shipmentStatistics()
     {
-        /*// 查询
-        $sells = $this->getSellShipmentStatistics(0, 10);
-        // 注入显示
-        $this->assign(['sells' => $sells]);*/
         $this->display();
     }
 
+    /**
+     * ajax获取厂家会员出货统计
+     */
     public function ajaxGetSellShipmentStatistics()
     {
-//        Tools::_vp($_GET, 0, 2);
         $column_index = [
             "0" => "userid",
             "1" => "username",
@@ -270,20 +267,6 @@ GROUP BY member.username) AS x");
      */
     private function getSellShipmentStatistics($start = 0, $limit = 10, $order = "trade_amount DESC", $search = '')
     {
-        $Member = D('Member');
-        $Trade = D('Trade');
-        $Product = D('Product');
-
-        /*$sql = "SELECT member.userid, member.username, member.company, COUNT(trade.itemid) AS trade_count, SUM(trade.total) AS trade_total, SUM(trade.amount) AS trade_amount, count(product.itemid) AS product_total
-FROM __MALL_member AS member
-
-LEFT JOIN __MALL_finance_trade AS trade ON member.username = trade.seller AND trade.status IN(1,2,3,4)
-LEFT JOIN __MALL_sell_5 AS product ON member.username = product.username AND product.price > 0 AND product.status = 3
-
-WHERE member.groupid = 6
-GROUP BY member.username
-ORDER BY {$order}
-LIMIT {$start}, {$limit}";*/
         $sql = "SELECT member.userid, member.username, member.company, COUNT(trade.itemid) AS trade_count, SUM(trade.total) AS trade_total, SUM(trade.amount) AS trade_amount
 FROM __MALL_member AS member
 LEFT JOIN __MALL_finance_trade AS trade ON member.username = trade.seller AND trade.status IN(1,2,3,4)
@@ -292,27 +275,13 @@ GROUP BY member.username
 ORDER BY {$order}
 LIMIT {$start}, {$limit}";
         $sells = $this->MallDb->list_query($sql);
+
+        $Product = D('Product');
         foreach ($sells as $k => $v) {
             $x = $Product->where([['username' => $v['username']]])->field("count(itemid) AS product_total")->group('username')->select();
             $sells[$k]['product_total'] = $x[0]['product_total'];
         }
         return $sells;
-
-
-        /*if($limit){
-            $limit = "{$start}, {$limit}";
-        }else{
-            $limit = null;
-        }
-        $sells = $Member->where(['groupid'=>6])->limit($limit)->field(['userid','username','company'])->select();
-        foreach($sells as $k => $v){
-            $trades = $Trade->field(['itemid','total','amount'])->where(['seller'=>$v['username'],['status'=>['in',[1,2,3,4]]]])->select();
-            $sells[$k]['trade_count'] = count($trades); //订单数
-            $sells[$k]['trade_total'] = get_arr_k_amount($trades,'total'); //出货数
-            $sells[$k]['trade_amount'] = get_arr_k_amount($trades,'amount'); //销售总额
-            $sells[$k]['product_total'] = count($Product->where([['price'=>['gt',0]],['status'=>3],['username'=>$v['username']]])->field(['itemid'])->select()); //在售产品数
-        }
-        return $sells;*/
     }
 
     /**
@@ -334,9 +303,11 @@ LIMIT {$start}, {$limit}";
         $this->display();
     }
 
+    /**
+     * ajax获取产品销量
+     */
     public function ajaxGetProductSaleRankingList()
     {
-        $Trade = D('Trade');
         $column_index = [
             'p_id',
             'title',
@@ -358,6 +329,7 @@ LIMIT {$start}, {$limit}";
         if (count($y) > 0) {
             $search = " AND " . Tools::arr2str($y, " AND ");
         }
+        $Trade = D('Trade');
         $y = $Trade->where("status IN(2,3,4) {$search}")->field("p_id")->group("p_id")->select();
         $total = count($y);
         $data = $Trade->where("status IN(2,3,4) {$search}")->field("p_id, title, COUNT(itemid) AS trade_count, SUM(total) AS trade_total, SUM(amount) AS trade_amount")->group("p_id")->order($order)->limit("{$start}, {$limit}")->select();
