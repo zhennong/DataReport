@@ -205,11 +205,10 @@ class ProductController extends AuthController
      */
     public function shipmentStatistics()
     {
-        // 查询
+        /*// 查询
         $sells = $this->getSellShipmentStatistics(0, 10);
-
         // 注入显示
-        $this->assign(['sells' => $sells]);
+        $this->assign(['sells' => $sells]);*/
         $this->display();
     }
 
@@ -217,27 +216,27 @@ class ProductController extends AuthController
     {
 //        Tools::_vp($_GET, 0, 2);
         $column_index = [
-            "0"=>"userid",
-            "1"=>"username",
-            "2"=>"company",
-            "3"=>"product_total",
-            "4"=>"trade_count",
-            "5"=>"trade_total",
-            "6"=>"trade_amount",
+            "0" => "userid",
+            "1" => "username",
+            "2" => "company",
+            "3" => "product_total",
+            "4" => "trade_count",
+            "5" => "trade_total",
+            "6" => "trade_amount",
         ];
         $draw = $_GET['draw'];//这个值作者会直接返回给前台
         $start = $_GET['start'];
         $limit = $_GET['length'];
         $order = $_GET['order'];
         $order = "{$column_index[$order[0]['column']]} {$order[0]['dir']}";
-        foreach($_GET['columns'] as $k => $v){
-            if($v['search']['value']!=''){
+        foreach ($_GET['columns'] as $k => $v) {
+            if ($v['search']['value'] != '') {
                 $y[] = "{$column_index[$v['data']]} LIKE '%{$v[search][value]}%'";
             }
         }
         $search = '';
-        if(count($y)>0){
-            $search = " AND ".Tools::arr2str($y," AND ");
+        if (count($y) > 0) {
+            $search = " AND " . Tools::arr2str($y, " AND ");
         }
         $x = $this->MallDb->list_query("SELECT COUNT(x.userid) as count FROM (SELECT member.userid
 FROM __MALL_member AS member
@@ -247,7 +246,7 @@ GROUP BY member.username) AS x");
         $total = $x[0]['count'];
         $data = $this->getSellShipmentStatistics($start, $limit, $order, $search);
         foreach ($data as $k => $v) {
-            foreach($column_index as $key => $value){
+            foreach ($column_index as $key => $value) {
                 $x[$k][] = $v[$value];
             }
         }
@@ -314,5 +313,68 @@ LIMIT {$start}, {$limit}";
             $sells[$k]['product_total'] = count($Product->where([['price'=>['gt',0]],['status'=>3],['username'=>$v['username']]])->field(['itemid'])->select()); //在售产品数
         }
         return $sells;*/
+    }
+
+    /**
+     * 产品收藏统计
+     */
+    public function productStatistics()
+    {
+        $Favorite = D('Favorite');
+        $favorites = $Favorite->where([['p_id' => ['gt', 0]]])->field("p_id AS product_id, title, COUNT(itemid) AS favorite_count")->group("p_id")->order("favorite_count DESC")->limit("0,100")->select();
+        $this->assign(['favorites' => $favorites]);
+        $this->display();
+    }
+
+    /**
+     * 产品销量排行榜 销量 成交额
+     */
+    public function productSaleRankingList()
+    {
+        $this->display();
+    }
+
+    public function ajaxGetProductSaleRankingList()
+    {
+        $Trade = D('Trade');
+        $column_index = [
+            'p_id',
+            'title',
+            'trade_count',
+            'trade_total',
+            'trade_amount',
+        ];
+        $draw = $_GET['draw'];//这个值作者会直接返回给前台
+        $start = $_GET['start'];
+        $limit = $_GET['length'];
+        $order = $_GET['order'];
+        $order = "{$column_index[$order[0]['column']]} {$order[0]['dir']}";
+        foreach ($_GET['columns'] as $k => $v) {
+            if ($v['search']['value'] != '') {
+                $y[] = "{$column_index[$v['data']]} LIKE '%{$v[search][value]}%'";
+            }
+        }
+        $search = '';
+        if (count($y) > 0) {
+            $search = " AND " . Tools::arr2str($y, " AND ");
+        }
+        $y = $Trade->where("status IN(2,3,4) {$search}")->field("p_id")->group("p_id")->select();
+        $total = count($y);
+        $data = $Trade->where("status IN(2,3,4) {$search}")->field("p_id, title, COUNT(itemid) AS trade_count, SUM(total) AS trade_total, SUM(amount) AS trade_amount")->group("p_id")->order($order)->limit("{$start}, {$limit}")->select();
+        foreach ($data as $k => $v) {
+            foreach ($column_index as $key => $value) {
+                $x[$k][] = $v[$value];
+            }
+        }
+
+        //获取Datatables发送的参数 必要
+        $show = [
+            "draw" => $draw,
+            "recordsTotal" => $total,
+            "recordsFiltered" => $total,
+            "data" => $x,
+        ];
+        $x = json_encode($show);
+        echo $x;
     }
 }
