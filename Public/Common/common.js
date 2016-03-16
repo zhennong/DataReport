@@ -37,3 +37,12 @@ function formatTime(time){
     time = time / 1000;
     return time;
 }
+
+var Tools = {
+    //打印json数据
+    json_alert:function(json){
+        var data =JSON.stringify(json);
+        alert(data);
+    }
+}
+

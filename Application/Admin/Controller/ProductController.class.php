@@ -215,19 +215,40 @@ class ProductController extends AuthController
 
     public function ajaxGetSellShipmentStatistics()
     {
+//        Tools::_vp($_GET, 0, 2);
+        $column_index = [
+            "0"=>"userid",
+            "1"=>"username",
+            "2"=>"company",
+            "3"=>"product_total",
+            "4"=>"trade_count",
+            "5"=>"trade_total",
+            "6"=>"trade_amount",
+        ];
         $draw = $_GET['draw'];//这个值作者会直接返回给前台
+        $start = $_GET['start'];
+        $limit = $_GET['length'];
+        $order = $_GET['order'];
+        $order = "{$column_index[$order[0]['column']]} {$order[0]['dir']}";
+        foreach($_GET['columns'] as $k => $v){
+            if($v['search']['value']!=''){
+                $y[] = "{$column_index[$v['data']]} LIKE '%{$v[search][value]}%'";
+            }
+        }
+        $search = '';
+        if(count($y)>0){
+            $search = " AND ".Tools::arr2str($y," AND ");
+        }
         $x = $this->MallDb->list_query("SELECT COUNT(x.userid) as count FROM (SELECT member.userid
 FROM __MALL_member AS member
 LEFT JOIN __MALL_finance_trade AS trade ON member.username = trade.seller AND trade.status IN(1,2,3,4)
-WHERE member.groupid = 6
+WHERE member.groupid = 6 {$search}
 GROUP BY member.username) AS x");
         $total = $x[0]['count'];
-        $start = $_GET['start'];
-        $limit = $_GET['length'];
-        $data = $this->getSellShipmentStatistics($start,$limit);
-        foreach($data as $k => $v){
-            foreach($v as $k1 => $v1){
-                $x[$k][] = $v1;
+        $data = $this->getSellShipmentStatistics($start, $limit, $order, $search);
+        foreach ($data as $k => $v) {
+            foreach($column_index as $key => $value){
+                $x[$k][] = $v[$value];
             }
         }
         //获取Datatables发送的参数 必要
@@ -248,7 +269,7 @@ GROUP BY member.username) AS x");
      * @param $order
      * @return [[]]
      */
-    private function getSellShipmentStatistics($start = 0, $limit = 10, $order = "trade_amount DESC")
+    private function getSellShipmentStatistics($start = 0, $limit = 10, $order = "trade_amount DESC", $search = '')
     {
         $Member = D('Member');
         $Trade = D('Trade');
@@ -267,13 +288,13 @@ LIMIT {$start}, {$limit}";*/
         $sql = "SELECT member.userid, member.username, member.company, COUNT(trade.itemid) AS trade_count, SUM(trade.total) AS trade_total, SUM(trade.amount) AS trade_amount
 FROM __MALL_member AS member
 LEFT JOIN __MALL_finance_trade AS trade ON member.username = trade.seller AND trade.status IN(1,2,3,4)
-WHERE member.groupid = 6
+WHERE member.groupid = 6 {$search}
 GROUP BY member.username
 ORDER BY {$order}
 LIMIT {$start}, {$limit}";
         $sells = $this->MallDb->list_query($sql);
-        foreach($sells as $k => $v){
-            $x = $Product->where([['username'=>$v['username']]])->field("count(itemid) AS product_total")->group('username')->select();
+        foreach ($sells as $k => $v) {
+            $x = $Product->where([['username' => $v['username']]])->field("count(itemid) AS product_total")->group('username')->select();
             $sells[$k]['product_total'] = $x[0]['product_total'];
         }
         return $sells;

@@ -8,10 +8,33 @@
             var DataTable = Table.dataTable({
                 language: dataTables_zh_CN,
                 pageLength: 10,
-                "processing": true,
-                "serverSide": true,
-                "ajax": ajax_url
+                processing: true,
+                serverSide: true,
+                ajax: ajax_url,
+                ordering: true,
+                searching: true,
+                order: [[6, "desc"]],
+                aoColumnDefs: [{"bSortable": false, "aTargets": [3]}],
+                initComplete: function () {
+                    var api = this.api();
+                    api.columns().indexes().flatten().each(function (i) {
+                        var column = api.column(i);
+                        if(i!=3&&i!=4&&i!=5&&i!=6){
+                            var search = $('<input type="search" placeholder="查询 ' + $(column.header()).text() +'"/>');
+                            $(column.footer()).empty().html(search);
+                            search.on('keyup',function(){
+                                var val = $.fn.dataTable.util.escapeRegex(
+                                    $(this).val()
+                                );
+                                column.search( val, true, false).draw();
+                            })
+                        }else{
+                            $(column.footer()).empty().html('<input type="search" placeholder="不可查询" readonly/>')
+                        }
+                    });
+                }
             });
+            $(".dataTables_filter").remove();
         });
     </script>
 </block>
@@ -23,16 +46,28 @@
             <table class="table table-bordered table-hover">
                 <thead>
                 <tr>
-                <th>用户id</th>
-                <th>用户名</th>
-                <th>公司</th>
-                <th>在售产品数</th>
-                <th>订单数</th>
-                <th>出货数</th>
-                <th>销售总额</th>
+                    <th>用户id</th>
+                    <th>用户名</th>
+                    <th>公司</th>
+                    <th>在售产品数</th>
+                    <th>订单数</th>
+                    <th>出货数</th>
+                    <th>销售总额</th>
                 </tr>
                 </thead>
+                <tfoot>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                </tfoot>
             </table>
         </div>
     </div>
+
 </block>
