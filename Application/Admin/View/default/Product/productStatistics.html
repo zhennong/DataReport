@@ -1,0 +1,40 @@
+<extend name="Layout:ly2" />
+
+<block name="head">
+    <script>
+        $(document).ready(function () {
+            var Table = $('table');
+            var DataTable = Table.DataTable({
+                language: dataTables_zh_CN,
+                pageLength: 10,
+                order: [[2, "desc"]]
+            });
+        });
+    </script>
+</block>
+
+<block name="body">
+    <div class="container-fluid padding-top">
+        <h1>产品收藏统计（前100）：</h1>
+        <div class="col-lg-12">
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>产品编号</th>
+                    <th>产品标题</th>
+                    <th>收藏数</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach($favorites as $k => $v): ?>
+                <tr>
+                    <th>{$v['product_id']}</th>
+                    <th>{$v['title']}</th>
+                    <th>{$v['favorite_count']}</th>
+                </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</block>

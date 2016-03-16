@@ -24,10 +24,11 @@ class ProductController extends AuthController
     /**
      * 获取分类hash
      */
-    private function getCateHash(){
+    private function getCateHash()
+    {
         $Category = D('Category');
-        $this->all_cate_list = $Category->where(['moduleid'=>5])->field(['catid','catname'])->select();
-        $this->all_cate_hash = Tools::toHashmap($this->all_cate_list,'catid','catname');
+        $this->all_cate_list = $Category->where(['moduleid' => 5])->field(['catid', 'catname'])->select();
+        $this->all_cate_hash = Tools::toHashmap($this->all_cate_list, 'catid', 'catname');
 
     }
 
@@ -37,9 +38,10 @@ class ProductController extends AuthController
      * @param $range ['start_price'=>1,'end_price'=>100]
      * @return array []
      */
-    private function getPriceRangeProductIDs($products,$range = ['start_price'=>1,'end_price'=>100]){
-        foreach($products as $k => $v){
-            if($v['price']>$range['start_price']&&$v['price']<$range['end_price']){
+    private function getPriceRangeProductIDs($products, $range = ['start_price' => 1, 'end_price' => 100])
+    {
+        foreach ($products as $k => $v) {
+            if ($v['price'] > $range['start_price'] && $v['price'] < $range['end_price']) {
                 $ids[] = $v['itemid'];
             }
         }
@@ -52,9 +54,10 @@ class ProductController extends AuthController
      * @param $product_ids
      * @return array [[]]
      */
-    private function getPriceRangeTrades($trades,$range = ['start_price'=>1,'end_price'=>100]){
-        foreach($trades as $k => $v){
-            if($v['price']>$range['start_price']&&$v['price']<$range['end_price']){
+    private function getPriceRangeTrades($trades, $range = ['start_price' => 1, 'end_price' => 100])
+    {
+        foreach ($trades as $k => $v) {
+            if ($v['price'] > $range['start_price'] && $v['price'] < $range['end_price']) {
                 $sel_trades[] = $v;
             }
         }
@@ -62,15 +65,16 @@ class ProductController extends AuthController
     }
 
     /**
-        * 产品类别比例
-        */
-    public function categoryRatio(){
+     * 产品类别比例
+     */
+    public function categoryRatio()
+    {
         // 查询添加的产品
         $Product = D('Product');
-        $map['addtime'] = [['gt',$this->month_start],['lt',$this->month_end]];
-        $field = ['itemid','catid'];
+        $map['addtime'] = [['gt', $this->month_start], ['lt', $this->month_end]];
+        $field = ['itemid', 'catid'];
         $sel_product_list = $Product->where($map)->field($field)->select();
-        foreach($sel_product_list as $k => $v){
+        foreach ($sel_product_list as $k => $v) {
             $x = Tools::str2arr($v['catid']);
             $sel_product_list[$k]['catid'] = $x[0];
         }
@@ -78,10 +82,10 @@ class ProductController extends AuthController
         $this->getCateHash();
 
         // 产品分类详情
-        $sel_cat_info = Tools::groupBy($sel_product_list,'catid');
-        foreach($sel_cat_info as $k =>$v){
+        $sel_cat_info = Tools::groupBy($sel_product_list, 'catid');
+        foreach ($sel_cat_info as $k => $v) {
             unset($sel_cat_info[$k]);
-            if($this->all_cate_hash[$k]){
+            if ($this->all_cate_hash[$k]) {
                 $sel_cat_info[$k]['catid'] = $k;
                 $sel_cat_info[$k]['catname'] = $this->all_cate_hash[$k];
                 $sel_cat_info[$k]['count'] = count($v);
@@ -90,14 +94,14 @@ class ProductController extends AuthController
         sort($sel_cat_info);
 
         // 数据重组
-        $legend_data = Tools::arr2str(Tools::getCols($sel_cat_info,'catname',true));
-        foreach($sel_cat_info as $k => $v){
-            $series_data[] = "{value:".$v['count'].", name:'".$v['catname']."'}";
+        $legend_data = Tools::arr2str(Tools::getCols($sel_cat_info, 'catname', true));
+        foreach ($sel_cat_info as $k => $v) {
+            $series_data[] = "{value:" . $v['count'] . ", name:'" . $v['catname'] . "'}";
         }
         $series_data = Tools::arr2str($series_data);
 
         // 注入显示
-        $this->assign(['legend_data'=>$legend_data,'series_data'=>$series_data]);
+        $this->assign(['legend_data' => $legend_data, 'series_data' => $series_data]);
         $this->display();
     }
 
@@ -123,52 +127,56 @@ class ProductController extends AuthController
      *      ...
      * ]
      */
-    public function categoryTotal(){}
+    public function categoryTotal()
+    {
+    }
 
     /**
      * 产品上传月走势
      */
-    public function uploadMonthlyTrend(){
+    public function uploadMonthlyTrend()
+    {
         $Product = D('Product');
         //数据查询
-        foreach($this->month_solt as $k => $v){
+        foreach ($this->month_solt as $k => $v) {
             $upload_products[$k]['month'] = $v['start']['date'];
-            $map['addtime'] = [['gt',$v['start']['ts']],['lt',$v['end']['ts']]];
+            $map['addtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
             $upload_products[$k]['count'] = count($Product->where($map)->field('itemid')->select());
         }
 
         //数据重组
-        $xAxis_data = Tools::arr2str(Tools::getCols($upload_products,'month',true));
-        $series_data = Tools::arr2str(Tools::getCols($upload_products,'count'));
+        $xAxis_data = Tools::arr2str(Tools::getCols($upload_products, 'month', true));
+        $series_data = Tools::arr2str(Tools::getCols($upload_products, 'count'));
 
         // 注入显示
-        $this->assign(['xAxis_data'=>$xAxis_data,'series_data'=>$series_data]);
+        $this->assign(['xAxis_data' => $xAxis_data, 'series_data' => $series_data]);
         $this->display();
     }
 
     /**
      * 价格区间分布图(销量 产品数量 交易额 订单总数)
      */
-    public function price_range_information(){
+    public function price_range_information()
+    {
         $map['status'] = 3;
-        $map['price'] = ['gt',0];
+        $map['price'] = ['gt', 0];
         $Product = D('Product');
         $Trade = D('Trade');
-        $products = $Product->where($map)->field(['itemid','price'])->select();
-        $trades = $Trade->where(['status'=>['in',[2,3,4]]])->field(['itemid','p_id','price','total','amount'])->select(); // 订单
-        foreach($this->price_range as $k => $v){
+        $products = $Product->where($map)->field(['itemid', 'price'])->select();
+        $trades = $Trade->where(['status' => ['in', [2, 3, 4]]])->field(['itemid', 'p_id', 'price', 'total', 'amount'])->select(); // 订单
+        foreach ($this->price_range as $k => $v) {
             $price_range_data[$k] = $v;
             // 产品数量
-            $product_ids = $this->getPriceRangeProductIDs($products,$v);
+            $product_ids = $this->getPriceRangeProductIDs($products, $v);
             $price_range_data[$k]['product_count'] = count($product_ids);
 
-            $sel_trades = $this->getPriceRangeTrades($trades,$v);
+            $sel_trades = $this->getPriceRangeTrades($trades, $v);
             // 订单总数
             $price_range_data[$k]['trade_count'] = count($sel_trades);
             // 销量
-            $price_range_data[$k]['trade_total'] = get_arr_k_amount($sel_trades,'total');
+            $price_range_data[$k]['trade_total'] = get_arr_k_amount($sel_trades, 'total');
             // 交易额
-            $price_range_data[$k]['trade_amount'] = get_arr_k_amount($sel_trades,'amount');
+            $price_range_data[$k]['trade_amount'] = get_arr_k_amount($sel_trades, 'amount');
         }
 
         // 数据重组
@@ -179,15 +187,15 @@ class ProductController extends AuthController
         }
         $series = Tools::arr2str($sel_trades);
         $this->assign(['legend_data'=>$legend_data,'xAxis_data'=>$xAxis_data,'series'=>$series]);*/
-        $legend_data = ['产品数量','订单总数','销量','交易额'];
-        $xAxis_data = Tools::arr2str(Tools::getCols($this->price_range,'range_name',true));
-        $series['product_count'] = Tools::arr2str(Tools::getCols($price_range_data,'product_count'));
-        $series['trade_count'] = Tools::arr2str(Tools::getCols($price_range_data,'trade_count'));
-        $series['trade_total'] = Tools::arr2str(Tools::getCols($price_range_data,'trade_total'));
-        $series['trade_amount'] = Tools::arr2str(Tools::getCols($price_range_data,'trade_amount'));
+        $legend_data = ['产品数量', '订单总数', '销量', '交易额'];
+        $xAxis_data = Tools::arr2str(Tools::getCols($this->price_range, 'range_name', true));
+        $series['product_count'] = Tools::arr2str(Tools::getCols($price_range_data, 'product_count'));
+        $series['trade_count'] = Tools::arr2str(Tools::getCols($price_range_data, 'trade_count'));
+        $series['trade_total'] = Tools::arr2str(Tools::getCols($price_range_data, 'trade_total'));
+        $series['trade_amount'] = Tools::arr2str(Tools::getCols($price_range_data, 'trade_amount'));
 
         // 注入显示
-        $this->assign(['legend_data'=>$legend_data,'xAxis_data'=>$xAxis_data,'series'=>$series]);
+        $this->assign(['legend_data' => $legend_data, 'xAxis_data' => $xAxis_data, 'series' => $series]);
         $this->display();
     }
 
@@ -195,13 +203,62 @@ class ProductController extends AuthController
      * 厂家会员出货统计 member username trade sell
      * 订单数 出货数 在售产品数sell 销售总额
      */
-    public function shipmentStatistics(){
-        // 查询
-        $sells = $this->getSellShipmentStatistics(0,10);
-
+    public function shipmentStatistics()
+    {
+        /*// 查询
+        $sells = $this->getSellShipmentStatistics(0, 10);
         // 注入显示
-        $this->assign(['sells'=>$sells]);
+        $this->assign(['sells' => $sells]);*/
         $this->display();
+    }
+
+    public function ajaxGetSellShipmentStatistics()
+    {
+//        Tools::_vp($_GET, 0, 2);
+        $column_index = [
+            "0" => "userid",
+            "1" => "username",
+            "2" => "company",
+            "3" => "product_total",
+            "4" => "trade_count",
+            "5" => "trade_total",
+            "6" => "trade_amount",
+        ];
+        $draw = $_GET['draw'];//这个值作者会直接返回给前台
+        $start = $_GET['start'];
+        $limit = $_GET['length'];
+        $order = $_GET['order'];
+        $order = "{$column_index[$order[0]['column']]} {$order[0]['dir']}";
+        foreach ($_GET['columns'] as $k => $v) {
+            if ($v['search']['value'] != '') {
+                $y[] = "{$column_index[$v['data']]} LIKE '%{$v[search][value]}%'";
+            }
+        }
+        $search = '';
+        if (count($y) > 0) {
+            $search = " AND " . Tools::arr2str($y, " AND ");
+        }
+        $x = $this->MallDb->list_query("SELECT COUNT(x.userid) as count FROM (SELECT member.userid
+FROM __MALL_member AS member
+LEFT JOIN __MALL_finance_trade AS trade ON member.username = trade.seller AND trade.status IN(1,2,3,4)
+WHERE member.groupid = 6 {$search}
+GROUP BY member.username) AS x");
+        $total = $x[0]['count'];
+        $data = $this->getSellShipmentStatistics($start, $limit, $order, $search);
+        foreach ($data as $k => $v) {
+            foreach ($column_index as $key => $value) {
+                $x[$k][] = $v[$value];
+            }
+        }
+        //获取Datatables发送的参数 必要
+        $show = [
+            "draw" => $draw,
+            "recordsTotal" => $total,
+            "recordsFiltered" => $total,
+            "data" => $x,
+        ];
+        $x = json_encode($show);
+        echo $x;
     }
 
     /**
@@ -211,26 +268,43 @@ class ProductController extends AuthController
      * @param $order
      * @return [[]]
      */
-    private function getSellShipmentStatistics($start=0,$limit=10,$order="trade_total DESC"){
+    private function getSellShipmentStatistics($start = 0, $limit = 10, $order = "trade_amount DESC", $search = '')
+    {
         $Member = D('Member');
         $Trade = D('Trade');
         $Product = D('Product');
-        if($limit){
-            $limit = "{$start},{$limit}";
+
+        /*$sql = "SELECT member.userid, member.username, member.company, COUNT(trade.itemid) AS trade_count, SUM(trade.total) AS trade_total, SUM(trade.amount) AS trade_amount, count(product.itemid) AS product_total
+FROM __MALL_member AS member
+
+LEFT JOIN __MALL_finance_trade AS trade ON member.username = trade.seller AND trade.status IN(1,2,3,4)
+LEFT JOIN __MALL_sell_5 AS product ON member.username = product.username AND product.price > 0 AND product.status = 3
+
+WHERE member.groupid = 6
+GROUP BY member.username
+ORDER BY {$order}
+LIMIT {$start}, {$limit}";*/
+        $sql = "SELECT member.userid, member.username, member.company, COUNT(trade.itemid) AS trade_count, SUM(trade.total) AS trade_total, SUM(trade.amount) AS trade_amount
+FROM __MALL_member AS member
+LEFT JOIN __MALL_finance_trade AS trade ON member.username = trade.seller AND trade.status IN(1,2,3,4)
+WHERE member.groupid = 6 {$search}
+GROUP BY member.username
+ORDER BY {$order}
+LIMIT {$start}, {$limit}";
+        $sells = $this->MallDb->list_query($sql);
+        foreach ($sells as $k => $v) {
+            $x = $Product->where([['username' => $v['username']]])->field("count(itemid) AS product_total")->group('username')->select();
+            $sells[$k]['product_total'] = $x[0]['product_total'];
+        }
+        return $sells;
+
+
+        /*if($limit){
+            $limit = "{$start}, {$limit}";
         }else{
             $limit = null;
         }
-
-        /*$trades = $Trade->where(['status'=>['in',[1,2,3,4]]])->field("seller,COUNT(itemid) AS trade_count,SUM(total) AS trade_total,SUM(amount) AS trade_amount")->group('seller')->limit($limit)->order($order)->select();
-        foreach($trades as $k => $v){
-            $sells[$k] = $v;
-            $x = $Member->where(['groupid'=>6,])->select();
-        }
-        return $sells;
-        Tools::_vp($sells);*/
-        $sql = "SELECT sell.*, trade.*, product.* FROM __MALL_finance_trade AS trade, __MALL_sell_5 AS sell, __MALL_";
-
-        /*$sells = $Member->where(['groupid'=>6])->limit($limit)->field(['userid','username','company'])->select();
+        $sells = $Member->where(['groupid'=>6])->limit($limit)->field(['userid','username','company'])->select();
         foreach($sells as $k => $v){
             $trades = $Trade->field(['itemid','total','amount'])->where(['seller'=>$v['username'],['status'=>['in',[1,2,3,4]]]])->select();
             $sells[$k]['trade_count'] = count($trades); //订单数
@@ -239,5 +313,68 @@ class ProductController extends AuthController
             $sells[$k]['product_total'] = count($Product->where([['price'=>['gt',0]],['status'=>3],['username'=>$v['username']]])->field(['itemid'])->select()); //在售产品数
         }
         return $sells;*/
+    }
+
+    /**
+     * 产品收藏统计
+     */
+    public function productStatistics()
+    {
+        $Favorite = D('Favorite');
+        $favorites = $Favorite->where([['p_id' => ['gt', 0]]])->field("p_id AS product_id, title, COUNT(itemid) AS favorite_count")->group("p_id")->order("favorite_count DESC")->limit("0,100")->select();
+        $this->assign(['favorites' => $favorites]);
+        $this->display();
+    }
+
+    /**
+     * 产品销量排行榜 销量 成交额
+     */
+    public function productSaleRankingList()
+    {
+        $this->display();
+    }
+
+    public function ajaxGetProductSaleRankingList()
+    {
+        $Trade = D('Trade');
+        $column_index = [
+            'p_id',
+            'title',
+            'trade_count',
+            'trade_total',
+            'trade_amount',
+        ];
+        $draw = $_GET['draw'];//这个值作者会直接返回给前台
+        $start = $_GET['start'];
+        $limit = $_GET['length'];
+        $order = $_GET['order'];
+        $order = "{$column_index[$order[0]['column']]} {$order[0]['dir']}";
+        foreach ($_GET['columns'] as $k => $v) {
+            if ($v['search']['value'] != '') {
+                $y[] = "{$column_index[$v['data']]} LIKE '%{$v[search][value]}%'";
+            }
+        }
+        $search = '';
+        if (count($y) > 0) {
+            $search = " AND " . Tools::arr2str($y, " AND ");
+        }
+        $y = $Trade->where("status IN(2,3,4) {$search}")->field("p_id")->group("p_id")->select();
+        $total = count($y);
+        $data = $Trade->where("status IN(2,3,4) {$search}")->field("p_id, title, COUNT(itemid) AS trade_count, SUM(total) AS trade_total, SUM(amount) AS trade_amount")->group("p_id")->order($order)->limit("{$start}, {$limit}")->select();
+        foreach ($data as $k => $v) {
+            foreach ($column_index as $key => $value) {
+                $x[$k][] = $v[$value];
+            }
+        }
+
+        //获取Datatables发送的参数 必要
+        $show = [
+            "draw" => $draw,
+            "recordsTotal" => $total,
+            "recordsFiltered" => $total,
+            "data" => $x,
+        ];
+        $x = json_encode($show);
+        echo $x;
     }
 }

@@ -3,28 +3,26 @@
 <block name="head">
     <script>
         $(document).ready(function () {
-            var ajax_url = "{:U('Admin/Product/ajaxGetSellShipmentStatistics')}";
+            var ajax_url = "{:U('Admin/Product/ajaxGetProductSaleRankingList')}";
             var Table = $('table');
-            var DataTable = Table.dataTable({
+            var DataTable = Table.DataTable({
                 language: dataTables_zh_CN,
                 pageLength: 10,
                 processing: true,
                 serverSide: true,
                 ajax: ajax_url,
-                ordering: true,
-                searching: true,
-                order: [[6, "desc"]],
+                order: [[4, "desc"]],
                 aoColumnDefs: [{"bSortable": false, "aTargets": [3]}],
                 initComplete: function () {
                     var api = this.api();
                     api.columns().indexes().flatten().each(function (i) {
                         var column = api.column(i);
-                        if(i!=3&&i!=4&&i!=5&&i!=6){
+                        if(i!=2&&i!=3&&i!=4){
                             var search = $('<input type="search" placeholder="查询 ' + $(column.header()).text() +'"/>');
                             $(column.footer()).empty().html(search);
                             search.on('keyup',function(){
                                 var val = $.fn.dataTable.util.escapeRegex(
-                                    $(this).val()
+                                        $(this).val()
                                 );
                                 column.search( val, true, false).draw();
                             })
@@ -41,24 +39,20 @@
 
 <block name="body">
     <div class="container-fluid padding-top">
-        <h1>厂家会员出货统计（全部）：</h1>
+        <h1>产品销量排行榜：</h1>
         <div class="col-lg-12">
             <table class="table table-bordered table-hover">
                 <thead>
                 <tr>
-                    <th>用户id</th>
-                    <th>用户名</th>
-                    <th>公司</th>
-                    <th>在售产品数</th>
+                    <th>产品编号</th>
+                    <th>产品标题</th>
                     <th>订单数</th>
-                    <th>出货数</th>
-                    <th>销售总额</th>
+                    <th>出售量</th>
+                    <th>总销量</th>
                 </tr>
                 </thead>
                 <tfoot>
                 <tr>
-                    <th></th>
-                    <th></th>
                     <th></th>
                     <th></th>
                     <th></th>
@@ -71,3 +65,16 @@
     </div>
 
 </block>
+
+<!--
+<tbody>
+<?php foreach($trades as $k => $v): ?>
+<tr>
+    <th>{$v['product_id']}</th>
+    <th>{$v['title']}</th>
+    <th>{$v['trade_count']}</th>
+    <th>{$v['trade_total']}</th>
+    <th>{$v['trade_amount']}</th>
+</tr>
+<?php endforeach; ?>
+</tbody>-->
