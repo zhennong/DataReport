@@ -11,7 +11,7 @@ namespace Admin\Model;
 
 use Common\Model\BusinessModel;
 
-class AgentModel extends BusinessModel
+class AgentSellModel extends BusinessModel
 {
     protected $tableName = 'agent_sell';
 }

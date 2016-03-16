@@ -9,16 +9,19 @@ namespace Admin\Controller;
 
 use Common\Tools;
 
-class BusinessController extends AdminController{
-    public function businessIndex(){
+class BusinessController extends AdminController
+{
+    public function businessIndex()
+    {
         $this->display();
     }
-    
+
     /**
      * 合作商月趋势
      * @author iredbaby
      */
-    public function businessTrend(){
+    public function businessTrend()
+    {
         $Agent = D('Agent');
         $mouth_solt = get_month_solt($this->month_start, $this->month_end);
         foreach ($mouth_solt as $k => $v) {
@@ -32,32 +35,34 @@ class BusinessController extends AdminController{
         $this->assign(['mouth_solt_agent' => $mouth_solt_agent]);
         $this->display();
     }
-    
+
     /**
      * 各县的交易额
      */
-    public function businessTotal(){
+    public function businessTotal()
+    {
         $provice = R('Member/getProvice');
-        $provice_name = R('Member/getProvice',array(1,I('pid')));
+        $provice_name = R('Member/getProvice', array(1, I('pid')));
         $pid = I('get.pid');
-        if(empty($pid)){
+        if (empty($pid)) {
             $pid = 17; //默认显示河南省
         }
 
         $area = D('area');
         $where['parentid'] = $pid;
-        $data  = $area->field('areaid,parentid,areaname')->where($where)->select();
-        if($pid > 4 && $pid < 33){
-            foreach($data AS $k=>$v){
-                $sql = "select a.areaid as areaid,a.areaname as areaname,SUM(b.money) as total from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.parentid='".$v['areaid']."' group by areaid order by total desc";
-               $data[$k]['sub'] = queryMysql($sql);
+        $data = $area->field('areaid,parentid,areaname')->where($where)->select();
+
+        if ($pid > 4 && $pid < 33) {
+            foreach ($data AS $k => $v) {
+                $sql = "select a.areaid as areaid,a.areaname as areaname,SUM(b.money) as total from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.parentid='" . $v['areaid'] . "' group by areaid order by total desc";
+                $data[$k]['sub'] = queryMysql($sql);
             }
-        }else{ //特殊城市处理
-            foreach($data AS $k=>$v){
-                if($k > 0){
+        } else { //特殊城市处理
+            foreach ($data AS $k => $v) {
+                if ($k > 0) {
                     unset($data[$k]);
-                }else{
-                    $sql = "select a.areaid as areaid,a.areaname as areaname,SUM(b.money) as total from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.parentid='".$v['parentid']."' group by areaid order by total desc";
+                } else {
+                    $sql = "select a.areaid as areaid,a.areaname as areaname,SUM(b.money) as total from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.parentid='" . $v['parentid'] . "' group by areaid order by total desc";
                     $data[$k]['sub'] = queryMysql($sql);
                 }
             }
@@ -85,7 +90,7 @@ class BusinessController extends AdminController{
         $this->assign('data',$data);
         $this->display();
     }
-    
+
     /**
      * 导出数据
      */
@@ -99,37 +104,44 @@ class BusinessController extends AdminController{
     }
 
 
-	/**
+    /**
      * 合作商热力图
      */
-    public function businessHot() {
-		$Agent = D('Agent');
-		$Agent_area_id = $Agent->select();
-		foreach($Agent_area_id AS $k=>$v){
-			$Province[$k] = getAreaFullNameFromAreaID($v['agareaid']);
-		}
-
-        $id = I('get.id');
-        if(empty($id)){
-           $id = 50;
+    public function businessHot()
+    {
+        $Agent = D('Agent');
+        $Agent_area_id = $Agent->select();
+        foreach ($Agent_area_id AS $k => $v) {
+            $Province[$k] = getAreaFullNameFromAreaID($v['agareaid']);
         }
-        $count = array(50,100,150,200,300,400,500,1000,2000,5000,10000);
+        $this->assign('data', array_count_values($Province));
+        $this->display();
+    }
 
-        $this->assign('count',$count);
-        $this->assign('count_id',$id);
-		$this->assign('data',array_count_values($Province));
-		$this->display();
+    /**
+     * 合作商提成月走势图
+     * @author Edwin <junqianhen@gmail.com>
+     */
+    public function partnerTrend()
+    {
+        $Agent = D('Partner');
+        $map['status'] = ['in', '2,3,4'];
+        //查询数据
+        $month_solt = get_month_solt($this->month_start, $this->month_end);
+        foreach ($month_solt as $k => $v) {
+            $map['addtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
+            $mouth_solt_partner[$k]['mouth_solt'] = $v;
+            $x = $Agent->field('money')->where($map)->select();
+            $mouth_solt_partner[$k]['mouth_name'] = date("Y-m", $v['start']['ts']);
+            $mouth_solt_partner[$k]['partner_sum']=get_arr_k_amount($x,'money');
+        }
+
+
+        //重组数据_月资讯数据
+        $xAxis_data = Tools::arr2str(Tools::getCols($mouth_solt_partner, 'mouth_name', true));
+        $series_data = Tools::arr2str(Tools::getCols($mouth_solt_partner, 'partner_sum'));
+        //注入显示
+        $this->assign(['xAxis_data' => $xAxis_data,'series_data' => $series_data]);
+        $this->display();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
