@@ -13,5 +13,5 @@ use Common\Model\BusinessModel;
 
 class AgentModel extends BusinessModel
 {
-    protected $tableName = 'agent_sell';
+    protected $tableName = 'agent';
 }
