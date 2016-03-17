@@ -32,4 +32,14 @@ class MallDb extends BusinessModel
         $sql = str_replace('__MALL_',C('BUSINESS_DB_TABLE_PREFIX'),$sql);
         return $sql;
     }
+
+    public function getSql($sql)
+    {
+        return $this->modifySQL($sql);
+    }
+
+    public function showSql($sql)
+    {
+        dump($this->getSql($sql));
+    }
 }

@@ -11,7 +11,7 @@ namespace Admin\Model;
 
 use Common\Model\BusinessModel;
 
-class DepartModel extends BusinessModel
+class DepartMemberModel extends BusinessModel
 {
     protected $tableName = "depart";
 }
