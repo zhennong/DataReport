@@ -248,7 +248,7 @@ class MemberController extends AuthController
         /*
          * pc注册的数量
          */
-        $map['comefrom'] ='web';
+        $map['comefrom'] = 'web';
         $sel_AppChart_list = $Member->where($map)->field($field)->select();
         $cat_group = Tools::groupBy($sel_AppChart_list, 'userid');
 
@@ -275,7 +275,7 @@ class MemberController extends AuthController
         $appChart_pc = get_arr_k_amount($x_pc, 'count');
         $appChart_mobel = get_arr_k_amount($x_mobel, 'count');
         //注入显示
-        $this->assign(['appChart_pc' => $appChart_pc,'appChart_mobel' => $appChart_mobel]);
+        $this->assign(['appChart_pc' => $appChart_pc, 'appChart_mobel' => $appChart_mobel]);
         $this->display();
     }
 }
