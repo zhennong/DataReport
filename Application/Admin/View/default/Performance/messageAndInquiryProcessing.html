@@ -1,13 +1,8 @@
-<extend name="Layout:ly2" />
+<extend name="Layout:ly2"/>
 
 <block name="head">
     <script>
         $(document).ready(function () {
-            var AnswerTable = $("#answer_table");
-            var AnswerDataTable = AnswerTable.DataTable({
-                language: dataTables_zh_CN,
-                pageLength: 10
-            });
             var MemberInquiryTable = $("#member_inquiry_table");
             var MemberInquiryDataTable = MemberInquiryTable.DataTable({
                 language: dataTables_zh_CN,
@@ -26,28 +21,28 @@
                     var api = this.api();
                     api.columns().indexes().flatten().each(function (i) {
                         var column = api.column(i);
-                        if(i!=6){
-                            var search = $('<input type="search" placeholder="查询 ' + $(column.header()).text() +'"/>');
+                        if (i != 7) {
+                            var search = $('<input type="search" placeholder="查询 ' + $(column.header()).text() + '"/>');
                             $(column.footer()).empty().html(search);
-                            search.on('keyup',function(){
+                            search.on('keyup', function () {
                                 var val = $.fn.dataTable.util.escapeRegex(
                                         $(this).val()
                                 );
-                                column.search( val, true, false).draw();
+                                column.search(val, true, false).draw();
                             })
-                        }else if(i==6){
+                        } else if (i == 7) {
                             var time_start = $('<input type="text" name="time_start" placeholder="日期"/>');
                             var datetimepicker_config = {
-                                format:"yyyy-mm-dd",
-                                autoclose:true,
-                                startView:4,
-                                maxView:4,
-                                minView:2,
-                                language:"zh-CN"
+                                format: "yyyy-mm-dd",
+                                autoclose: true,
+                                startView: 4,
+                                maxView: 4,
+                                minView: 2,
+                                language: "zh-CN"
                             };
                             time_start.datetimepicker(datetimepicker_config);
                             $(column.footer()).empty().html(time_start);
-                        }else{
+                        } else {
                             $(column.footer()).empty().html('<input type="search" placeholder="不可查询" readonly/>')
                         }
                     });
@@ -59,39 +54,6 @@
 </block>
 
 <block name="body">
-    <div class="container-fluid padding-top">
-        <h1>留言处理：</h1>
-        <div class="col-lg-12">
-            <table id="answer_table" class="table table-bordered table-hover">
-                <thead>
-                <tr>
-                    <th>成员id</th>
-                    <th>成员帐号</th>
-                    <th>成员名</th>
-                    <th>部门</th>
-                    <th>消息总数</th>
-                    <th>已经处理的消息数</th>
-                    <th>未处理的消息数</th>
-                    <th>处理率</th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php foreach($departmembers as $k => $v): ?>
-                <tr>
-                    <th>{$v['member_id']}</th>
-                    <th>{$v['username']}</th>
-                    <th>{$v['member_name']}</th>
-                    <th>{$v['depart_name']}</th>
-                    <th>{$v['message_status']['total']}</th>
-                    <th>{$v['message_status']['count_yes']}</th>
-                    <th>{$v['message_status']['count_no']}</th>
-                    <th>{$v['message_status']['disposal_rate']}</th>
-                </tr>
-                <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
 
     <div class="container-fluid padding-top">
         <h1>询价处理：</h1>
@@ -137,19 +99,21 @@
             <table id="inquiry_table" class="table table-bordered table-hover">
 
                 <thead>
-                    <tr>
-                        <th>询价标题</th>
-                        <th>处理人名</th>
-                        <th>产品id</th>
-                        <th>产品名</th>
-                        <th>产品规格</th>
-                        <th>产品价格</th>
-                        <th>询价时间</th>
-                    </tr>
+                <tr>
+                    <th>询问内容</th>
+                    <th>回答内容</th>
+                    <th>处理人名</th>
+                    <th>产品id</th>
+                    <th>产品名</th>
+                    <th>产品规格</th>
+                    <th>产品价格</th>
+                    <th>询价时间</th>
+                </tr>
                 </thead>
                 <tfoot>
                 <tr>
-                    <th>询价标题</th>
+                    <th>询问内容</th>
+                    <th>回答内容</th>
                     <th>处理人</th>
                     <th>产品id</th>
                     <th>产品名</th>

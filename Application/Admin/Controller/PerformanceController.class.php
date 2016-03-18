@@ -39,8 +39,6 @@ class PerformanceController extends AuthController
             $departmembers[$k]['depart_name'] = $this->depart_data[$v['depart_id']]['depart_name'];
             $x = D('Member')->where(['username'=>$v['username']])->field(['truename'])->find();
             $departmembers[$k]['member_name'] = $x['truename'];
-            // 留言统计
-            $departmembers[$k]['message_status'] = $this->getMessage($v['username'],true);
             // 询价统计
             $departmembers[$k]['inquiry_status'] = $this->getInquiry($v['username'],true);
         }
@@ -54,7 +52,8 @@ class PerformanceController extends AuthController
     public function getAjaxInquiryProcessing()
     {
         $column_index = [
-            "message_title",
+            "content",
+            "amswer",
             "member_truename",
             "product_id",
             "product_title",
@@ -63,7 +62,8 @@ class PerformanceController extends AuthController
             "addtime",
         ];
         $column_search = [
-            "message.title",
+            "message.content",
+            "message.answer",
             "member.truename",
             "product.itemid",
             "product.title",
@@ -83,7 +83,6 @@ class PerformanceController extends AuthController
         foreach ($_GET['columns'] as $k => $v) {
             if ($v['search']['value'] != '') {
                 if($column_search[$v['data']]=="addtime"){
-                    Tools::_vp($v[search][value],0,2);
                     $y[] = "{$column_search[$v['data']]} BETWEEN 0 AND 1000000000000 ";
                 }else{
                     $y[] = "{$column_search[$v['data']]} LIKE '%{$v[search][value]}%'";
@@ -132,23 +131,6 @@ class PerformanceController extends AuthController
     }
 
     /**
-     * 留言统计
-     */
-    private function getMessage($depart_name,$getStatusCount=false,$field=false)
-    {
-        if($getStatusCount){
-            $yes = $this->Message->where(['msgbelong'=>$depart_name,'answer'=>['NEQ','']])->field("COUNT(itemid) AS count")->select();
-            $no = $this->Message->where(['msgbelong'=>$depart_name,'answer'=>['EQ','']])->field("COUNT(itemid) AS count")->select();
-            $message_info['count_yes'] = $yes[0]['count'];
-            $message_info['count_no'] = $no[0]['count'];
-            $message_info['total'] = $yes[0]['count'] + $no[0]['count'];
-            $message_info['disposal_rate'] = ($message_info['count_yes']*100/$message_info['total']) . "%" ;
-        }
-
-        return $message_info;
-    }
-
-    /**
      * 询价统计
      */
     private function getInquiry($depart_name,$getStatusCount=false,$field=false)
@@ -178,5 +160,20 @@ class PerformanceController extends AuthController
             $inquiry_info['disposal_time_rate'] = (($inquiry_info['count_yes'] - $inquiry_info['count_timeout'])*100/$inquiry_info['total']) . "%";
         }
         return $inquiry_info;
+    }
+
+    /**
+     * 询价转换提成
+     */
+    public function inquiryConversionCommission()
+    {
+        $sql = "SELECT depart.username, member.truename, COUNT(trade.itemid) AS trade_count FROM __MALL_depart AS depart
+            INNER JOIN __MALL_member AS member ON depart.username = member.username
+            INNER JOIN __MALL_finance_trade AS trade ON depart.username = trade.xunjia_ticheng
+            WHERE trade.status IN(2, 3, 4) AND depart.bumen = 1
+            GROUP BY depart.username";
+        $list = $this->MallDb->list_query($sql);
+        $this->assign(['list'=>$list]);
+        $this->display();
     }
 }
