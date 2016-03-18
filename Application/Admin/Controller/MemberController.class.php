@@ -248,7 +248,7 @@ class MemberController extends AuthController
         /*
          * pc注册的数量
          */
-        $map = ["comefrom='web'"];
+        $map['comefrom'] ='web';
         $sel_AppChart_list = $Member->where($map)->field($field)->select();
         $cat_group = Tools::groupBy($sel_AppChart_list, 'userid');
 
@@ -261,7 +261,7 @@ class MemberController extends AuthController
         /*
          * 手机注册的数量
          */
-        $map = ["comefrom='touch'"];
+        $map['comefrom'] = 'touch';
         $sel_AppChart_list = $Member->where($map)->field($field)->select();
         $cat_group = Tools::groupBy($sel_AppChart_list, 'userid');
 
