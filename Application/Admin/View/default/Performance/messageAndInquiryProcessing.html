@@ -31,32 +31,23 @@
                                 column.search(val, true, false).draw();
                             })
                         } else if (i == 7) {
-                            var time_start = $('<input type="text" name="time_start" placeholder="日期"/>');
-                            var datetimepicker_config = {
-                                format: "yyyy-mm-dd",
-                                autoclose: true,
-                                startView: 4,
-                                maxView: 4,
-                                minView: 2,
-                                language: "zh-CN"
-                            };
-                            time_start.datetimepicker(datetimepicker_config);
-                            $(column.footer()).empty().html(time_start);
+                            $(column.footer()).empty().html('<input type="search" placeholder="不可查询" readonly/>');
                         } else {
                             $(column.footer()).empty().html('<input type="search" placeholder="不可查询" readonly/>')
                         }
                     });
                 }
             });
+            InquiryDataTable.search([$("#month_start").val(),$("#month_end").val()], true, false).draw();
             $("#inquiry_table_filter").remove();
         });
     </script>
 </block>
 
 <block name="body">
-
+    <include file="Includes/monthSelect" />
     <div class="container-fluid padding-top">
-        <h1>询价处理：</h1>
+        <h1>询价处理（开始时间：<?= date("Y-m-d",$month_start )?> - 结束时间：<?= date("Y-m-d",$month_end ) ?>）：</h1>
         <div class="col-lg-12">
             <table id="member_inquiry_table" class="table table-bordered table-hover">
                 <thead>
@@ -94,7 +85,7 @@
     </div>
 
     <div class="container-fluid padding-top">
-        <h1>询价列表：</h1>
+        <h1>询价列表（开始时间：<?= date("Y-m-d",$month_start )?> - 结束时间：<?= date("Y-m-d",$month_end ) ?>）：</h1>
         <div class="col-lg-12">
             <table id="inquiry_table" class="table table-bordered table-hover">
 

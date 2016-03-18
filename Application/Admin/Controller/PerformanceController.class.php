@@ -51,6 +51,7 @@ class PerformanceController extends AuthController
      */
     public function getAjaxInquiryProcessing()
     {
+        Tools::_vp($_GET,0,2);
         $column_index = [
             "content",
             "amswer",
@@ -83,6 +84,7 @@ class PerformanceController extends AuthController
         foreach ($_GET['columns'] as $k => $v) {
             if ($v['search']['value'] != '') {
                 if($column_search[$v['data']]=="addtime"){
+//                    Tools::_vp("$[search][value]",0,2);
                     $y[] = "{$column_search[$v['data']]} BETWEEN 0 AND 1000000000000 ";
                 }else{
                     $y[] = "{$column_search[$v['data']]} LIKE '%{$v[search][value]}%'";
