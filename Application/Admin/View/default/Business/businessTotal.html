@@ -1,62 +1,127 @@
 <include file="Layout:ly2"/>
 
+<block name="head">
+    <style type="text/css">
+        .list.count {
+            width: 98%;
+            margin: 0 auto;
+        }
+
+        .list.count div {
+            width: 18%;
+            height: 700px;
+            border: 2px solid #ccc;
+            overflow-y: auto;
+            float: left;
+            margin-right: 25px;
+        }
+
+        .list.count div.county {
+            width: 58%;
+        }
+
+        .list.count div ul {
+            width: 93%;
+            padding: 10px 0;
+            margin: 0 auto;
+        }
+
+        .list.count div ul li {
+            border-bottom: 1px solid #ccc;
+            line-height: 35px;
+            text-indent: 0.5em;
+            cursor: pointer;
+        }
+
+        .list.count div ul li.curr {
+            background: #ededed;
+        }
+
+        .list.count div ul li:hover {
+            background: #ededed;
+        }
+
+        .list.count div ul li a {
+            color: #0000FF;
+            font-size: 15px;
+            display: block;
+            line-height: 35px;
+        }
+
+        .list.count div ul li font {
+            color: #555;
+            float: none;
+            font-size: 13px;
+            position: relative;
+            top: 0px;
+            margin-left: 15px;
+        }
+
+        .list.count div.county ul {
+            width: 98%;
+            margin: 0 auto;
+        }
+
+        .list.count div.county ul li font {
+            float: none;
+            top: 0;
+            margin-left: 15px;
+        }
+    </style>
+
+    <script type="text/javascript">
+        $(function () {
+            $('.provice li.p_{$pid}').addClass('curr');
+            $('.city li.c_{$cid}').addClass('curr');
+        })
+    </script>
+</block>
+
 <block name="body">
-<div class="container-fluid padding10">
-    <div class="dropdown">
-      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-          <font>合作商交易额</font>
-      </button>
-    </div>
-    
-    <button type="button" class="btn btn-success pos-right" onclick="location.href='{:U('Business/businessExport',array('type'=>'export'))}'">导出Excel表</button>
-    
-</div>
+    <div class="container-fluid padding10">
+        <div class="dropdown">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="true">
+                <font>合作商交易额</font>
+            </button>
+        </div>
 
-<style type="text/css">
-.list.count{width: 98%;margin: 0 auto;}
-.list.count div{width: 18%;height:700px;border: 2px solid #ccc;overflow-y: auto;float: left;margin-right: 25px;}
-.list.count div.county{width: 58%;}
-.list.count div ul{width: 93%;padding:10px 0;margin:0 auto;}
-.list.count div ul li{border-bottom: 1px solid #ccc;line-height: 35px;text-indent: 0.5em;cursor: pointer;}
-.list.count div ul li.curr{background: #ededed;}
-.list.count div ul li:hover{background: #ededed;}
-.list.count div ul li a{color: #0000FF;font-size: 15px;display: block;line-height: 35px;}
-.list.count div ul li font{color: #555;float: none;font-size: 13px;position: relative;top:0px;margin-left: 15px;}
-.list.count div.county ul{width: 98%;margin: 0 auto;}
-.list.count div.county ul li font{float:none;top:0;margin-left: 15px;}
-</style>
+        <button type="button" class="btn btn-success pos-right"
+                onclick="location.href='{:U('Business/businessExport',array('type'=>'export'))}'">导出Excel表
+        </button>
 
-<script type="text/javascript">
-$(function(){
-    $('.provice li.p_{$pid}').addClass('curr');
-    $('.city li.c_{$cid}').addClass('curr');
-})
-</script>
-
-<div class="list count">
-    <div class="provice">
-       <ul>
-           <foreach name="provice" item="vo">
-           <li class="p_{$vo['areaid']}"><a href="{:U('Business/businessTotal',array('pid'=>$vo['areaid']))}">{$vo['areaname']}{$vo.totalmoney}{$vo['count']}</a></li>
-           </foreach>
-       </ul>
     </div>
 
-    <div class="city">
-        <ul>
-            <foreach name="city" item="vo">
-                <li class="c_{$vo['areaid']}"><a href="{:U('Business/businessTotal',array('pid'=>$vo['parentid'],'cid'=>$vo['areaid']))}">{$vo['areaname']}{$vo['truename']}{$vo.totalmoney}{$vo['count']}</a></li>
-            </foreach>
-        </ul>
-    </div>
 
-    <div class="county">
-        <ul>
-            <foreach name="county" item="vo">
-                <li><a href="javascript:void(0)">{$vo['areaname']}{$vo['truename']}{$vo['totalmoney']}{$vo['count']}</font></a></li>
-            </foreach>
-        </ul>
+    <div class="list count">
+        <div class="provice">
+            <ul>
+                <foreach name="provice" item="vo">
+                    <li class="p_{$vo['areaid']}"><a href="{:U('Business/businessTotal',array('pid'=>$vo['areaid']))}">{$vo['areaname']}{$vo.totalmoney}{$vo['count']}</a>
+                    </li>
+                </foreach>
+            </ul>
+        </div>
+
+        <div class="city">
+            <ul>
+                <foreach name="city" item="vo">
+                    <li class="c_{$vo['areaid']}"><a
+                            href="{:U('Business/businessTotal',array('pid'=>$vo['parentid'],'cid'=>$vo['areaid']))}">{$vo['areaname']}{$vo['truename']}{$vo.totalmoney}{$vo['count']}</a>
+                    </li>
+                </foreach>
+            </ul>
+        </div>
+
+        <div class="county">
+            <ul>
+                <foreach name="county" item="vo">
+                    <li>
+                        <a href="javascript:void(0)">{$vo['areaname']}{$vo['truename']}{$vo['totalmoney']}{$vo['count']}</font></a>
+                    </li>
+                </foreach>
+            </ul>
+        </div>
     </div>
-</div>
 
 </block>
