@@ -1,0 +1,59 @@
+<extend name="Layout:ly2"/>
+
+<block name="head">
+    <script type="text/javascript">
+        $(function () {
+            option = {
+                title : {
+                    text: '注册终端比例图',
+                    subtext: '个人电脑和手机',
+                    x:'center'
+                },
+                tooltip : {
+                    trigger: 'item',
+                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left',
+                    data: ['电脑','手机']
+                },
+                series : [
+                    {
+                        name: '终端',
+                        type: 'pie',
+                        radius : '55%',
+                        center: ['50%', '60%'],
+                        data:[
+                            {value:<?=$appChart_pc?>, name:'电脑'},
+                            {value:<?=$appChart_mobel?>, name:'手机'},
+                        ],
+                        itemStyle: {
+                            emphasis: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+
+            var appChart = echarts.init(document.getElementById('appChart'));
+            appChart.setOption(option);
+            window.onresize = function(){
+                appChart.resize();
+            };
+        });
+
+
+    </script>
+</block>
+
+<block name="body">
+    <div class="container-fluid "style="padding-top: 50px">
+        <div class="col-lg-12" style="padding-top: 50px">
+            <div id="appChart" class="charts_h600"></div>
+        </div>
+    </div>
+</block>
