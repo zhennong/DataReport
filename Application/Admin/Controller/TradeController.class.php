@@ -167,17 +167,19 @@ class TradeController extends AdminController
      * 年趋势图
      * @author iredbaby
      */
-    public function orderYearTrend(){	
+    public function orderYearTrend(){
 	$Trade = D('Trade');
 	$year = time2year($this->year_start,$this->year_end);
 	for($i = $year['year']['start']; $i <= $year['year']['end'];$i++){	    
 	    $year_start = strtotime($i . "-01-01 00:00:00");
-	    $year_start_end = strtotime($i . "-12-31 23:59:59");	    
+	    $year_start_end = strtotime($i . "-12-31 23:59:59");
+
 	    $map['addtime'] = [['gt',$year_start],['lt',$year_start_end]];
-	    $map['status'] = ['in','2,3,4'];	    
+	    $map['status'] = ['in','2,3,4'];
 	    $yeartrade_names[] = $i;
 	    $yeartrade_total[] = $Trade->where($map)->field("addtime")->count();	    
-	}	
+	}
+
 	$yeartrade_name = implode("','",$yeartrade_names);
 	$yeartrade_total = implode(",",str_replace(0,'',$yeartrade_total));		
 	$this->assign(['yeartrade_name'=>$yeartrade_name,'yeartrade_total'=>$yeartrade_total]);
