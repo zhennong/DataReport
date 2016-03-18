@@ -19,6 +19,7 @@ class InformationController extends AdminController
     {
         $this->display('information_index');
     }
+
     /**
      * 月资讯总量柱状图
      * @Edwin
@@ -32,7 +33,7 @@ class InformationController extends AdminController
 
         $Information = D('Information');
         $map['status'] = ['in', '2,3,4'];
-        $month_start=strtotime('January 2015');
+        $month_start = strtotime('January 2015');
         //查询数据
         $mouth_solt = get_month_solt($month_start, $this->month_end);
         foreach ($mouth_solt as $k => $v) {
@@ -77,7 +78,7 @@ class InformationController extends AdminController
 
         //注入显示_月资讯数据/月病虫害数据/月农药中毒数据
         $this->assign(['xAxis_data' => $xAxis_data, 'series_data_information' => $series_data_inforamtion_information, 'series_data_pests' => $series_data_inforamtion_pests, 'series_data_poisoning' => $series_data_inforamtion_poisoning]);
-        $this->assign(['month_start'=>$month_start]);
+        $this->assign(['month_start' => $month_start]);
         $this->display();
     }
 
@@ -90,7 +91,7 @@ class InformationController extends AdminController
 
         $Information = D('Information');
         $map['addtime'] = [['gt', $this->month_start], ['lt', $this->month_end]];
-        $month_start=strtotime('January 2013');
+        $month_start = strtotime('January 2013');
         //查询数据
         $mouth_solt = get_month_solt($month_start, $this->month_end);
         foreach ($mouth_solt as $k => $v) {
@@ -133,7 +134,7 @@ class InformationController extends AdminController
 
         //注入显示
         $this->assign(['series_data_information' => $series_data_inforamtion_information, 'series_data_pests' => $series_data_inforamtion_pests, 'series_data_poisoning' => $series_data_inforamtion_poisoning]);
-        $this->assign(['month_start'=>$month_start]);
+        $this->assign(['month_start' => $month_start]);
         $this->display();
     }
 
@@ -227,47 +228,5 @@ class InformationController extends AdminController
         $this->assign(['legend_data_information' => $legend_data_inforamtion, 'series_data_information' => $series_data_inforamtion, 'legend_data_pests' => $legend_data_pests, 'series_data_pests' => $series_data_pests, 'legend_data_poisoning' => $legend_data_poisoning, 'series_data_poisoning' => $series_data_poisoning]);
         $this->display();
     }
-//
-//    public function a()
-//    {
-//        echo "function a";
-//    }
-//
-//    private function b()
-//    {
-//        echo "function b";
-//    }
-//
-//    protected function c()
-//    {
-//        echo "function c";
-//    }
+
 }
-
-//class child extends InformationController
-//{
-//    function d()
-//    {
-//        parent::a();//调用父类a方法
-//    }
-//
-//    function e()
-//    {
-//        parent::b();//调用父类b方法
-//    }
-//
-//    function f()
-//    {
-//        parent::c();//调用父类c方法
-//    }
-
-//}
-
-//    $father = new InformationController();
-//    $father->a();
-//    $father->b();//显示错误 外部无法调用私有的方法 Call to protected method father::b()
-//    $father->c();//显示错误 外部无法调用受保护的方法Call to private method father::c()
-//    $chlid = new child();
-//    $chlid->d();
-//    $chlid->e();
-//    $chlid->f();//显示错误 无法调用父类private的方法 Call to private method father::b()

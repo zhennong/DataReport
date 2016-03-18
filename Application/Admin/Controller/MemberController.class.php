@@ -27,7 +27,7 @@ class MemberController extends AuthController
     public function memberReg()
     {
         $Member = D('Member');
-        $month_start=strtotime('January 2013');
+        $month_start = strtotime('January 2013');
         $mouth_solt = get_month_solt($month_start, $this->month_end);
         foreach ($mouth_solt as $k => $v) {
             $map['regtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
@@ -38,7 +38,7 @@ class MemberController extends AuthController
             unset($mouth_solt_member[$k]['member']);
         }
         $this->assign(['mouth_solt_member' => $mouth_solt_member]);
-        $this->assign(['month_start'=>$month_start]);
+        $this->assign(['month_start' => $month_start]);
         $this->display();
     }
 
@@ -118,7 +118,7 @@ class MemberController extends AuthController
     {
         $Trade = D('Trade');
         //按年月日全部付款
-        $map['status'] = ['in',[2,3,4]];
+        $map['status'] = ['in', [2, 3, 4]];
         for ($i = 1; $i <= 3; $i++) {
             $map['paytime'] = [['neq', 0], ['gt', format_date($i)], ['lt', $this->now]];
             $member_type[] = $i;
@@ -127,22 +127,22 @@ class MemberController extends AuthController
         $day_new = $month_new = 0;
         //日付款新会员
         $map['paytime'] = [['lt', $this->now_d_start]];
-        $buyer_all_before_day = Tools::getCols($Trade->where($map)->field("buyer")->group('buyer')->select(),'buyer');
+        $buyer_all_before_day = Tools::getCols($Trade->where($map)->field("buyer")->group('buyer')->select(), 'buyer');
         $map['paytime'] = [['gt', $this->now_d_start]];
         $buyer_after_day = $Trade->where($map)->field("buyer")->group('buyer')->select();
-        foreach($buyer_after_day as $k => $v){
-            if(!in_array($v['buyer'],$buyer_all_before_day)){
-                $day_new ++;
+        foreach ($buyer_after_day as $k => $v) {
+            if (!in_array($v['buyer'], $buyer_all_before_day)) {
+                $day_new++;
             }
         }
         //月付款新会员
         $map['paytime'] = [['lt', $this->now_m_start]];
-        $buyer_all_before_month = Tools::getCols($Trade->where($map)->field("buyer")->group('buyer')->select(),'buyer');
+        $buyer_all_before_month = Tools::getCols($Trade->where($map)->field("buyer")->group('buyer')->select(), 'buyer');
         $map['paytime'] = [['gt', $this->now_m_start]];
         $buyer_after_month = $Trade->where($map)->field("buyer")->group('buyer')->select();
-        foreach($buyer_after_month as $k => $v){
-            if(!in_array($v['buyer'],$buyer_all_before_month)){
-                $month_new ++;
+        foreach ($buyer_after_month as $k => $v) {
+            if (!in_array($v['buyer'], $buyer_all_before_month)) {
+                $month_new++;
             }
         }
         /*for ($i = 2; $i <= 3; $i++) {
@@ -172,7 +172,7 @@ class MemberController extends AuthController
     public function memberRegApp()
     {
         $Member = D('Member');
-        $month_start=strtotime('May 2015');
+        $month_start = strtotime('May 2015');
         $mouth_solt = get_month_solt($month_start, $this->month_end);
         foreach ($mouth_solt as $k => $v) {
             $map['regtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
@@ -184,7 +184,7 @@ class MemberController extends AuthController
             unset($mouth_solt_member_app[$k]['member']);
         }
         $this->assign(['mouth_solt_member_app' => $mouth_solt_member_app]);
-        $this->assign(['month_start'=>$month_start]);
+        $this->assign(['month_start' => $month_start]);
         $this->display();
     }
 
@@ -202,16 +202,16 @@ class MemberController extends AuthController
         } //默认河南省
 
         $data = $Area->where('parentid =' . $provice_id)->select();
-        if($provice_id > 4 && $provice_id < 33) {
+        if ($provice_id > 4 && $provice_id < 33) {
             foreach ($data as $k => $v) {
                 $sql = "select a.areaid as areaid,a.areaname as areaname,b.areaid as areaids,COUNT(b.areaid) as total from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.parentid='" . $v['areaid'] . "' group by b.areaid";
                 $data[$k]['sub'] = queryMysql($sql);
             }
-        }else{ //特殊城市处理
+        } else { //特殊城市处理
             foreach ($data as $k => $v) {
-                if($k > 0){
+                if ($k > 0) {
                     unset($data[$k]);
-                }else{
+                } else {
                     $sql = "select a.areaid as areaid,a.areaname as areaname,b.areaid as areaids,COUNT(b.areaid) as total from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.parentid='" . $v['parentid'] . "' group by b.areaid";
                     $data[$k]['sub'] = queryMysql($sql);
                 }
@@ -236,5 +236,46 @@ class MemberController extends AuthController
             $data = $m->field('areaname')->where('areaid = ' . $pid)->select();
         }
         return $data;
+    }
+
+    /**
+     * 终端注册饼形图
+     */
+    public function memberRegAppChart()
+    {
+        $Member = D('Member');
+        $field = ['userid', 'comefrom'];
+        /*
+         * pc注册的数量
+         */
+        $map['comefrom'] ='web';
+        $sel_AppChart_list = $Member->where($map)->field($field)->select();
+        $cat_group = Tools::groupBy($sel_AppChart_list, 'userid');
+
+        foreach ($cat_group as $k => $v) {
+            $x_pc[$k]['userid'] = $v[0]['userid'];
+            $x_pc[$k]['count'] = count($v);
+        }
+        sort($x_pc);
+
+        /*
+         * 手机注册的数量
+         */
+        $map['comefrom'] = 'touch';
+        $sel_AppChart_list = $Member->where($map)->field($field)->select();
+        $cat_group = Tools::groupBy($sel_AppChart_list, 'userid');
+
+        foreach ($cat_group as $k => $v) {
+            $x_mobel[$k]['userid'] = $v[0]['userid'];
+            $x_mobel[$k]['count'] = count($v);
+        }
+        sort($x_mobel);
+
+        //重组数据
+        $appChart_pc = get_arr_k_amount($x_pc, 'count');
+        $appChart_mobel = get_arr_k_amount($x_mobel, 'count');
+        //注入显示
+        $this->assign(['appChart_pc' => $appChart_pc,'appChart_mobel' => $appChart_mobel]);
+        $this->display();
     }
 }
