@@ -23,7 +23,8 @@ class BusinessController extends AdminController
     public function businessTrend()
     {
         $Agent = D('Agent');
-        $mouth_solt = get_month_solt($this->month_start, $this->month_end);
+        $month_start=strtotime('January 2014');
+        $mouth_solt = get_month_solt($month_start, $this->month_end);
         foreach ($mouth_solt as $k => $v) {
             $map['addtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
             $mouth_solt_agent[$k]['mouth_sort'] = $v;
@@ -33,6 +34,7 @@ class BusinessController extends AdminController
             unset($mouth_solt_agent[$k]['agent']);
         }
         $this->assign(['mouth_solt_agent' => $mouth_solt_agent]);
+        $this->assign(['month_start'=>$month_start]);
         $this->display();
     }
 
@@ -263,7 +265,8 @@ class BusinessController extends AdminController
         $Agent = D('Partner');
         $map['status'] = ['in', '2,3,4'];
         //查询数据
-        $month_solt = get_month_solt($this->month_start, $this->month_end);
+        $month_start=strtotime('September 2013');
+        $month_solt = get_month_solt($month_start, $this->month_end);
         foreach ($month_solt as $k => $v) {
             $map['addtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
             $mouth_solt_partner[$k]['mouth_solt'] = $v;
@@ -278,6 +281,7 @@ class BusinessController extends AdminController
         $series_data = Tools::arr2str(Tools::getCols($mouth_solt_partner, 'partner_sum'));
         //注入显示
         $this->assign(['xAxis_data' => $xAxis_data,'series_data' => $series_data]);
+        $this->assign(['month_start'=>$month_start]);
         $this->display();
     }
 }

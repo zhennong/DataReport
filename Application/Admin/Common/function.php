@@ -91,7 +91,7 @@ function strFilter($str){
  * @return [[]]
  */
 function diffdate($date1, $date2){
-    if (strtotime ( $date1 ) > strtotime ( $date2 )) 
+    if (strtotime ( $date1 ) > strtotime ( $date2 ))
     {
         $ymd = $date2;
         $date2 = $date1;
@@ -101,14 +101,14 @@ function diffdate($date1, $date2){
     list ( $y2, $m2, $d2 ) = explode ( '-', $date2 );
     $math = ($y2 - $y1) * 12 + $m2 - $m1;
     $my_arr = array ();
-    if ($y1 == $y2 && $m1 == $m2) 
+    if ($y1 == $y2 && $m1 == $m2)
     {
-        if ($m1 < 10) 
+        if ($m1 < 10)
         {
             $m1 = intval ( $m1 );
             $m1 = '0' . $m1;
         }
-        if ($m2 < 10) 
+        if ($m2 < 10)
         {
             $m2 = intval ( $m2 );
             $m2 = '0' . $m2;
@@ -116,25 +116,25 @@ function diffdate($date1, $date2){
         $my_arr [] = $y1 . '_' . $m1;
         $my_arr [] = $y2 . '_' . $m2;
         return $my_arr;
-    }     
+    }
     $p = $m1;
-    $x = $y1;     
-    for($i = 0; $i <= $math; $i ++) 
+    $x = $y1;
+    for($i = 0; $i <= $math; $i ++)
     {
-        if ($p > 12) 
+        if ($p > 12)
         {
             $x = $x + 1;
             $p = $p - 12;
-            if ($p < 10) 
+            if ($p < 10)
             {
                 $p = intval ( $p );
                 $p = '0' . $p;
             }
             $my_arr [] = $x . '-' . $p;
-        } 
-        else 
+        }
+        else
         {
-            if ($p < 10) 
+            if ($p < 10)
             {
                 $p = intval ( $p );
                 $p = '0' . $p;

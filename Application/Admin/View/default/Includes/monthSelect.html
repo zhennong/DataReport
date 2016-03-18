@@ -13,7 +13,7 @@
 
     <script>
         //日期验证结束时间必须大于开始时间
-        function check_date_input(){            
+        function check_date_input(){
             var month_start = $("#month_start").val();
             var month_end = $("#month_end").val();
             if(formatTime(month_end) < formatTime(month_start)){
@@ -21,9 +21,9 @@
                 $("#month_end").val("").focus();
                 return false;
             }
-            return true;            
+            return true;
         }
-                       
+
         //日期控件配置
         $(document).ready(function () {
             var datetimepicker_config = {
@@ -36,6 +36,6 @@
             };
             $("#month_start").datetimepicker(datetimepicker_config);
             $("#month_end").datetimepicker(datetimepicker_config);
-        });        
+        });
     </script>
 </div>
