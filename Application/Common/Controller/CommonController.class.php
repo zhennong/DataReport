@@ -73,8 +73,8 @@ abstract class CommonController extends Controller
      */
     private function getRange(){
         if (I('month_start') && I('month_end')) {
-            $this->month_start = strtotime(I('month_start') . "00:00:00");
-            $this->month_end = strtotime(I('month_end') . "23:59:59");
+            $this->month_start = strtotime(I('month_start') . "-01 00:00:00");
+            $this->month_end = strtotime(I('month_end') . "-01 23:59:59");
         } else {
             $this->month_start = strtotime($this->now_Y . "-01-01 00:00:00");
             $this->month_end = time();

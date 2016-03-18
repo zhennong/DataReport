@@ -51,7 +51,6 @@ class PerformanceController extends AuthController
      */
     public function getAjaxInquiryProcessing()
     {
-        Tools::_vp($_GET,0,2);
         $column_index = [
             "content",
             "amswer",
@@ -72,21 +71,26 @@ class PerformanceController extends AuthController
             "product.price",
             "message.addtime",
         ];
+
         for($i = 0; $i < count($column_index); $i++){
             $field[] = " {$column_search[$i]} AS {$column_index[$i]} ";
         }
         $field = Tools::arr2str($field);
-        $draw = $_GET['draw'];//这个值作者会直接返回给前台
+        $draw = $_GET['draw'];
         $start = $_GET['start'];
         $limit = $_GET['length'];
         $order = $_GET['order'];
         $order = "{$column_index[$order[0]['column']]} {$order[0]['dir']}";
+
+        if($_GET['search']['value']!=''){
+            $search_time = Tools::str2arr($_GET['search']['value']);
+            $this->month_start = strtotime($search_time[0] . "-01 00:00:00");
+            $this->month_end = strtotime($search_time[1] . "-01 23:59:59");
+            $y[] = " message.addtime > {$this->month_start} AND  message.addtime < {$this->month_end} ";
+        }
         foreach ($_GET['columns'] as $k => $v) {
             if ($v['search']['value'] != '') {
-                if($column_search[$v['data']]=="addtime"){
-//                    Tools::_vp("$[search][value]",0,2);
-                    $y[] = "{$column_search[$v['data']]} BETWEEN 0 AND 1000000000000 ";
-                }else{
+                if($column_search[$v['data']]=="addtime"){}else{
                     $y[] = "{$column_search[$v['data']]} LIKE '%{$v[search][value]}%'";
                 }
             }
@@ -100,7 +104,7 @@ class PerformanceController extends AuthController
             FROM __MALL_message AS message
             INNER JOIN __MALL_sell_5 AS product ON message.cpid = product.itemid
             INNER JOIN __MALL_member AS member ON message.msgbelong = member.username
-            WHERE message.is_xunjia = 1";
+            WHERE message.is_xunjia = 1 {$search}";
         $z = $this->MallDb->list_query($sql);
         $total = $z[0]['total'];
         $sql = "SELECT  {$field}
@@ -140,7 +144,7 @@ class PerformanceController extends AuthController
         if($getStatusCount){
             $sql = "SELECT message.itemid, message.addtime, message.fixtime, product.price FROM __MALL_message AS message
                 LEFT JOIN __MALL_sell_5 AS product ON message.cpid = product.itemid
-                WHERE message.msgbelong = '{$depart_name}'";
+                WHERE message.msgbelong = '{$depart_name}' AND message.addtime > {$this->month_start} AND message.addtime < {$this->month_end}";
             $x = $this->MallDb->list_query($sql);
             $inquiry_info['count_no'] = 0;
             $inquiry_info['count_yes'] = 0;
