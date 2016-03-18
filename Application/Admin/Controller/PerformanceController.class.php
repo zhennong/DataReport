@@ -54,9 +54,7 @@ class PerformanceController extends AuthController
     public function getAjaxInquiryProcessing()
     {
         $column_index = [
-            "message_id",
             "message_title",
-            "member_username",
             "member_truename",
             "product_id",
             "product_title",
@@ -65,9 +63,7 @@ class PerformanceController extends AuthController
             "addtime",
         ];
         $column_search = [
-            "message.itemid",
             "message.title",
-            "member.username",
             "member.truename",
             "product.itemid",
             "product.title",
@@ -75,6 +71,10 @@ class PerformanceController extends AuthController
             "product.price",
             "message.addtime",
         ];
+        for($i = 0; $i < count($column_index); $i++){
+            $field[] = " {$column_search[$i]} AS {$column_index[$i]} ";
+        }
+        $field = Tools::arr2str($field);
         $draw = $_GET['draw'];//这个值作者会直接返回给前台
         $start = $_GET['start'];
         $limit = $_GET['length'];
@@ -82,7 +82,12 @@ class PerformanceController extends AuthController
         $order = "{$column_index[$order[0]['column']]} {$order[0]['dir']}";
         foreach ($_GET['columns'] as $k => $v) {
             if ($v['search']['value'] != '') {
-                $y[] = "{$column_search[$v['data']]} LIKE '%{$v[search][value]}%'";
+                if($column_search[$v['data']]=="addtime"){
+                    Tools::_vp($v[search][value],0,2);
+                    $y[] = "{$column_search[$v['data']]} BETWEEN 0 AND 1000000000000 ";
+                }else{
+                    $y[] = "{$column_search[$v['data']]} LIKE '%{$v[search][value]}%'";
+                }
             }
         }
         $search = '';
@@ -97,9 +102,7 @@ class PerformanceController extends AuthController
             WHERE message.is_xunjia = 1";
         $z = $this->MallDb->list_query($sql);
         $total = $z[0]['total'];
-        $sql = "SELECT  message.itemid AS message_id, message.title AS message_title, message.addtime AS addtime,
-                member.username AS member_username, member.truename AS member_truename,
-                product.itemid AS product_id, product.title AS product_title, product.standard AS product_standard, product.price AS price
+        $sql = "SELECT  {$field}
             FROM __MALL_message AS message
             INNER JOIN __MALL_sell_5 AS product ON message.cpid = product.itemid
             INNER JOIN __MALL_member AS member ON message.msgbelong = member.username
@@ -110,7 +113,11 @@ class PerformanceController extends AuthController
 
         foreach ($data as $k => $v) {
             foreach ($column_index as $key => $value) {
-                $x[$k][] = $v[$value];
+                if($value == 'addtime'){
+                    $x[$k][] = date("Y-m-d H:i", $v[$value]);
+                }else{
+                    $x[$k][] = $v[$value];
+                }
             }
         }
         //获取Datatables发送的参数 必要

@@ -20,12 +20,13 @@
                 pageLength: 10,
                 processing: true,
                 serverSide: true,
+                order: [[2, "desc"]],
                 ajax: ajax_url,
                 initComplete: function () {
                     var api = this.api();
                     api.columns().indexes().flatten().each(function (i) {
                         var column = api.column(i);
-                        if(i!=3&&i!=4&&i!=5&&i!=6){
+                        if(i!=6){
                             var search = $('<input type="search" placeholder="查询 ' + $(column.header()).text() +'"/>');
                             $(column.footer()).empty().html(search);
                             search.on('keyup',function(){
@@ -34,12 +35,25 @@
                                 );
                                 column.search( val, true, false).draw();
                             })
+                        }else if(i==6){
+                            var time_start = $('<input type="text" name="time_start" placeholder="日期"/>');
+                            var datetimepicker_config = {
+                                format:"yyyy-mm-dd",
+                                autoclose:true,
+                                startView:4,
+                                maxView:4,
+                                minView:2,
+                                language:"zh-CN"
+                            };
+                            time_start.datetimepicker(datetimepicker_config);
+                            $(column.footer()).empty().html(time_start);
                         }else{
                             $(column.footer()).empty().html('<input type="search" placeholder="不可查询" readonly/>')
                         }
                     });
                 }
             });
+            $("#inquiry_table_filter").remove();
         });
     </script>
 </block>
@@ -124,9 +138,7 @@
 
                 <thead>
                     <tr>
-                        <th>itemid</th>
                         <th>询价标题</th>
-                        <th>处理人</th>
                         <th>处理人名</th>
                         <th>产品id</th>
                         <th>产品名</th>
@@ -137,9 +149,7 @@
                 </thead>
                 <tfoot>
                 <tr>
-                    <th>itemid</th>
                     <th>询价标题</th>
-                    <th>处理人</th>
                     <th>处理人</th>
                     <th>产品id</th>
                     <th>产品名</th>
@@ -152,19 +162,3 @@
         </div>
     </div>
 </block>
-
-<!--<thead>-->
-<!--<tr>-->
-    <!--<th>询价id</th>-->
-    <!--<th>询价标题</th>-->
-    <!--<th>处理人</th>-->
-    <!--<th>产品id</th>-->
-    <!--<th>产品名</th>-->
-    <!--<th>产品规格</th>-->
-    <!--<th>产品价格</th>-->
-    <!--<th>询价时间</th>-->
-    <!--<th>询价内容</th>-->
-    <!--<th>处理内容</th>-->
-    <!--<th>状态</th>-->
-<!--</tr>-->
-<!--</thead>-->
