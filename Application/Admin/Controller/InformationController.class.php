@@ -10,6 +10,7 @@ namespace Admin\Controller;
 
 
 use Common\Tools;
+use PHPExcel\Shared\Date;
 
 class InformationController extends AdminController
 {
@@ -18,20 +19,22 @@ class InformationController extends AdminController
     {
         $this->display('information_index');
     }
-
     /**
      * 月资讯总量柱状图
      * @Edwin
      */
+
     public function monthlyInformation()
     {
         /*
          * 月资讯总量
          */
+
         $Information = D('Information');
         $map['status'] = ['in', '2,3,4'];
+        $month_start=strtotime('January 2015');
         //查询数据
-        $mouth_solt = get_month_solt($this->month_start, $this->month_end);
+        $mouth_solt = get_month_solt($month_start, $this->month_end);
         foreach ($mouth_solt as $k => $v) {
             $map['addtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
             $mouth_solt_information[$k]['mouth_solt'] = $v;
@@ -74,6 +77,7 @@ class InformationController extends AdminController
 
         //注入显示_月资讯数据/月病虫害数据/月农药中毒数据
         $this->assign(['xAxis_data' => $xAxis_data, 'series_data_information' => $series_data_inforamtion_information, 'series_data_pests' => $series_data_inforamtion_pests, 'series_data_poisoning' => $series_data_inforamtion_poisoning]);
+        $this->assign(['month_start'=>$month_start]);
         $this->display();
     }
 
@@ -86,9 +90,9 @@ class InformationController extends AdminController
 
         $Information = D('Information');
         $map['addtime'] = [['gt', $this->month_start], ['lt', $this->month_end]];
-
+        $month_start=strtotime('January 2013');
         //查询数据
-        $mouth_solt = get_month_solt($this->month_start, $this->month_end);
+        $mouth_solt = get_month_solt($month_start, $this->month_end);
         foreach ($mouth_solt as $k => $v) {
             $map['addtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
             $mouth_solt_information[$k]['mouth_solt'] = $v;
@@ -129,6 +133,7 @@ class InformationController extends AdminController
 
         //注入显示
         $this->assign(['series_data_information' => $series_data_inforamtion_information, 'series_data_pests' => $series_data_inforamtion_pests, 'series_data_poisoning' => $series_data_inforamtion_poisoning]);
+        $this->assign(['month_start'=>$month_start]);
         $this->display();
     }
 
@@ -145,7 +150,7 @@ class InformationController extends AdminController
     private function getCateHash()
     {
         $Category = D('Category');
-        $map['moduleid'] = ['in',[21,23,26]];
+        $map['moduleid'] = ['in', [21, 23, 26]];
         $this->all_information_list = $Category->where($map)->field(['catid', 'catname'])->select();
         $this->all_information_hash = Tools::toHashmap($this->all_information_list, 'catid', 'catname');
     }
@@ -161,8 +166,8 @@ class InformationController extends AdminController
         $Information = D('Information');
         $field = ['itemid', 'catid'];
         $sel_information_list = $Information->where()->field($field)->select();
-        $cat_group = Tools::groupBy($sel_information_list,'catid');
-        foreach($cat_group as $k => $v){
+        $cat_group = Tools::groupBy($sel_information_list, 'catid');
+        foreach ($cat_group as $k => $v) {
             $x[$k]['catid'] = $v[0]['catid'];
             $x[$k]['catname'] = $this->all_information_hash[$v[0]['catid']];
             $x[$k]['count'] = count($v);
@@ -172,10 +177,10 @@ class InformationController extends AdminController
         // 查询虫害资讯
         $Pests = D('Pests');
         $field = ['itemid', 'catid'];
-        $map['catid'] = ['in',[6086,6324,6087,6088,6318,6319,6092,6093,6096,14408]];
+        $map['catid'] = ['in', [6086, 6324, 6087, 6088, 6318, 6319, 6092, 6093, 6096, 14408]];
         $sel_pests_list = $Pests->where($map)->field($field)->select();
-        $cat_group = Tools::groupBy($sel_pests_list,'catid');
-        foreach($cat_group as $k => $v){
+        $cat_group = Tools::groupBy($sel_pests_list, 'catid');
+        foreach ($cat_group as $k => $v) {
             $x_pests[$k]['catid'] = $v[0]['catid'];
             $x_pests[$k]['catname'] = $this->all_information_hash[$v[0]['catid']];
             $x_pests[$k]['count'] = count($v);
@@ -185,10 +190,10 @@ class InformationController extends AdminController
         // 查询中毒资讯
         $Poisoning = D('Poisoning');
         $field = ['itemid', 'catid'];
-        $map['catid'] = ['in',[12749,12750,12751,12752,12753,12776]];
+        $map['catid'] = ['in', [12749, 12750, 12751, 12752, 12753, 12776]];
         $sel_poisoning_list = $Poisoning->where($map)->field($field)->select();
-        $cat_group = Tools::groupBy($sel_poisoning_list,'catid');
-        foreach($cat_group as $k => $v){
+        $cat_group = Tools::groupBy($sel_poisoning_list, 'catid');
+        foreach ($cat_group as $k => $v) {
             $x_poisoning[$k]['catid'] = $v[0]['catid'];
             $x_poisoning[$k]['catname'] = $this->all_information_hash[$v[0]['catid']];
             $x_poisoning[$k]['count'] = count($v);
@@ -219,7 +224,50 @@ class InformationController extends AdminController
 
 
         //注入显示
-        $this->assign(['legend_data_information' => $legend_data_inforamtion,'series_data_information' => $series_data_inforamtion,'legend_data_pests' => $legend_data_pests,'series_data_pests' => $series_data_pests,'legend_data_poisoning' => $legend_data_poisoning,'series_data_poisoning' => $series_data_poisoning]);
+        $this->assign(['legend_data_information' => $legend_data_inforamtion, 'series_data_information' => $series_data_inforamtion, 'legend_data_pests' => $legend_data_pests, 'series_data_pests' => $series_data_pests, 'legend_data_poisoning' => $legend_data_poisoning, 'series_data_poisoning' => $series_data_poisoning]);
         $this->display();
     }
+//
+//    public function a()
+//    {
+//        echo "function a";
+//    }
+//
+//    private function b()
+//    {
+//        echo "function b";
+//    }
+//
+//    protected function c()
+//    {
+//        echo "function c";
+//    }
 }
+
+//class child extends InformationController
+//{
+//    function d()
+//    {
+//        parent::a();//调用父类a方法
+//    }
+//
+//    function e()
+//    {
+//        parent::b();//调用父类b方法
+//    }
+//
+//    function f()
+//    {
+//        parent::c();//调用父类c方法
+//    }
+
+//}
+
+//    $father = new InformationController();
+//    $father->a();
+//    $father->b();//显示错误 外部无法调用私有的方法 Call to protected method father::b()
+//    $father->c();//显示错误 外部无法调用受保护的方法Call to private method father::c()
+//    $chlid = new child();
+//    $chlid->d();
+//    $chlid->e();
+//    $chlid->f();//显示错误 无法调用父类private的方法 Call to private method father::b()
