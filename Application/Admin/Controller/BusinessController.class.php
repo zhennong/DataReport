@@ -65,7 +65,7 @@ class BusinessController extends AdminController
         $Trade = D('Trade');
         $map['a.status'] = array('in','2,3,4');
         $map['b.areaid'] = array('eq',$agareaid);
-        $total = $Trade->cache(true)->alias('a')->field('SUM(a.amount) AS totalmoney')->join('destoon_address b on a.addressid = b.itemid')->where($map)->select();
+        $total = $Trade->cache(true)->alias('a')->field('SUM(a.amount) AS totalmoney')->join(C('BUSINESS_DB_TABLE_PREFIX').'address b on a.addressid = b.itemid')->where($map)->select();
         $x = get_arr_k_amount($total,'totalmoney');
         $data = $x;
         return $data;
@@ -75,16 +75,12 @@ class BusinessController extends AdminController
     public function getAgentDetail(){
         $area = D('Area');
         $agdl = D('AgentDownLine');
-        $data = $area->cache(true)->alias('a')->field('a.*,c.truename,c.userid')->join('LEFT JOIN destoon_agent b on b.agareaid = a.areaid LEFT JOIN destoon_member c on c.userid = b.aguid')->select();
+        $data = $area->cache(true)->alias('a')->field('a.*,c.truename,c.userid')->join('LEFT JOIN '.C('BUSINESS_DB_TABLE_PREFIX').'agent b ON b.agareaid = a.areaid LEFT JOIN '.C('BUSINESS_DB_TABLE_PREFIX').'member c ON c.userid = b.aguid')->select();
         foreach($data as $key=>$value){
             if ($value['truename']){
                 $tmp[$key] = $value;
-
-                //获取合作商金额
-                $tmp[$key]['totalmoney'] = $this->getTotalMoney($value['areaid']);
-
-                //获取合作商下线
-                $map['agentuid'] = array('eq',$value['userid']);
+                $tmp[$key]['totalmoney'] = $this->getTotalMoney($value['areaid']); //获取合作商金额
+                $map['agentuid'] = array('eq',$value['userid']); //获取合作商下线
                 $tmp[$key]['count'] = $agdl->where($map)->count();
             }
         }
@@ -99,20 +95,16 @@ class BusinessController extends AdminController
             $where['areaid'] = array('eq',$v['parentid']);
             $data_area = $area->cache(true)->field('parentid,areaname')->where($where)->select();
             foreach($data_area as $k2=>$v2){
-                $tmp[$k]['id'] = $k;
-                $tmp[$k]['parentid'] = $v2['parentid'];
-                $tmp[$k]['city'] = $v2['areaname'];
-                $tmp[$k]['county'] = $v['areaname'];
-                $tmp[$k]['totalmoney'] = $v['totalmoney'];
-                $tmp[$k]['truename'] = $v['truename'];
-                $tmp[$k]['count'] = $v['count'];
+                $data[$k]['parentid'] = $v2['parentid'];
+                $data[$k]['city'] = $v2['areaname'];
+                $data[$k]['county'] = $v['areaname'];
                 if($v2['parentid'] == 0){ //判断父ID是否为0 如果为0则为省级栏目
-                    $tmp[$k]['provice'] = $v2['areaname'];
-                    $tmp[$k]['city'] = $v['areaname'];
+                    $data[$k]['provice'] = $v2['areaname'];
+                    $data[$k]['city'] = $v['areaname'];
                 }
             }
         }
-        return $tmp;
+        return $data;
     }
 
     /**
@@ -134,7 +126,6 @@ class BusinessController extends AdminController
             }
 
             $x = 1;
-
             //数据重组
             foreach($data as $key=>$val){
                 $tmp[$key]['id'] = $x++;
@@ -155,6 +146,7 @@ class BusinessController extends AdminController
 
     /**
      * 合作商热力图
+     * @author Iredbaby
      */
     public function businessHot(){
         $Area = D('Area');
