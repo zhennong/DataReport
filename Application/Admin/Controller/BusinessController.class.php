@@ -60,19 +60,8 @@ class BusinessController extends AdminController
         $this->display();
     }
 
-    //获取各地合作商交易额
-    private function getTotalMoney($agareaid = 0){
-        $Trade = D('Trade');
-        $map['a.status'] = array('in','2,3,4');
-        $map['b.areaid'] = array('eq',$agareaid);
-        $total = $Trade->cache(true)->alias('a')->field('SUM(a.amount) AS totalmoney')->join(C('BUSINESS_DB_TABLE_PREFIX').'address b on a.addressid = b.itemid')->where($map)->select();
-        $x = get_arr_k_amount($total,'totalmoney');
-        $data = $x;
-        return $data;
-    }
-
     //获取合作商详细信息
-    public function getAgentDetail(){
+    protected function getAgentDetail(){
         $area = D('Area');
         $agdl = D('AgentDownLine');
         $data = $area->cache(true)->alias('a')->field('a.*,c.truename,c.userid')->join('LEFT JOIN '.C('BUSINESS_DB_TABLE_PREFIX').'agent b ON b.agareaid = a.areaid LEFT JOIN '.C('BUSINESS_DB_TABLE_PREFIX').'member c ON c.userid = b.aguid')->select();
@@ -88,7 +77,7 @@ class BusinessController extends AdminController
     }
 
     //通过县areaid获取所属市
-    public function getPidByCity(){
+    protected function getPidByCity(){
         $data = $this->getAgentDetail();
         $area = D('Area');
         foreach($data as $k=>$v){
