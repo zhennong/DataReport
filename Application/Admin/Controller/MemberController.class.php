@@ -193,35 +193,101 @@ class MemberController extends AuthController
      */
     public function memberCount()
     {
-        $Area = D('Area');
-        $provice_id = I('pid');
-        $provice = $this->getProvice();
-        $provice_name = $this->getProvice(1, $provice_id);
-        if ($provice_id == "") {
-            $provice_id = 17;
-        } //默认河南省
+//        $Area = D('Area');
+//        $provice_id = I('pid');
+//        $provice = $this->getProvice();
+//        $provice_name = $this->getProvice(1, $provice_id);
+//        if ($provice_id == "") {
+//            $provice_id = 17;
+//        } //默认河南省
+//
+//        $data = $Area->where('parentid =' . $provice_id)->select();
+//        if ($provice_id > 4 && $provice_id < 33) {
+//            foreach ($data as $k => $v) {
+//                $sql = "select a.areaid as areaid,a.areaname as areaname,b.areaid as areaids,COUNT(b.areaid) as total from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.parentid='" . $v['areaid'] . "' group by b.areaid";
+//                $data[$k]['sub'] = queryMysql($sql);
+//            }
+//        } else { //特殊城市处理
+//            foreach ($data as $k => $v) {
+//                if ($k > 0) {
+//                    unset($data[$k]);
+//                } else {
+//                    $sql = "select a.areaid as areaid,a.areaname as areaname,b.areaid as areaids,COUNT(b.areaid) as total from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.parentid='" . $v['parentid'] . "' group by b.areaid";
+//                    $data[$k]['sub'] = queryMysql($sql);
+//                }
+//            }
+//        }
+//
+//        $this->assign('data', $data);
+//        $this->assign('provice', $provice);
+//        $this->assign('provice_name', $provice_name[0]['areaname']);
+//        $this->display();
 
-        $data = $Area->where('parentid =' . $provice_id)->select();
-        if ($provice_id > 4 && $provice_id < 33) {
-            foreach ($data as $k => $v) {
-                $sql = "select a.areaid as areaid,a.areaname as areaname,b.areaid as areaids,COUNT(b.areaid) as total from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.parentid='" . $v['areaid'] . "' group by b.areaid";
-                $data[$k]['sub'] = queryMysql($sql);
-            }
-        } else { //特殊城市处理
-            foreach ($data as $k => $v) {
-                if ($k > 0) {
-                    unset($data[$k]);
-                } else {
-                    $sql = "select a.areaid as areaid,a.areaname as areaname,b.areaid as areaids,COUNT(b.areaid) as total from `destoon_area` as a,`destoon_member` as b where a.areaid = b.areaid AND a.parentid='" . $v['parentid'] . "' group by b.areaid";
-                    $data[$k]['sub'] = queryMysql($sql);
+        $member = D('Member');
+        $count = $member->cache(true)->count();
+
+        $this->assign(['provice'=>$this->getMemProvice(),'city'=>$this->getMemCity(),'county'=>$this->getMemCounty(),'count'=>$count]);
+        $this->display();
+    }
+
+    //获取省会员数
+    public function getMemProvice(){
+        $area = D('Area');
+        $member = D('Member');
+        $map['parentid'] = array('eq',0);
+        $data_area = $area->cache(true)->where($map)->select();
+        foreach($data_area AS $k=>$v){
+            $map2['areaid'] = array('in',$v['arrchildid']);
+            $data = $member->cache(true)->field('count(*) as count')->where($map2)->select();
+            foreach($data AS $k2=>$v2){
+                if($v2['count'] > 0){
+                    $data_area[$k]['count'] = $v2['count'];
                 }
             }
         }
+        return $data_area;
+    }
 
-        $this->assign('data', $data);
-        $this->assign('provice', $provice);
-        $this->assign('provice_name', $provice_name[0]['areaname']);
-        $this->display();
+    //获取市会员数
+    public function getMemCity(){
+        $id = I('get.pid');
+        if(!empty($id)){
+            $area = D('Area');
+            $member = D('Member');
+            $map['parentid'] = array('eq',$id);
+            $data_area = $area->cache(true)->where($map)->select();
+            foreach($data_area AS $k=>$v){
+                $map2['areaid'] = array('in',$v['arrchildid']);
+                $data = $member->cache(true)->field('count(*) as count')->where($map2)->select();
+                foreach($data AS $k2=>$v2){
+                    if($v2['count'] > 0){
+                        $data_area[$k]['count'] = $v2['count'];
+                    }
+                }
+            }
+            return $data_area;
+        }
+    }
+
+    //获取县会员数
+    public function getMemCounty(){
+        $id = I('get.cid');
+        if(!empty($id)){
+            $area = D('Area');
+            $member = D('Member');
+            $map['parentid'] = array('eq',$id);
+            $data_area = $area->cache(true)->where($map)->select();
+            foreach($data_area AS $k=>$v){
+                $map2['areaid'] = array('in',$v['arrchildid']);
+                $data = $member->cache(true)->field('count(*) as count')->where($map2)->select();
+                foreach($data AS $k2=>$v2){
+                    if($v2['count'] > 0){
+                        $data_area[$k]['count'] = $v2['count'];
+                    }
+                }
+            }
+            return $data_area;
+        }
     }
 
     /**

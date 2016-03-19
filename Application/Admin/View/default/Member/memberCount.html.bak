@@ -1,0 +1,63 @@
+<include file="Layout:ly2"/>
+
+<block name="body">  
+<div class="container-fluid padding10">
+    <div class="dropdown">
+      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          <font> {$provice_name|default="请选择省份"} </font>
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+        <foreach name="provice" item="vo">
+            <li><a href="{:U('Member/memberCount',array('pid'=>$vo['areaid']))}">{$vo['areaname']}</a></li>
+        </foreach>
+      </ul>
+    </div>
+</div>
+    
+<div class="list">
+  <table width="100%" border="0" cellpadding="0" cellspacing="0" class="list_table">
+      <thead>
+	    <tr>
+	      <td width="10%"><div align="center">ID</div></td>
+	      <td width="20%"><div align="center">市</div></td>
+	      <td width="30%"><div align="center">县</div></td>
+            <td width="30%"><div align="center">统计（位）</div></td>
+        </tr>
+        </thead>
+        
+        <tbody>
+        <foreach name="data" item="vo" key="k">
+            <tr bgcolor="#fafafa">
+                <td height="45"><div align="center">{$vo.areaid}</div></td>
+                <td><div align="center">
+                        <strong>
+                            <switch name="vo.parentid">
+                                <case value="1">北京</case>
+                                <case value="2">上海</case>
+                                <case value="3">天津</case>
+                                <case value="4">重庆</case>
+                                <case value="33">香港</case>
+                                <case value="34">澳门</case>
+                                <default />{$vo.areaname}
+                            </switch>
+                            
+                        </strong>
+                    </div></td>
+                <td><div align="center"></div></td>
+                <td><div align="center"></div></td>
+	      </tr>
+            <foreach name="vo['sub']" item="sub">
+                <tr>
+                    <td height="45"><div align="center">{$sub.areaid}</div></td>
+                    <td><div align="center">&nbsp;&nbsp;&nbsp;&nbsp;┠─&nbsp;&nbsp;{$sub.title}</div></td>
+                    <td><div align="center">{$sub.areaname}</div></td>
+                    <td><div align="center">{$sub['total']|default=0}</div></td>
+                </tr>
+            </foreach>
+        </foreach>
+        </tbody>
+  </table>
+</div>
+
+</block>
