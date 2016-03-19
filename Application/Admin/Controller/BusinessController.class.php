@@ -53,7 +53,7 @@ class BusinessController extends AdminController
      * 获取省
      * @return mixed
      */
-    public function getProvice(){
+    private function getProvice(){
         $area = D('Area');
         $agent = D('Agent');
         $where['parentid'] = array('eq',0);
@@ -86,7 +86,7 @@ class BusinessController extends AdminController
      * 获取市
      * @return mixed
      */
-    public function getCity() {
+    private function getCity() {
         $id = I('get.pid');
         if(!empty($id)){
             if($id > 4){
@@ -126,7 +126,7 @@ class BusinessController extends AdminController
      * 获取县
      * @return mixed
      */
-    public function getCounty() {
+    private function getCounty() {
         $id = I('get.cid');
         if(!empty($id)) {
             $agent_downline = D('AgentDownLine');
@@ -158,15 +158,12 @@ class BusinessController extends AdminController
      * @param int $agareaid
      * @return mixed
      */
-    public function getTotalMoney($agareaid = 0,$count = 0){
+    private function getTotalMoney($agareaid = 0,$count = 0){
         $Trade = D('Trade');
-        $x = 0;
         $map['a.status'] = array('in','2,3,4');
         $map['b.areaid'] = array('eq',$agareaid);
         $total = $Trade->cache(true)->alias('a')->field('SUM(a.amount) AS totalmoney')->join('destoon_address b on a.addressid = b.itemid')->where($map)->select();
-        foreach($total AS $k=>$v){
-            $x += intval($v['totalmoney']);
-        }
+        $x = get_arr_k_amount($total,'totalmoney');
         $data = $x;
         return $data;
     }
