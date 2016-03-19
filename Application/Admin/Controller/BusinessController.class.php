@@ -49,6 +49,7 @@ class BusinessController extends AdminController
         $this->display();
     }
 
+
     /**
      * 获取省
      * @return mixed
@@ -187,16 +188,70 @@ class BusinessController extends AdminController
         $this->display();
     }
 
+    //获取全部数额
+    public function getAllArea($id){
+        $area = D('Area');
+        $map['parentid'] = array('eq',$id);
+        $data = $area->cache(true)->alias('a')->field('a.*,c.truename')->join('LEFT JOIN destoon_agent b on b.agareaid = a.areaid LEFT JOIN destoon_member c on c.userid = b.aguid')->where()->select();
+
+        foreach($data as $key=>$value){
+            if ($value['truename']){
+                $total[$key]['areaid'] = $value['areaid'];
+                $total[$key]['areaname'] = $value['areaname'];
+                $total[$key]['parentid'] = $value['parentid'];
+                $total[$key]['truename'] = $value['truename'];
+                $total[$key]['totalmoney'] = $this->getTotalMoney($value['areaid']);
+            }
+            //$data[$key]['totalmoney'] = $this->getTotalMoney($value['areaid']);
+        }
+        return $total;
+    }
+
+
     /**
      * 导出数据
      */
     public function businessExport()
     {
         if (I('get.type') == 'export') {
+            $data = $this->getAllArea();
+            $area = D('Area');
+            foreach($data as $k=>$v){
+                $where['areaid'] = array('eq',$v['parentid']);
+                $data_area = $area->field('parentid,areaname')->where($where)->select();
+                foreach($data_area as $k2=>$v2){
+                    $tmp[$k]['id'] = $k;
+                    $tmp[$k]['city'] = $v2['areaname'];
+                    $tmp[$k]['county'] = $v['areaname'];
+                    $tmp[$k]['totalmoney'] = $v['totalmoney'];
+                }
+            }
 
-//          $fileName = "各县交易额统计";
-//          $headArr = array('ID', '城市', '区县', '交易额');
-//          exportExcel($fileName, $headArr, $data); //数据导出
+            dump($tmp);
+
+
+//            $all_data = Tools::list2tree($data,'areaid','parentid','_child',0);
+//            foreach($all_data as $key=>$value){
+//                foreach($value['_child'] as $k2=>$v2){
+//
+//                    $total[$key]['_child'] = $v2;
+//
+//                    foreach($v2['_child'] as $k3=>$v3){
+//                        $total[]['id'] = $key+1;
+//                        $total[]['provice'] = $value['areaname'];
+//                        $total[]['city'] = $v2['areaname'];
+//                        $total[]['counry'] = $v3['areaname'];
+//                        $total[]['totalmoney'] = $v3['totalmoney']!=NULL?$v3['totalmoney']:0;
+//
+//                    }
+//                }
+//            }
+
+            //dump($data);
+
+//            $fileName = "各县交易额统计";
+//            $headArr = array('ID','省','城市', '区县', '交易额');
+//            exportExcel($fileName, $headArr, $data); //数据导出
         }
     }
 
