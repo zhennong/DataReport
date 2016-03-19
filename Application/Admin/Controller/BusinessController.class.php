@@ -122,7 +122,7 @@ class BusinessController extends AdminController
     public function businessExport() {
         $area = D('Area');
         if (I('get.type') == 'export') {
-            $data = $this->getIdByCity();
+            $data = $this->getPidByCity();
             foreach($data as $k=>$v){
                 if($v['parentid']!=0){
                     $where['areaid'] = array('eq',$v['parentid']);
@@ -165,7 +165,7 @@ class BusinessController extends AdminController
             $where['agareaid'] = array('in',$v['arrchildid']);
             $data = $Agent_count = $Agent->where($where)->select();
             foreach($data AS $k2=>$v2){
-                $tmp[$k]['count'] = count($data);
+                $tmp[$k]['count'] = count($data)!=0?count($data):0;
                 $tmp[$k]['name'] = $v['areaname'];
             }
         }
