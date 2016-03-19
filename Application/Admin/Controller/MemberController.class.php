@@ -226,7 +226,6 @@ class MemberController extends AuthController
         $member = D('Member');
         $count = $member->cache(true)->count();
 
-
         $this->assign(['provice'=>$this->getMemProvice(),'city'=>$this->getMemCity(),'county'=>$this->getMemCounty(),'count'=>$count]);
         $this->display();
     }
