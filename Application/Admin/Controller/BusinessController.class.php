@@ -41,12 +41,85 @@ class BusinessController extends AdminController
      * 各县的交易额
      */
     public function businessTotal() {
-        $this->assign('pid',I('get.pid'));
+        $x = $this->getBusinessTotal(25); //0 25 316 2749
+        Tools::_vp($x);
+        /*$this->assign('pid',I('get.pid'));
         $this->assign('cid',I('get.cid'));
         $this->assign('provice',$this->getProvice()); //省
         $this->assign('city',$this->getCity());       //市
         $this->assign('county',$this->getCounty());   //县
-        $this->display();
+        $this->display();*/
+    }
+
+    public function getBusinessTotal($areaid)
+    {
+        $areas = D('Area')->field(["arrchildid"=>'ids'])->where(["areaid"=>$areaid])->find();
+        $areas = Tools::str2arr($areas['ids']);
+        $this->agentTradeCache();
+        foreach($areas as $k => $v){
+            if(count($this->agent_info[$v])>0) {
+                $agent_trade[$v]['agent_info'] = $this->agent_info[$v];
+                $agent_trade[$v]['info'] = $this->area_trade[$v];
+            }
+        }
+        return $agent_trade;
+    }
+
+
+    /**
+     * 缓存
+     */
+    public function agentTradeCache()
+    {
+        if(!S('agent_info')){
+            $sql = "SELECT area.areaid, member.truename FROM __MALL_area AS area
+                INNER JOIN __MALL_agent AS agent ON area.areaid = agent.agareaid
+                INNER JOIN __MALL_member AS member On agent.aguid = member.userid";
+            $x = $this->MallDb->list_query($sql);
+            foreach($x as $k => $v){
+                $y[$v['areaid']] = $v;
+            }
+            $this->agent_info = $y;
+            S('agent_info',$this->agent_info);
+        }else{
+            $this->agent_info = S('agent_info');
+        }
+        if(!S('area_trade')){
+            $sql = "SELECT area.areaid, area.areaname, SUM(trade.amount) AS amount FROM __MALL_address AS address
+                    LEFT JOIN __MALL_area AS area ON address.areaid = area.areaid
+                    LEFT JOIN __MALL_finance_trade AS trade ON address.itemid = trade.addressid
+                    WHERE trade.status IN(2,3,4)
+                    GROUP BY area.areaid";
+            $x = $this->MallDb->list_query($sql);
+            foreach($x as $k => $v){
+                $y[$v['areaid']] = $v;
+            }
+            $this->area_trade = $y;
+            S('area_trade',$this->area_trade);
+        }else{
+            $this->area_trade = S('area_trade');
+        }
+    }
+
+    public function ajaxGetBusiness($parent_area_id, &$agent_trade=[])
+    {
+        // 是否是区县
+        $_areaTree = $this->getAreaTree($parent_area_id);
+
+        $this->agentTradeCache();
+
+        if(count($_areaTree)>0){
+            foreach($_areaTree as $k => $v){
+                $agent_trade = $this->ajaxGetBusiness($v['id'],$agent_trade);
+            }
+        }else{
+            $area_id = $parent_area_id;
+            if(count($this->agent_info[$area_id])>0){
+                $agent_trade[$area_id]['agent_info'] = $this->agent_info[$area_id];
+                $agent_trade[$area_id]['info'] = $this->area_trade[$area_id];
+            }
+        }
+        return $agent_trade;
     }
 
 

@@ -69,6 +69,63 @@ abstract class CommonController extends Controller
     }
 
     /**
+     * 从市获取所有县区
+     * @param $city_id
+     * @return []
+     */
+    protected function getCountyIdsFromCityId($city_id)
+    {
+        $Area = D('Area');
+        $x = $Area->where(['parentid'=>$city_id])->field("areaid")->select();
+        return Tools::getCols($x,'areaid');
+    }
+
+    /**
+     * 从省获取所有市
+     * @param $provice
+     * @return []
+     */
+    protected function getCityIdsFromProviceId($provice_id)
+    {
+        return $this->getCountyIdsFromCityId($provice_id);
+    }
+
+    /**
+     * 从省获取所有县区
+     * @param $provice
+     * @return []
+     */
+    protected function getCountyIdsFromProviceId($provice_id)
+    {
+        $citys = $this->getCityIdsFromProviceId($provice_id);
+        $county_ids = [];
+        foreach($citys as $k => $v){
+            $x = $this->getCountyIdsFromCityId($v);
+            $county_ids = array_merge($county_ids,$x);
+        }
+        return $county_ids;
+    }
+
+    /**
+     * 获取所有地区
+     * @return [[]]
+     */
+    protected function getAllAreaList()
+    {
+        $areas = D('Area')->cache(true)->field(['areaid'=>'id','areaname','parentid'=>'pid'])->select();
+        return $areas;
+    }
+
+    /**
+     * 获取地区树
+     * @return tree
+     */
+    protected function getAreaTree($root=0)
+    {
+        return Tools::list2tree($this->getAllAreaList(),'id','pid','_child',$root);
+    }
+
+    /**
      *  公用查询时间
      */
     private function getRange(){
