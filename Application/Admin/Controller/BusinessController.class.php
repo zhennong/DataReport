@@ -141,7 +141,7 @@ class BusinessController extends AdminController
         foreach($data as $key=>$value){
             if ($value['truename']){
                 $tmp[$key] = $value;
-                $tmp[$key]['totalmoney'] = $this->getTotalMoney($value['areaid']); //获取合作商金额
+                $tmp[$key]['totalmoney'] = getTotalMoney($value['areaid']); //获取合作商金额
                 $map['agentuid'] = array('eq',$value['userid']); //获取合作商下线
                 $tmp[$key]['count'] = $agdl->where($map)->count();
             }
