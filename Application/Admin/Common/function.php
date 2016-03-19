@@ -261,7 +261,7 @@ function exportExcel($fileName,$headArr,$data){
         foreach($rows as $keyName=>$value){// 列写入
             $j = chr($span);
             $objActSheet->setCellValue($j.$column,$value);
-            $objActSheet->getCell('F'.$column)->getHyperlink()->setUrl('http://www.baidu.com');
+            //$objActSheet->getCell('F'.$column)->getHyperlink()->setUrl('http://www.baidu.com');
             $span++;
         }
         $column++;
