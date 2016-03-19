@@ -41,7 +41,7 @@ class BusinessController extends AdminController
      * 各县的交易额
      */
     public function businessTotal() {
-        $x = $this->getBusinessTotal(25); //0 25 316 2749
+        $x = $this->getBusinessTotal(5); //0 25 316 2749
         Tools::_vp($x);
         $this->display();
     }
