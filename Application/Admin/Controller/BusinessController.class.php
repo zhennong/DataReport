@@ -3,7 +3,6 @@
  * @thinkphp3.2.3  招商管理   php5.4以上
  * @Created on 2016/01/15
  * @Author  iredbaby   1596229276@qq.com
- * @如果需要公共控制器，就不要继承AuthController，直接继承Controller
  */
 namespace Admin\Controller;
 
@@ -41,49 +40,29 @@ class BusinessController extends AdminController
     /**
      * 各县的交易额
      */
-    public function businessTotal()
-    {
-//        $provice = R('Member/getProvice');
-//        $provice_name = R('Member/getProvice', array(1, I('pid')));
-//        $pid = I('get.pid');
-//        if (empty($pid)) {
-//            $pid = 17; //默认显示河南省
-//        }
-//
-//        $area = D('area');
-//        $where['parentid'] = $pid;
-//        $data = $area->field('areaid,parentid,areaname')->where($where)->select();
-//
-//        if ($pid > 4 && $pid < 33) {
-//            foreach ($data AS $k => $v) {
-//                $sql = "select a.areaid as areaid,a.areaname as areaname,SUM(b.totalmoney) as total from `destoon_area` as a,`destoon_agent` as b where a.areaid = b.agareaid AND a.parentid='" . $v['areaid'] . "' group by areaid order by total desc";
-//                $data[$k]['sub'] = queryMysql($sql);
-//            }
-//        } else { //特殊城市处理
-//            foreach ($data AS $k => $v) {
-//                if ($k > 0) {
-//                    unset($data[$k]);
-//                } else {
-//                    $sql = "select da.areaid as areaid,a.areaname as areaname,SUM(b.totalmoney) as total from `destoon_area` as a,`destoon_agent` as b where a.areaid = b.agareaid AND a.parentid='" . $v['parentid'] . "' group by areaid order by total desc";
-//                    $data[$k]['sub'] = queryMysql($sql);
-//                }
-//            }
-//        }
-//
-//        $this->assign('provice', $provice);
-//        $this->assign('provice_name', $provice_name[0]['areaname']);
-//        $this->assign('data', $data);
-//        $this->display();
+    public function businessTotal() {
 
-        $pid = I('get.pid');
-        $cid = I('get.cid');
+        $area = D('Area');
 
-        $this->assign('pid',$pid);
-        $this->assign('cid',$cid);
+        $data = $area->cache(true)->alias('a')->field('a.areaid,a.areaname,c.truename')->join('LEFT JOIN destoon_agent b on b.agareaid = a.areaid LEFT JOIN destoon_member c on c.userid = b.aguid')->select();
 
-        $this->assign('provice',$this->getProvice());
-        $this->assign('city',$this->getCity());
-        $this->assign('county',$this->getCounty());
+        foreach($data as $key=>$value){
+            if ($value['truename']){
+                //dump($value['areaid']);
+
+                $data[$key]['totalmoney'] = $this->getTotalMoney($value['areaid']);
+            }
+        }
+
+        dump($data);
+
+
+
+        $this->assign('pid',I('get.pid'));
+        $this->assign('cid',I('get.cid'));
+        $this->assign('provice',$this->getProvice()); //省
+        $this->assign('city',$this->getCity());       //市
+        $this->assign('county',$this->getCounty());   //县
         $this->display();
     }
 
@@ -91,24 +70,38 @@ class BusinessController extends AdminController
      * 获取省
      * @return mixed
      */
-    public function getProvice(){
+    private function getProvice(){
         $area = D('Area');
         $agent = D('Agent');
         $where['parentid'] = array('eq',0);
-        $data_area = $area->where($where)->select();
+        //$where['areaid'] = array('lt',7);
+
+        $data_area = $area->cache(true)->where($where)->select();
+
         foreach($data_area AS $key=>$value){
-            //$map['agareaid'] = array('in',$value['arrchildid']);
-            //$data = $agent->where($map)->field('COUNT(id) as count,SUM(totalmoney) as totalmoney')->select();
-
-            $sql = "SELECT COUNT(a.id) AS count,SUM(b.amount) AS totalmoney FROM destoon_agent AS a,destoon_finance_trade AS b WHERE a.agareaid = b.addressid AND a.agareaid IN(".$value['arrchildid'].")";
-            $data = queryMysql($sql);
-
+            $map['agareaid'] = array('in',$value['arrchildid']);
+            $data = $agent->where($map)->field('agareaid')->select();
+            $total = 0;
             foreach($data As $k=>$v){
-                if($v['count'] > 0) {
-                    $data_area[$key]['count'] = '<font style="color: #2aabd2;">合作商：'.$v['count'].' 个</font>';
-                    $data_area[$key]['totalmoney'] = '<font style="color: #f00;margin-left: 10px;">金额：'.$v['totalmoney'].'</font>';
+                if(count($data) > 0) {
+                    $data_area[$key]['count'] = '<font style="color: #2aabd2;">合作商：'.count($data).' 个</font>';
+
+//                    $total = $this->getTotalMoney($value['areaid'],count($data));
+//                    $totallist[$k] = $total;
+
+
+
                 }
+
+
+
             }
+
+//            foreach($totallist as $v){
+//                $s += $v;
+//            }
+//            $data_area[$key]['totalmoney'] = '<font style="color: #f00;">金额：'.$s.'</font>';
+
         }
         return $data_area;
     }
@@ -117,8 +110,7 @@ class BusinessController extends AdminController
      * 获取市
      * @return mixed
      */
-    public function getCity()
-    {
+    private function getCity() {
         $id = I('get.pid');
         if(!empty($id)){
             if($id > 4){
@@ -128,39 +120,26 @@ class BusinessController extends AdminController
                 $data_area = $area->where($where)->select();
                 foreach($data_area AS $key=>$value){
                     $map['agareaid'] = array('in',$value['arrchildid']);
-                    $data = $agent->where($map)->field('COUNT(id) as count,SUM(totalmoney) as totalmoney')->select();
-                    foreach($data As $k=>$v){
-                        if($v['count'] > 0) {
-                            $data_area[$key]['count'] = '<font style="color: #2aabd2;">合作商：'.$v['count'].' 个</font>';
-                            $data_area[$key]['totalmoney'] = '<font style="color: #f00;margin-left: 10px;">金额：'.$v['totalmoney'].'</font>';
+                    $data = $agent->where($map)->field('agareaid')->group('agareaid')->select();
+
+                    $total = 0;
+                    foreach($data As $k=>$v) {
+                        if (count($data) > 0) {
+                            $data_area[$key]['count'] = '<font style="color: #2aabd2;">合作商：'.count($data).' 个</font>';
+
+//                            $total = $this->getTotalMoney($v['agareaid']);
+//                            $totallist[$k] = $total;
                         }
                     }
+
+//                    foreach($totallist as $v){
+//                        $s += $v;
+//                    }
+//                    $data_area[$key]['totalmoney'] = '<font style="color: #f00;">金额：'.$s.'</font>';
                 }
-            }else{
-                $agent_downline = D('AgentDownLine');
-                $sql = "SELECT a.*,m.username,m.truename,m.userid,at.totalmoney,at.isok FROM destoon_area a " .
-                    "LEFT JOIN destoon_agent at ON at.agareaid=a.areaid " .
-                    "LEFT JOIN destoon_member m ON m.userid=at.aguid " .
-                    "WHERE a.parentid=" . $id;
-
-                $data_area = queryMysql($sql);
-
-                foreach ($data_area as $key => $value) {
-                    $map['agentuid'] = array('eq', $value['userid']);
-                    $data_info = $agent_downline->where($map)->count();
-
-                    if ($value['truename']){
-                        $data_area[$key]['truename'] = '<font style="color:#0c199c;margin-left: 50px;">姓名：' . $value['truename'] . '</font>';
-                    }
-
-                    if ($value['totalmoney']) {
-                        $data_area[$key]['totalmoney'] = '<font style="color: #f00;">交易金额：' . $value['totalmoney'] . '</font>';
-                    }
-
-                    if ($data_info > 0) {
-                        $data_area[$key]['count'] = '<font style="color: #2aabd2;">下线数：(' . $data_info . ')</font>';
-                    }
-
+            }else{ //特殊城市处理
+                if(!empty($id)) {
+                    //
                 }
             }
             return $data_area;
@@ -171,42 +150,49 @@ class BusinessController extends AdminController
      * 获取县
      * @return mixed
      */
-    public function getCounty()
-    {
+    private function getCounty() {
         $id = I('get.cid');
         if(!empty($id)) {
             $agent_downline = D('AgentDownLine');
-            $sql = "SELECT a.*,m.username,m.truename,m.userid,at.totalmoney,at.isok FROM destoon_area a " .
-                "LEFT JOIN destoon_agent at ON at.agareaid=a.areaid " .
-                "LEFT JOIN destoon_member m ON m.userid=at.aguid " .
-                "WHERE parentid=" . $id;
-
-            $data = queryMysql($sql);
-
+            $Area = D('Area');
+            $where['parentid'] = array('eq',$id);
+            $data = $Area->cache(true)->alias('a')->field('a.areaid,a.areaname,c.truename,b.agareaid,b.isok')->join('LEFT JOIN destoon_agent b on b.agareaid = a.areaid LEFT JOIN destoon_member c on c.userid = b.aguid')->where($where)->select();
             foreach ($data as $key => $value) {
                 $map['agentuid'] = array('eq', $value['userid']);
                 $data_info = $agent_downline->where($map)->count();
-
                 if ($value['truename']){
                     $data[$key]['truename'] = '<font style="color:#0c199c;margin-left: 10px;">姓名：' . $value['truename'] . '</font>';
-                }
 
-                if ($value['totalmoney']) {
-                    $data[$key]['totalmoney'] = '<font style="color: #f00;">交易金额：' . $value['totalmoney'] . '</font>';
+                    $data[$key]['totalmoney'] = '<font style="color: #f00;margin-left: 10px;">金额：'.$this->getTotalMoney($value['areaid']).'</font>';
                 }
 
                 if ($data_info > 0) {
                     $data[$key]['count'] = '<font style="color: #2aabd2;">下线数：(' . $data_info . ')</font>';
                 }
-
             }
-
-            return $data;
         }
+        return $data;
+    }
+
+    /**
+     * 获取各地合作商交易额
+     * @param int $agareaid
+     * @return mixed
+     */
+    private function getTotalMoney($agareaid = 0){
+        $Trade = D('Trade');
+        $map['a.status'] = array('in','2,3,4');
+        $map['b.areaid'] = array('eq',$agareaid);
+        $total = $Trade->cache(true)->alias('a')->field('SUM(a.amount) AS totalmoney')->join('destoon_address b on a.addressid = b.itemid')->where($map)->select();
+        $x = get_arr_k_amount($total,'totalmoney');
+        $data = $x;
+        return $data;
     }
 
 
-    //各县合作商
+    /**
+     * 各县合作商
+     */
     public function businessAgentTotal(){
         $Agent = D('Agent');
         $areaid = I('get.areaid');
@@ -274,7 +260,6 @@ class BusinessController extends AdminController
             $mouth_solt_partner[$k]['mouth_name'] = date("Y-m", $v['start']['ts']);
             $mouth_solt_partner[$k]['partner_sum']=get_arr_k_amount($x,'money');
         }
-
 
         //重组数据_月资讯数据
         $xAxis_data = Tools::arr2str(Tools::getCols($mouth_solt_partner, 'mouth_name', true));

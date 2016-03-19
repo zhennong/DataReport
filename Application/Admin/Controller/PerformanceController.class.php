@@ -39,8 +39,6 @@ class PerformanceController extends AuthController
             $departmembers[$k]['depart_name'] = $this->depart_data[$v['depart_id']]['depart_name'];
             $x = D('Member')->where(['username'=>$v['username']])->field(['truename'])->find();
             $departmembers[$k]['member_name'] = $x['truename'];
-            // 留言统计
-            $departmembers[$k]['message_status'] = $this->getMessage($v['username'],true);
             // 询价统计
             $departmembers[$k]['inquiry_status'] = $this->getInquiry($v['username'],true);
         }
@@ -54,9 +52,8 @@ class PerformanceController extends AuthController
     public function getAjaxInquiryProcessing()
     {
         $column_index = [
-            "message_id",
-            "message_title",
-            "member_username",
+            "content",
+            "amswer",
             "member_truename",
             "product_id",
             "product_title",
@@ -65,9 +62,8 @@ class PerformanceController extends AuthController
             "addtime",
         ];
         $column_search = [
-            "message.itemid",
-            "message.title",
-            "member.username",
+            "message.content",
+            "message.answer",
             "member.truename",
             "product.itemid",
             "product.title",
@@ -75,14 +71,28 @@ class PerformanceController extends AuthController
             "product.price",
             "message.addtime",
         ];
-        $draw = $_GET['draw'];//这个值作者会直接返回给前台
+
+        for($i = 0; $i < count($column_index); $i++){
+            $field[] = " {$column_search[$i]} AS {$column_index[$i]} ";
+        }
+        $field = Tools::arr2str($field);
+        $draw = $_GET['draw'];
         $start = $_GET['start'];
         $limit = $_GET['length'];
         $order = $_GET['order'];
         $order = "{$column_index[$order[0]['column']]} {$order[0]['dir']}";
+
+        if($_GET['search']['value']!=''){
+            $search_time = Tools::str2arr($_GET['search']['value']);
+            $this->month_start = strtotime($search_time[0] . "-01 00:00:00");
+            $this->month_end = strtotime($search_time[1] . "-01 23:59:59");
+            $y[] = " message.addtime > {$this->month_start} AND  message.addtime < {$this->month_end} ";
+        }
         foreach ($_GET['columns'] as $k => $v) {
             if ($v['search']['value'] != '') {
-                $y[] = "{$column_search[$v['data']]} LIKE '%{$v[search][value]}%'";
+                if($column_search[$v['data']]=="addtime"){}else{
+                    $y[] = "{$column_search[$v['data']]} LIKE '%{$v[search][value]}%'";
+                }
             }
         }
         $search = '';
@@ -94,12 +104,10 @@ class PerformanceController extends AuthController
             FROM __MALL_message AS message
             INNER JOIN __MALL_sell_5 AS product ON message.cpid = product.itemid
             INNER JOIN __MALL_member AS member ON message.msgbelong = member.username
-            WHERE message.is_xunjia = 1";
+            WHERE message.is_xunjia = 1 {$search}";
         $z = $this->MallDb->list_query($sql);
         $total = $z[0]['total'];
-        $sql = "SELECT  message.itemid AS message_id, message.title AS message_title, message.addtime AS addtime,
-                member.username AS member_username, member.truename AS member_truename,
-                product.itemid AS product_id, product.title AS product_title, product.standard AS product_standard, product.price AS price
+        $sql = "SELECT  {$field}
             FROM __MALL_message AS message
             INNER JOIN __MALL_sell_5 AS product ON message.cpid = product.itemid
             INNER JOIN __MALL_member AS member ON message.msgbelong = member.username
@@ -110,7 +118,11 @@ class PerformanceController extends AuthController
 
         foreach ($data as $k => $v) {
             foreach ($column_index as $key => $value) {
-                $x[$k][] = $v[$value];
+                if($value == 'addtime'){
+                    $x[$k][] = date("Y-m-d H:i", $v[$value]);
+                }else{
+                    $x[$k][] = $v[$value];
+                }
             }
         }
         //获取Datatables发送的参数 必要
@@ -125,23 +137,6 @@ class PerformanceController extends AuthController
     }
 
     /**
-     * 留言统计
-     */
-    private function getMessage($depart_name,$getStatusCount=false,$field=false)
-    {
-        if($getStatusCount){
-            $yes = $this->Message->where(['msgbelong'=>$depart_name,'answer'=>['NEQ','']])->field("COUNT(itemid) AS count")->select();
-            $no = $this->Message->where(['msgbelong'=>$depart_name,'answer'=>['EQ','']])->field("COUNT(itemid) AS count")->select();
-            $message_info['count_yes'] = $yes[0]['count'];
-            $message_info['count_no'] = $no[0]['count'];
-            $message_info['total'] = $yes[0]['count'] + $no[0]['count'];
-            $message_info['disposal_rate'] = ($message_info['count_yes']*100/$message_info['total']) . "%" ;
-        }
-
-        return $message_info;
-    }
-
-    /**
      * 询价统计
      */
     private function getInquiry($depart_name,$getStatusCount=false,$field=false)
@@ -149,7 +144,7 @@ class PerformanceController extends AuthController
         if($getStatusCount){
             $sql = "SELECT message.itemid, message.addtime, message.fixtime, product.price FROM __MALL_message AS message
                 LEFT JOIN __MALL_sell_5 AS product ON message.cpid = product.itemid
-                WHERE message.msgbelong = '{$depart_name}'";
+                WHERE message.msgbelong = '{$depart_name}' AND message.addtime > {$this->month_start} AND message.addtime < {$this->month_end}";
             $x = $this->MallDb->list_query($sql);
             $inquiry_info['count_no'] = 0;
             $inquiry_info['count_yes'] = 0;
@@ -171,5 +166,20 @@ class PerformanceController extends AuthController
             $inquiry_info['disposal_time_rate'] = (($inquiry_info['count_yes'] - $inquiry_info['count_timeout'])*100/$inquiry_info['total']) . "%";
         }
         return $inquiry_info;
+    }
+
+    /**
+     * 询价转换提成
+     */
+    public function inquiryConversionCommission()
+    {
+        $sql = "SELECT depart.username, member.truename, COUNT(trade.itemid) AS trade_count FROM __MALL_depart AS depart
+            INNER JOIN __MALL_member AS member ON depart.username = member.username
+            INNER JOIN __MALL_finance_trade AS trade ON depart.username = trade.xunjia_ticheng
+            WHERE trade.status IN(2, 3, 4) AND depart.bumen = 1
+            GROUP BY depart.username";
+        $list = $this->MallDb->list_query($sql);
+        $this->assign(['list'=>$list]);
+        $this->display();
     }
 }
