@@ -63,7 +63,7 @@
                     },
                     data:[
                         <foreach name="data" item="vo" key="k" >
-                        {name:'{$k}',value:{$vo}},
+                        {name:'{$vo.name}',value:{$vo.count}},
                         </foreach>
                     ]
                 }
