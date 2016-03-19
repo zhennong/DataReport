@@ -41,6 +41,23 @@ class BusinessController extends AdminController
      * 各县的交易额
      */
     public function businessTotal() {
+
+        $area = D('Area');
+
+        $data = $area->cache(true)->alias('a')->field('a.areaid,a.areaname,c.truename')->join('LEFT JOIN destoon_agent b on b.agareaid = a.areaid LEFT JOIN destoon_member c on c.userid = b.aguid')->select();
+
+        foreach($data as $key=>$value){
+            if ($value['truename']){
+                //dump($value['areaid']);
+
+                $data[$key]['totalmoney'] = $this->getTotalMoney($value['areaid']);
+            }
+        }
+
+        dump($data);
+
+
+
         $this->assign('pid',I('get.pid'));
         $this->assign('cid',I('get.cid'));
         $this->assign('provice',$this->getProvice()); //省
@@ -68,9 +85,16 @@ class BusinessController extends AdminController
             foreach($data As $k=>$v){
                 if(count($data) > 0) {
                     $data_area[$key]['count'] = '<font style="color: #2aabd2;">合作商：'.count($data).' 个</font>';
-//                    $total = $this->getTotalMoney($v['agareaid'],count($data));
+
+//                    $total = $this->getTotalMoney($value['areaid'],count($data));
 //                    $totallist[$k] = $total;
+
+
+
                 }
+
+
+
             }
 
 //            foreach($totallist as $v){
@@ -130,12 +154,9 @@ class BusinessController extends AdminController
         $id = I('get.cid');
         if(!empty($id)) {
             $agent_downline = D('AgentDownLine');
-            $sql = "SELECT a.areaid,a.areaname,m.truename,at.agareaid,at.isok FROM destoon_area a " .
-                "LEFT JOIN destoon_agent at ON at.agareaid=a.areaid " .
-                "LEFT JOIN destoon_member m ON m.userid=at.aguid " .
-                "WHERE parentid=" . $id;
-            $data = queryMysql($sql);
-
+            $Area = D('Area');
+            $where['parentid'] = array('eq',$id);
+            $data = $Area->cache(true)->alias('a')->field('a.areaid,a.areaname,c.truename,b.agareaid,b.isok')->join('LEFT JOIN destoon_agent b on b.agareaid = a.areaid LEFT JOIN destoon_member c on c.userid = b.aguid')->where($where)->select();
             foreach ($data as $key => $value) {
                 $map['agentuid'] = array('eq', $value['userid']);
                 $data_info = $agent_downline->where($map)->count();
@@ -158,7 +179,7 @@ class BusinessController extends AdminController
      * @param int $agareaid
      * @return mixed
      */
-    private function getTotalMoney($agareaid = 0,$count = 0){
+    private function getTotalMoney($agareaid = 0){
         $Trade = D('Trade');
         $map['a.status'] = array('in','2,3,4');
         $map['b.areaid'] = array('eq',$agareaid);
