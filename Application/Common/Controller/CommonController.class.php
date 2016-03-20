@@ -68,6 +68,13 @@ abstract class CommonController extends Controller
         $this->now_d_start = strtotime($this->now_Y . '-' . $this->now_m . '-' .$this->now_d . ' 00:00:00');
     }
 
+    protected function getAreaChildIds($area_id)
+    {
+        $Area = D('Area');
+        $x = $Area->where(['parentid'=>$area_id])->field("areaid")->select();
+        return Tools::getCols($x,'areaid');
+    }
+
     /**
      * 从市获取所有县区
      * @param $city_id
@@ -75,9 +82,7 @@ abstract class CommonController extends Controller
      */
     protected function getCountyIdsFromCityId($city_id)
     {
-        $Area = D('Area');
-        $x = $Area->where(['parentid'=>$city_id])->field("areaid")->select();
-        return Tools::getCols($x,'areaid');
+        return $this->getAreaChildIds($city_id);
     }
 
     /**
@@ -88,6 +93,17 @@ abstract class CommonController extends Controller
     protected function getCityIdsFromProviceId($provice_id)
     {
         return $this->getCountyIdsFromCityId($provice_id);
+    }
+
+    /**
+     * 从全国获取所有省
+     * @param $provice
+     * @return []
+     */
+    protected function getProviceIdsFromCountry()
+    {
+        $provice = $this->getCountyIdsFromCityId(0);
+        return $provice;
     }
 
     /**
@@ -104,6 +120,16 @@ abstract class CommonController extends Controller
             $county_ids = array_merge($county_ids,$x);
         }
         return $county_ids;
+    }
+
+    /**
+     * 从全国获取所有地区子id
+     * @param $area_id
+     * @return []
+     */
+    protected function getCountyIdsFromCountry()
+    {
+        #
     }
 
     /**

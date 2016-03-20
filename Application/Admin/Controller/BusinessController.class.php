@@ -41,15 +41,22 @@ class BusinessController extends AdminController
      * 各县的交易额
      */
     public function businessTotal() {
-        $x = $this->getBusinessTotal(5); //0 25 316 2749
-        Tools::_vp($x);
+        $x = $this->getBusinessTotal(0); //0 25 316 2749
         $this->display();
     }
 
     public function getBusinessTotal($areaid)
     {
-        $areas = D('Area')->field(["arrchildid"=>'ids'])->where(["areaid"=>$areaid])->find();
-        $areas = Tools::str2arr($areas['ids']);
+        if(!S('all_area')){
+            $all_area = $this->getAllAreaList();
+            S('all_area',$all_area);
+        }else{
+            $all_area = S('all_area');
+        }
+        $area_tree = $this->getAreaTree($areaid);
+        $area_list = Tools::tree2list($area_tree);
+        $areas = Tools::getCols($area_list,'id');
+
         $this->agentTradeCache();
         foreach($areas as $k => $v){
             if(count($this->agent_info[$v])>0) {

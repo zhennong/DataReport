@@ -199,7 +199,7 @@ class Tools
                 $reffer = $value;
                 if(isset($reffer[$child])){
                     unset($reffer[$child]);
-                    tree_to_list($value[$child], $child, $order, $list);
+                    Tools::tree2list($value[$child], $child, $order, $list);
                 }
                 $list[] = $reffer;
             }
