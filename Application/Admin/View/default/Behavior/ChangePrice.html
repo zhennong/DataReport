@@ -10,12 +10,12 @@
             <table class="table table-hover table-bordered table-condensed form-inline">
                 <tr>
                     <th>行为ID</th>
-                    <th>操作账号</th>
-                    <th>原价格</th>
-                    <th>修改价格</th>
-                    <th>修改时间</th>
+                    <th>改价人账号</th>
+                    <th>原来金额</th>
+                    <th>要更改的金额</th>
+                    <th>申请时间</th>
                     <th>修改类型</th>
-                    <th>订单状态</th>
+                    <th>理由</th>
                 </tr>
                 <foreach name="list" item="vo">
                     <tr>
@@ -24,19 +24,17 @@
                         <td>{$vo.primary}</td>
                         <td>{$vo.goal}</td>
                         <td>{$vo.addtime|date="Y-m-d H:i:s",###}</td>
-                        <td>{$vo.type}</td>
+
+                        <td><if condition="$vo.type eq price">
+                            产品单价<else />订单总价
+                        </if></td>
                         <td><switch name="vo.gjreason">
-                            <case value="0">买家发起订单,等待卖家确认</case>
-                            <case value="1">卖家已确认订单,等待买家付款</case>
-                            <case value="2">买家已付款等待卖家发货</case>
-                            <case value="3">卖家已发货等待卖家确认</case>
-                            <case value="4">交易成功</case>
-                            <case value="5">卖家申请退款</case>
-                            <case value="6">已退款给买家</case>
-                            <case value="7">买家关闭交易</case>
-                            <case value="8">卖家关闭交易</case>
-                            <case value="9">订单处理中</case>
-                            <case value="10">已通知客户提货,7日后将交易自动完成</case>
+                            <case value="0">客户补差价</case>
+                            <case value="1">厂家降价</case>
+                            <case value="2">简述变更</case>
+                            <case value="3">使用了优惠卷</case>
+                            <case value="5">其他市场价格便宜</case>
+                            <case value="6">市场发货改为厂家发货，便宜了</case>
                             <default/>暂无订单状态
                         </switch>
                         </td>
