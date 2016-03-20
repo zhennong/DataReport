@@ -41,87 +41,152 @@ class BusinessController extends AdminController
      * 各县的交易额
      */
     public function businessTotal() {
-        $x = $this->getBusinessTotal(0); //0 25 316 2749
+        $this->getTotalData();
+        $data_provice = $this->getProviceTotal();
+        $data_city = $this->getCityTotal();
+        $data_county = $this->getCountyTotal();
+        $this->assign(['provice'=>$data_provice,'city'=>$data_city,'county'=>$data_county]);
         $this->display();
     }
 
-    public function getBusinessTotal($areaid)
-    {
-        if(!S('all_area')){
-            $all_area = $this->getAllAreaList();
-            S('all_area',$all_area);
-        }else{
-            $all_area = S('all_area');
-        }
-        $area_tree = $this->getAreaTree($areaid);
-        $area_list = Tools::tree2list($area_tree);
-        $areas = Tools::getCols($area_list,'id');
-
-        $this->agentTradeCache();
-        foreach($areas as $k => $v){
-            if(count($this->agent_info[$v])>0) {
-                $agent_trade[$v]['agent_info'] = $this->agent_info[$v];
-                $agent_trade[$v]['info'] = $this->area_trade[$v];
+    //缓存数据
+    public function getTotalData(){
+        if(!S('TotalData')){
+            $sql = "select sum(ft.amount) as Tamount,ad.areaid,arrparentid from destoon_finance_trade ft,destoon_address ad,destoon_area a where ft.addressid=ad.itemid and ft.`status` in (2,3,4) and a.areaid=ad.areaid group by ad.areaid";
+            $data = $this->MallDb->list_query($sql);
+            foreach($data as $k=>$v){
+                $v['arrparentid'] = explode(',',$v['arrparentid']);
+                $data_new[$v['areaid']]['areaid'] = $v['areaid'];
+                $data_new[$v['areaid']]['topid'] = $v['arrparentid'][1];
+                $data_new[$v['areaid']]['parentid'] = $v['arrparentid'][2];
+                $data_new[$v['areaid']]['tamount'] = $v['tamount'];
             }
-        }
-        return $agent_trade;
-    }
-
-
-    /**
-     * 缓存
-     */
-    public function agentTradeCache()
-    {
-        if(!S('agent_info')){
-            $sql = "SELECT area.areaid, member.truename FROM __MALL_area AS area
-                INNER JOIN __MALL_agent AS agent ON area.areaid = agent.agareaid
-                INNER JOIN __MALL_member AS member On agent.aguid = member.userid";
-            $x = $this->MallDb->list_query($sql);
-            foreach($x as $k => $v){
-                $y[$v['areaid']] = $v;
-            }
-            $this->agent_info = $y;
-            S('agent_info',$this->agent_info);
-        }else{
-            $this->agent_info = S('agent_info');
-        }
-        if(!S('area_trade')){
-            $sql = "SELECT area.areaid, area.areaname, SUM(trade.amount) AS amount FROM __MALL_address AS address
-                    LEFT JOIN __MALL_area AS area ON address.areaid = area.areaid
-                    LEFT JOIN __MALL_finance_trade AS trade ON address.itemid = trade.addressid
-                    WHERE trade.status IN(2,3,4)
-                    GROUP BY area.areaid";
-            $x = $this->MallDb->list_query($sql);
-            foreach($x as $k => $v){
-                $y[$v['areaid']] = $v;
-            }
-            $this->area_trade = $y;
-            S('area_trade',$this->area_trade);
-        }else{
-            $this->area_trade = S('area_trade');
+            unset($data);
+            S('TotalData',$data_new);
         }
     }
 
-    public function ajaxGetBusiness($parent_area_id, &$agent_trade=[])
-    {
-        // 是否是区县
-        $_areaTree = $this->getAreaTree($parent_area_id);
-
-        $this->agentTradeCache();
-
-        if(count($_areaTree)>0){
-            foreach($_areaTree as $k => $v){
-                $agent_trade = $this->ajaxGetBusiness($v['id'],$agent_trade);
-            }
-        }else{
-            $area_id = $parent_area_id;
-            if(count($this->agent_info[$area_id])>0){
-                $agent_trade[$area_id]['agent_info'] = $this->agent_info[$area_id];
-                $agent_trade[$area_id]['info'] = $this->area_trade[$area_id];
+    //获取代理商数量
+    public function getAgentList($areaid){
+        $sql = "SELECT COUNT(*) AS count FROM __MALL_agent WHERE agareaid IN (".$areaid.")";
+        $agent_list = $this->MallDb->list_query($sql);
+        foreach($agent_list AS $k=>$v){
+            if($v['count']){
+                $count = $v['count'];
             }
         }
-        return $agent_trade;
+        return $count;
+    }
+
+    //获取合作商名字和和下线数
+    public function getAgentNameAndDownLine($areaid){
+        $sql = "SELECT a.*,m.username,m.truename,m.userid,at.isok,s.score FROM destoon_area a ".
+            "LEFT JOIN destoon_agent at ON at.agareaid=a.areaid ".
+            "LEFT JOIN destoon_member m ON m.userid=at.aguid ".
+            "LEFT JOIN destoon_agent_score s ON s.aguid=m.userid ".
+            "WHERE a.areaid=".$areaid;
+        $data = $this->MallDb->list_query($sql);
+        foreach($data as $k=>$v){
+            if($v['userid'] > 0){
+                $sql2 = "SELECT COUNT(*) AS count FROM destoon_agent_downline WHERE agentuid=".$v['userid'];
+                $data2 = $this->MallDb->list_query($sql2);
+                foreach($data2 as $k2=>$v2){
+                    $data[$k]['truename'] = $v['truename'];
+                    $data[$k]['count'] = $v2['count'];
+                }
+            }
+        }
+        return $data;
+    }
+
+    //获取省数据
+    public function getProviceTotal(){
+        $area = D('area');
+        $arealist = $area->where(['parentid' => 0])->select();
+        $totalData = S('TotalData');
+        $s = array();
+        foreach($arealist as $k=>$v){
+            $agent_count = $this->getAgentList($v['arrchildid']);
+            $total = 0;
+            foreach($totalData as $areaid=>$v2){
+                if($v2['topid']==$v['areaid']){
+                    $tmp[$v['areaid']] = $v;
+                    $tmp[$v['areaid']]['count'] = $agent_count;
+                    $total  += $v2['tamount'];
+                    $tmp[$v['areaid']]['tamount'] = $total;
+                }
+            }
+        }
+        return $tmp;
+    }
+
+    //获取市数据
+    public function getCityTotal(){
+        $id = I('get.pid');
+        if(!empty($id)){
+            if($id > 4){
+                $area = D('area');
+                $arealist = $area->where(['parentid' => $id])->select();
+                $totalData = S('TotalData');
+                $data = array();
+                foreach($arealist as $k=>$v){
+                    $agent_count = $this->getAgentList($v['arrchildid']);
+                    $total = 0;
+                    foreach($totalData as $areaid=>$v2){
+                        if($v2['parentid']==$v['areaid']){
+                            $data[$v['areaid']] = $v;
+                            $data[$v['areaid']]['count'] = $agent_count;
+                            $total += $v2['tamount'];
+                            $data[$v['areaid']]['tamount'] = $total;
+                        }
+                    }
+                }
+            }else{
+                $area = D('area');
+                $arealist = $area->where(['parentid' => $id])->select();
+                $totalData = S('TotalData');
+                $data = array();
+                foreach($arealist as $k=>$v){
+                    foreach($totalData as $areaid=>$v2){
+                        if($v2['areaid']==$v['areaid']){
+                            $data[$v['areaid']] = $v;
+                            $agent_data = $this->getAgentNameAndDownLine($v['areaid']);
+                            foreach($agent_data as $k3=>$v3){
+                                $data[$v['areaid']]['truename'] = $v3['truename'];
+                                $data[$v['areaid']]['count'] = $v3['count'];
+                            }
+                            $data[$v['areaid']]['tamount'] += $v2['tamount'];
+                        }
+                    }
+                }
+            }
+            return $data;
+        }
+    }
+
+    //获取县数据
+    public function getCountyTotal(){
+        $id = I('get.cid');
+        if(!empty($id)){
+            $area = D('area');
+            $arealist = $area->where(['parentid' => $id])->select();
+            $totalData = S('TotalData');
+            $data = array();
+            foreach($arealist as $k=>$v){
+                foreach($totalData as $areaid=>$v2){
+                    if($v2['areaid']==$v['areaid']){
+                        $data[$v['areaid']] = $v;
+                        $agent_data = $this->getAgentNameAndDownLine($v['areaid']);
+                        foreach($agent_data as $k3=>$v3){
+                            $data[$v['areaid']]['truename'] = $v3['truename'];
+                            $data[$v['areaid']]['count'] = $v3['count'];
+                        }
+                        $data[$v['areaid']]['tamount'] += $v2['tamount'];
+                    }
+                }
+            }
+            return $data;
+        }
     }
 
     //各县合作商金额统计

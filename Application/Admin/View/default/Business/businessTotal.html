@@ -97,7 +97,10 @@
         <div class="provice">
             <ul>
                 <foreach name="provice" item="vo">
-                    <li class="p_{$vo['areaid']}"><a href="{:U('Business/businessTotal',array('pid'=>$vo['areaid']))}">{$vo['areaname']}{$vo.totalmoney}{$vo['count']}</a>
+                    <li class="p_{$vo['areaid']}"><a href="{:U('Business/businessTotal',array('pid'=>$vo['areaid']))}">{$vo['areaname']}
+                        <if condition="$vo.tamount gt 0"><font>金额：{$vo.tamount}</font></if>
+                        <if condition="$vo.count gt 0"><font>代理商：{$vo['count']}</font></if>
+                    </a>
                     </li>
                 </foreach>
             </ul>
@@ -107,7 +110,10 @@
             <ul>
                 <foreach name="city" item="vo">
                     <li class="c_{$vo['areaid']}"><a
-                            href="{:U('Business/businessTotal',array('pid'=>$vo['parentid'],'cid'=>$vo['areaid']))}">{$vo['areaname']}{$vo['truename']}{$vo.totalmoney}{$vo['count']}</a>
+                            href="{:U('Business/businessTotal',array('pid'=>$vo['parentid'],'cid'=>$vo['areaid']))}">{$vo['areaname']}
+                            <if condition="$vo.tamount gt 0"><font>金额：{$vo.tamount}</font></if>
+                            <if condition="$vo.count gt 0"><font>代理商：{$vo['count']}</font></if>
+                    </a>
                     </li>
                 </foreach>
             </ul>
@@ -117,7 +123,10 @@
             <ul>
                 <foreach name="county" item="vo">
                     <li>
-                        <a href="javascript:void(0)">{$vo['areaname']}{$vo['truename']}{$vo['totalmoney']}{$vo['count']}</a>
+                        <a href="javascript:void(0)">{$vo['areaname']}
+                            <if condition="$vo.truename neq ''"><font>合作商：{$vo['truename']}</font></if>
+                            <if condition="$vo.tamount gt 0"><font>金额：{$vo['tamount']}</font></if>
+                            <if condition="$vo.count gt 0"><font>下线数：{$vo['count']}</font></if></a>
                     </li>
                 </foreach>
             </ul>
