@@ -56,7 +56,7 @@ if(account_hidden == 1){
     layer.msg('账号重复，请重新输入');
     return false;
 }
-$.post("__SELF__",{"account":account,"password":password,"group_id":group_id},function(data){
+$.post("{:U('Admin/admin_add')}",{"account":account,"password":password,"group_id":group_id},function(data){
     if(data == 1){
         layer.msg('添加成功，正在跳转中...',{icon: 1,time: 2000,shade: [0.8, '#393D49']},function(){
               parent.window.location.reload();    //刷新父页面
