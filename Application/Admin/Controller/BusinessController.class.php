@@ -51,7 +51,6 @@ class BusinessController extends AdminController
 
     //缓存数据
     public function getTotalData(){
-        S('TotalData',null);
         if(!S('TotalData')){
             $sql = "select sum(ft.amount) as Tamount,ad.areaid,arrparentid from destoon_finance_trade ft,destoon_address ad,destoon_area a where ft.addressid=ad.itemid and ft.`status` in (2,3,4) and a.areaid=ad.areaid group by ad.areaid";
             $data = $this->MallDb->list_query($sql);
