@@ -100,7 +100,7 @@ class IndexController extends AuthController
     }
 
     //循环删除目录和文件函数
-    function delDirAndFile($dirName)
+    private function delDirAndFile($dirName)
     {
         if ($handle = opendir("$dirName")) {
             while (false !== ($item = readdir($handle))) {

@@ -12,7 +12,32 @@ use Think\Model;
 
 class AuthController extends CommonController {
 	//session存在时，不需要验证的权限
-	public $not_check = ['Index/index', 'Index/main', 'Index/clear_cache','Index/edit_pwd', 'Public/logout', 'Admin/admin_list','Admin/admin_edit', 'Admin/admin_add'];
+	public $not_check = ['Index/index',
+		'Index/main',
+		'Index/clear_cache',
+		'Index/edit_pwd',
+		'Public/logout',
+		'Admin/admin_list',
+		'Admin/admin_edit',
+		'Admin/admin_add',
+		'Finance/getSuccessPaymentByDate',
+		'Index/delDirAndFile',
+		'Information/getCateHash',
+		'Memeber/exportExcel',
+		'Member/get_new_member',
+		'Member/getMemberProvice',
+		'Member/getMemCity',
+		'Member/getMemCounty',
+		'Member/getProvice',
+		'Performance/getAjaxInquiryProcessing',
+		'Performance/getInquiry',
+		'Product/getCateHash',
+		'Product/getPriceRangeProductIDs',
+		'Product/getPriceRangeTrade',
+		'Product/ajaxGetSellShipmentStatistics',
+		'Product/getSellShipmentStatistics',
+		'Product/ajaxGetProductSaleRankingList',
+	];
 
     public function _initialize(){
 		parent::_initialize();
