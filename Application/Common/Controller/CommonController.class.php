@@ -68,6 +68,89 @@ abstract class CommonController extends Controller
         $this->now_d_start = strtotime($this->now_Y . '-' . $this->now_m . '-' .$this->now_d . ' 00:00:00');
     }
 
+    protected function getAreaChildIds($area_id)
+    {
+        $Area = D('Area');
+        $x = $Area->where(['parentid'=>$area_id])->field("areaid")->select();
+        return Tools::getCols($x,'areaid');
+    }
+
+    /**
+     * 从市获取所有县区
+     * @param $city_id
+     * @return []
+     */
+    protected function getCountyIdsFromCityId($city_id)
+    {
+        return $this->getAreaChildIds($city_id);
+    }
+
+    /**
+     * 从省获取所有市
+     * @param $provice
+     * @return []
+     */
+    protected function getCityIdsFromProviceId($provice_id)
+    {
+        return $this->getCountyIdsFromCityId($provice_id);
+    }
+
+    /**
+     * 从全国获取所有省
+     * @param $provice
+     * @return []
+     */
+    protected function getProviceIdsFromCountry()
+    {
+        $provice = $this->getCountyIdsFromCityId(0);
+        return $provice;
+    }
+
+    /**
+     * 从省获取所有县区
+     * @param $provice
+     * @return []
+     */
+    protected function getCountyIdsFromProviceId($provice_id)
+    {
+        $citys = $this->getCityIdsFromProviceId($provice_id);
+        $county_ids = [];
+        foreach($citys as $k => $v){
+            $x = $this->getCountyIdsFromCityId($v);
+            $county_ids = array_merge($county_ids,$x);
+        }
+        return $county_ids;
+    }
+
+    /**
+     * 从全国获取所有地区子id
+     * @param $area_id
+     * @return []
+     */
+    protected function getCountyIdsFromCountry()
+    {
+        #
+    }
+
+    /**
+     * 获取所有地区
+     * @return [[]]
+     */
+    protected function getAllAreaList()
+    {
+        $areas = D('Area')->cache(true)->field(['areaid'=>'id','areaname','parentid'=>'pid'])->select();
+        return $areas;
+    }
+
+    /**
+     * 获取地区树
+     * @return tree
+     */
+    protected function getAreaTree($root=0)
+    {
+        return Tools::list2tree($this->getAllAreaList(),'id','pid','_child',$root);
+    }
+
     /**
      *  公用查询时间
      */

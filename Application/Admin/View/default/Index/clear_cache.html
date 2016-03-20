@@ -19,7 +19,7 @@ function get_checbbox() {
 //清空缓存
 function clear_caches(){
     var str = get_checbbox();
-    $.get("__SELF__",{"clear":str},function(data){
+    $.get("{:U('Index/clear_cache')}",{"clear":str},function(data){
         if(data == 1){
             layer.msg('清理成功，1 秒后自动关闭',{shift: 5,time: 1000},function(){
                     var index = parent.layer.getFrameIndex(window.name); //获取当前窗体索引
