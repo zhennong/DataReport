@@ -179,16 +179,18 @@ class AdminController extends AuthController{
 	    	}
 	    	$this->assign('data',$data);	// 顶级
     		$this->display();
-    	}	
+    	}
     }
     
     //编辑组
     public function group_edit(){
     	$m = M('auth_group');
+
     	if(!empty($_POST)){
     		$data['id'] = I('id');
     		$data['title'] = I('title');
     		$data['rules'] = implode(',', I('rules'));
+
     		if($m->save($data)){
     			$this->success('修改成功');
     		}else{
@@ -207,8 +209,9 @@ class AdminController extends AuthController{
     			$data[$k]['sub'] = $m->field('id,title')->where('pid ='.$v['id'])->select();
     		}
     		$this->assign('data',$data);
-    		$this->display();    		
+			$this->display();
     	}
+
     }
 
     //删除组
