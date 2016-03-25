@@ -52,23 +52,31 @@ class MemberController extends AuthController
         $count = $Trade->field('buyer')->where($map)->count(('DISTINCT buyer'));
         $Page = new \Think\Page($count, 20);
         $show = $Page->show();
-        $data = $Trade
-            ->field('buyer,buyer_name,SUM(total) as a,SUM(amount) as b')
-            ->where($map)
-            ->limit($Page->firstRow . ',' . $Page->listRows)
-            ->group('buyer')
-            ->order('b desc')
-            ->select();
+
+        $sql = "SELECT ft.addressid,ft.buyer,ft.buyer_name,ft.buyer_mobile,SUM(ft.total) as a,SUM(ft.amount) as b,ad.areaid FROM destoon_finance_trade AS ft,destoon_address AS ad WHERE ft.addressid = ad.itemid AND status in (2,3,4) GROUP BY buyer LIMIT ".$Page->firstRow . "," . $Page->listRows ;
+        $data = queryMysql($sql);
         $all_amount_count = $Trade->where($map)->field('amount')->sum('amount');
         foreach ($data as $k => $v) {
+            $member_info[$k]['addressid'] = $v['addressid'];
             $member_info[$k]['buyer'] = $v['buyer'];
             $member_info[$k]['buyer_name'] = $v['buyer_name'];
+            $member_info[$k]['buyer_mobile'] = $v['buyer_mobile'];
             $member_info[$k]['total'] = $v['a'];
             $member_info[$k]['amount'] = $v['b'];
             $member_info[$k]['rate'] = round($v['b'] / $all_amount_count * 100, 5);
+            $arealist = getAreaFullNameFromAreaID($v['areaid']);
+            $member_info[$k]['area'] = arr2str($arealist,'');
         }
         $this->assign(['member_info' => $member_info, 'day_s' => $this->month_start, 'day_e' => $this->month_end, 'show' => $show, 'count' => $count]);
         $this->display();
+    }
+
+    protected function getCacheTrade(){
+        if(!S('data')){
+            $sql = "SELECT ft.addressid,ft.buyer,ft.buyer_name,ft.buyer_mobile,SUM(ft.total) as a,SUM(ft.amount) as b,ad.areaid FROM destoon_finance_trade AS ft,destoon_address AS ad WHERE ft.addressid = ad.itemid AND status in (2,3,4) GROUP BY buyer";
+            $data = queryMysql($sql);
+            S('data',$data);
+        }
     }
 
     //导出Excel表
@@ -78,7 +86,9 @@ class MemberController extends AuthController
         $map['status'] = array('in', '2,3,4');
         $map['status'] = array('neq', '');
         if (I('get.type') == 'export') {
-            $data = $Trade->field('DISTINCT buyer,buyer_name,SUM(total) as a,SUM(amount) as b')->where($map)->group('buyer')->order('b desc')->select();
+
+            $this->getCacheTrade();
+            $data = S('data');
             $all_amount_count = $Trade->where($map)->field('amount')->sum('amount');
             foreach ($data as $k => $v) {
                 $member_info[$k]['buyer'] = $v['buyer'];
@@ -86,9 +96,13 @@ class MemberController extends AuthController
                 $member_info[$k]['total'] = $v['a'];
                 $member_info[$k]['amount'] = $v['b'];
                 $member_info[$k]['rate'] = round($v['b'] / $all_amount_count * 100, 5) . '%';
+                $member_info[$k]['buyer_mobile'] = $v['buyer_mobile'];
+//                导出所在地区
+//                $arealist = getAreaFullNameFromAreaID($v['areaid']);
+//                $member_info[$k]['area'] = arr2str($arealist,'');
             }
             $fileName = "会员信息";
-            $headArr = array('账号', '姓名', '购买数量', '交易额', '购买率');
+            $headArr = array('账号', '姓名', '购买数量', '交易额', '购买率','联系电话');
             exportExcel($fileName, $headArr, $member_info); //数据导出
         }
     }
@@ -256,14 +270,14 @@ class MemberController extends AuthController
             $member = D('Member');
             $map['parentid'] = array('eq',$id);
             $data_area = $area->cache(true)->where($map)->select();
-            foreach($data_area AS $k=>$v){
-                $map2['areaid'] = array('in',$v['arrchildid']);
-                $data = $member->cache(true)->field('count(*) as count')->where($map2)->select();
-                foreach($data AS $k2=>$v2){
-                    if($v2['count'] > 0){
-                        $data_area[$k]['count'] = $v2['count'];
-                    }
-                }
+                    foreach($data_area AS $k=>$v){
+                        $map2['areaid'] = array('in',$v['arrchildid']);
+                        $data = $member->cache(true)->field('count(*) as count')->where($map2)->select();
+                        foreach($data AS $k2=>$v2){
+                            if($v2['count'] > 0){
+                                $data_area[$k]['count'] = $v2['count'];
+                            }
+                        }
             }
             return $data_area;
         }

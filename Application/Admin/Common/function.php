@@ -281,7 +281,7 @@ function exportExcel($fileName,$headArr,$data){
 function queryMysql($sql){
     $CountData = D();
     $CountData->db(1,C('BUSINESS_DB'));
-    $data = $CountData->query($sql);
+    $data = $CountData->cache(true)->query($sql);
     return $data;
 }
 
@@ -294,4 +294,25 @@ function getTotalMoney($agareaid = 0){
     $x = get_arr_k_amount($total,'totalmoney');
     $data = $x;
     return $data;
+}
+
+/**
+ * 根据地区id获取地区详细
+ */
+function getAreaFullNameFromAreaID($areaid){
+    $y = getAreaInfoFromAreaID($areaid,$x);
+    return array_reverse($y);
+}
+function getAreaInfoFromAreaID($areaid,&$areaInfo)
+{
+    $tb_area = C('BUSINESS_DB_TABLE_PREFIX')."area";
+    $sql = "SELECT * FROM {$tb_area} WHERE areaid = {$areaid}";
+    $x = queryMysql($sql);
+    if($x[0]['parentid'] == 0){
+        $areaInfo[] = $x[0][areaname];
+    }else{
+        $areaInfo[] = $x[0][areaname];
+        getAreaInfoFromAreaID($x[0]['parentid'],$areaInfo);
+    }
+    return $areaInfo;
 }
