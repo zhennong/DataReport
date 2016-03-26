@@ -3,35 +3,39 @@
 <block name="head"></block>
 
 <block name="body">
-    <include file="Includes/export" />
+    <include file="Includes/export"/>
     <div class="container-fluid">
         <div class="col-lg-12">
             <table id="order_trend_datatable" class="table table-bordered table-hover">
                 <thead>
                 <tr>
-                    <th width="20%">账号</th>
-                    <th width="20%">姓名</th>
-                    <th width="20%">购买数量</th>
-                    <th width="20%">交易额</th>
-                    <th width="20%">购买率</th>
+                    <th>账号</th>
+                    <th>姓名</th>
+                    <th>购买数量</th>
+                    <th>交易额</th>
+                    <th>购买率</th>
+                    <th>联系电话</th>
+                    <th>所在地区</th>
                 </tr>
                 </thead>
                 <tbody>
-                
-                <foreach name="member_info" item="vo" key="k" >
-                <tr>
-                    <td>{$vo['buyer']}</td>
-                    <td>{$vo['buyer_name']}</td>
-                    <td>{$vo['total']}</td>
-                    <td>{$vo['amount']}</td>
-                    <td>{$vo['rate']} %</td>
-                </tr>
+
+                <foreach name="member_info" item="vo" key="k">
+                    <tr>
+                        <td>{$vo['buyer']}</td>
+                        <td>{$vo['buyer_name']}</td>
+                        <td>{$vo['total']}</td>
+                        <td>{$vo['amount']}</td>
+                        <td>{$vo['rate']} %</td>
+                        <td>{$vo['buyer_mobile']}</td>
+                        <td>{$vo['area']}</td>
+                    </tr>
                 </foreach>
                 </tbody>
             </table>
-            
+
             <div class="page"><?= $show ?></div>
         </div>
-        
+
     </div>
 </block>

@@ -57,7 +57,6 @@ class FinanceController extends AdminController
             $mouth_solt_trades[$k]['trade_amount'] = get_arr_k_amount($mouth_solt_trades[$k]['trades'],'amount');
             unset($mouth_solt_trades[$k]['trades']);
         }
-        return $mouth_solt_trades;
     }
 
     /**
