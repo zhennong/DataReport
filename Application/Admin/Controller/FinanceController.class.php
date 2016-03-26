@@ -161,4 +161,66 @@ class FinanceController extends AdminController
         $this->assign(['xAxis'=>$xAxis,'xAxis_data'=>$xAxis_data,'legend'=>$legend,'legend_data'=>$legend_data,'same_year_trades'=>$same_year_trades]);
         $this->display();
     }
+
+    /**
+     * 会员付款列表
+     */
+    public function memberPaymentList()
+    {
+        if($draw = I("get.draw")){
+            // 字段
+            $column = [
+                ['select'=>'buyer','as'=>'buyer'],
+                ['select'=>'buyer_name','as'=>'buyer_name'],
+                ['select'=>'buyer_mobile','as'=>'buyer_mobile'],
+                ['select'=>'SUM(total)','as'=>'trade_total'],
+                ['select'=>'SUM(amount)','as'=>'trade_amount'],
+            ];
+
+            // 预定义
+            $start = $_GET['start'];
+            $limit = $_GET['length'];
+            $order = $_GET['order'];
+            $search[] = "status in(2,3,4)";
+
+            // 重组条件
+            $order = "{$column[$order[0]['column']]['as']} {$order[0]['dir']}";
+            foreach ($_GET['columns'] as $k => $v) {
+                if ($v['search']['value'] != '') {
+                    $search[] = "{$column[$v['data']]['select']} LIKE '%{$v[search][value]}%'";
+                }
+            }
+            $search = Tools::arr2str($search, " AND ");
+            foreach($column as $k => $v){
+                $field[] = "{$v['select']} AS {$v['as']}";
+            }
+            $field = Tools::arr2str($field);
+
+            // 查询总数
+            $Trade = D('Trade');
+            $trade_count = $Trade->field(['count(*)'=>'count'])->where($search)->group("buyer")->select();
+            $total = count($trade_count);
+
+            // 查询数据并重组
+            $data = $Trade->field($field)->where($search)->group("buyer")->order($order)->limit($start,$limit)->select();
+            foreach ($data as $k => $v) {
+                foreach ($column as $key => $value) {
+                    $x[$k][] = $v[$value['as']];
+                }
+            }
+
+            //获取Datatables发送的参数 必要
+            $show = [
+                "draw" => $draw,
+                "recordsTotal" => $total,
+                "recordsFiltered" => $total,
+                "data" => $x,
+            ];
+            $x = json_encode($show);
+            echo $x;
+            exit();
+        }
+        $this->display();
+    }
+
 }
