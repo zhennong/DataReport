@@ -67,7 +67,7 @@ class FinanceController extends AdminController
     public function mouthSoltPayment()
     {
         $this->assign('mouth_solt_trades',$this->getMouthSoltPayment($this->month_start,$this->month_end));
-        $this->display();
+
     }
 
     /**
