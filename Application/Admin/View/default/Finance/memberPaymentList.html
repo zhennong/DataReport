@@ -1,0 +1,77 @@
+<extend name="Layout:ly2"/>
+
+<block name="head">
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var ajax_url = "{:U('Admin/Finance/memberPaymentList')}";
+            var Table = $('table');
+            var DataTable = Table.DataTable({
+                language: dataTables_zh_CN,
+                pageLength: 10,
+                order: [[3, "desc"]],
+                processing: true,
+                serverSide: true,
+                ajax: ajax_url,
+                initComplete: function () {
+                    var api = this.api();
+                    api.columns().indexes().flatten().each(function (i) {
+                        var column = api.column(i);
+                        if(i!=3&&i!=4&&i!=5&&i!=6){
+                            var search = $('<input type="search" placeholder="查询 ' + $(column.header()).text() +'"/>');
+                            $(column.footer()).empty().html(search);
+                            search.on('keyup',function(){
+                                var val = $.fn.dataTable.util.escapeRegex(
+                                        $(this).val()
+                                );
+                                column.search( val, true, false).draw();
+                            })
+                        }else{
+                            $(column.footer()).empty().html('<input type="search" placeholder="不可查询" readonly/>')
+                        }
+                    });
+                }
+            });
+            $(".dataTables_filter").remove();
+        });
+    </script>
+</block>
+
+<block name="body">
+    <include file="Includes/yearSelect"/>
+    <div class="container-fluid">
+        <h3>会员付款列表</h3>
+        <div class="col-lg-12">
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>会员名</th>
+                    <th>会员帐号</th>
+                    <th>手机</th>
+                    <th>购买量</th>
+                    <th>交易额</th>
+                </tr>
+                </thead>
+                <tfoot>
+                <tr>
+                    <th>会员名</th>
+                    <th>会员帐号</th>
+                    <th>手机</th>
+                    <th>购买量</th>
+                    <th>交易额</th>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</block>
+
+<!--<tbody>-->
+<!--<?php foreach($payList as $k => $v): ?>-->
+<!--<tr>-->
+    <!--<th>{$v['buyer']}</th>-->
+    <!--<th>{$v['buyer_name']}</th>-->
+    <!--<th>{$v['trade_total']}</th>-->
+    <!--<th>{$v['trade_amount']}</th>-->
+<!--</tr>-->
+<!--<?php endforeach; ?>-->
+<!--</tbody>-->
