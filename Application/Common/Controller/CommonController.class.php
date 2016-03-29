@@ -14,10 +14,13 @@ abstract class CommonController extends Controller
 {
     protected $MallDb;
     protected $malldb; //商城数据库链接
+    protected $day_start; // 获取公用开始时间
+    protected $day_end;   // 获取公用结束时间
     protected $month_start; // 获取公用开始时间
     protected $month_end;   // 获取公用结束时间
     protected $year_start; // 获取公用开始时间
     protected $year_end;   // 获取公用结束时间
+    protected $mapDayRange; // 获取公用查询段
     protected $mapMonthRange; // 获取公用查询段
     protected $mapYearRange; // 获取公用查询段
     protected $now; //当前时间戳
@@ -30,6 +33,7 @@ abstract class CommonController extends Controller
     protected $now_Y_start; //当前年开始时间戳
     protected $now_m_start;
     protected $now_d_start;
+    protected $day_solt; // 所选时间内各个月时间段
     protected $month_solt; // 所选时间内各个月时间段
     protected $year_solt; // 所选时间内各个年时间段
 
@@ -155,6 +159,17 @@ abstract class CommonController extends Controller
      *  公用查询时间
      */
     private function getRange(){
+        if (I('day_start') && I('day_end')) {
+            $this->day_start = strtotime(I('day_start') . "-01 00:00:00");
+            $this->day_end = strtotime(I('day_end') . "-01 23:59:59");
+        } else {
+            $this->day_start = strtotime($this->now_Y . "-01-01 00:00:00");
+            $this->day_end = time();
+        }
+        $this->day_solt = get_day_solt($this->day_start,$this->day_end);
+        $this->assign(['day_start' => $this->day_start, 'day_end' => $this->day_end]);
+        $this->mapDayRange = [['gt',$this->day_start],['lt',$this->day_end]];
+
         if (I('month_start') && I('month_end')) {
             $this->month_start = strtotime(I('month_start') . "-01 00:00:00");
             $this->month_end = strtotime(I('month_end') . "-01 23:59:59");

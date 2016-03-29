@@ -1,0 +1,41 @@
+<div class="container-fluid padding">
+    <form id="date_select_form" class="form-inline" method="post" action="__SELF__" onsubmit="return check_date_input()">
+        <div class="form-group">
+            <label for="day_start">开始日期</label>
+            <input type="text" name="day_start" value="{:date('Y-m-d',$day_start)}" class="form-control" id="day_start" placeholder="开始日期">
+        </div>
+        <div class="form-group margin-left">
+            <label for="day_end">结束日期</label>
+            <input type="text" name="day_end" value="{:date('Y-m-d',$day_end)}" class="form-control" id="day_end" placeholder="结束日期">
+        </div>
+        <button type="submit" class="btn btn-default">提交</button>
+    </form>
+
+    <script>
+        //日期验证结束时间必须大于开始时间
+        function check_date_input(){
+            var day_start = $("#day_start").val();
+            var day_end = $("#day_end").val();
+            if(formatTime(day_end) < formatTime(day_start)){
+                alert('结束日期必须大于开始日期');
+                $("#day_end").val("").focus();
+                return false;
+            }
+            return true;
+        }
+
+        //日期控件配置
+        $(document).ready(function () {
+            var datetimepicker_config = {
+                format:"yyyy-mm-dd",
+                autoclose:true,
+                startView:2,
+                maxView:4,
+                minView:2,
+                language:"zh-CN"
+            };
+            $("#day_start").datetimepicker(datetimepicker_config);
+            $("#day_end").datetimepicker(datetimepicker_config);
+        });
+    </script>
+</div>

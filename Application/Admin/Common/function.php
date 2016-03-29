@@ -147,6 +147,32 @@ function diffdate($date1, $date2){
 }
 
 /**
+ * 获取每日时间段
+ * @param $start_ts
+ * @param $end_ts
+ * @return [
+ *      ['k'=>[
+ *          'start'=>['ts'=>timestrap,'date'=>'Y-m'],
+ *          'end'=>['ts'=>timestrap,'date'=>'Y-m'],
+ *      ]]
+ * ]
+ */
+function get_day_solt($start_ts,$end_ts){
+    $day_solt = [];
+    $x = $start_ts;
+    $i = 1;
+    while($x < $end_ts){
+        $day_solt[$i]['start']['ts'] = $x;
+        $day_solt[$i]['start']['date'] = date("Y-m-d", $x);
+        $x = strtotime("+{$i} Day", $start_ts);
+        $day_solt[$i]['end']['ts'] = $x;
+        $day_solt[$i]['end']['date'] = date("Y-m-d", $x);
+        $i++;
+    }
+    return $day_solt;
+}
+
+/**
  * 获取每月时间段
  * @param $start_ts
  * @param $end_ts
