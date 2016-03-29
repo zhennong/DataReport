@@ -45,7 +45,7 @@ class BehaviorController extends AdminController
         $Page = new \Think\Page($count, 25);
         $pages = $Page->show();
         $_GET['p'] = $_GET['p'] ? $_GET['p'] : 1;
-        $list = $orderOperation->order('addtime DESC')->limit($_GET['p'],25)->select();
+        $list = $orderOperation->order('addtime DESC')->select();
         $this->assign('list', $list);
         $this->assign('pages', $pages);
         $this->display();
