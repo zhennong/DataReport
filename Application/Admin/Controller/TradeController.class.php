@@ -65,6 +65,7 @@ class TradeController extends AdminController
 //        $this->display();
 
         //按照天数统计
+
         $day_solt = get_day_solt($this->day_start,$this->day_end);
         $model = D('Trade');
         foreach ($day_solt as $k => $v) {

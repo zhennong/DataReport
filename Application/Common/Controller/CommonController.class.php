@@ -160,10 +160,10 @@ abstract class CommonController extends Controller
      */
     private function getRange(){
         if (I('day_start') && I('day_end')) {
-            $this->day_start = strtotime(I('day_start') . "-01 00:00:00");
-            $this->day_end = strtotime(I('day_end') . "-01 23:59:59");
+            $this->day_start = strtotime(I('day_start') . " 00:00:00");
+            $this->day_end = strtotime(I('day_end') . " 23:59:59");
         } else {
-            $this->day_start = strtotime($this->now_Y . "-01-01 00:00:00");
+            $this->day_start = strtotime('-1 week');
             $this->day_end = time();
         }
         $this->day_solt = get_day_solt($this->day_start,$this->day_end);
