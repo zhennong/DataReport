@@ -1,5 +1,16 @@
 <extend name="Layout:ly2"/>
 <block name="head">
+    <script>
+        $(document).ready(function () {
+            var Table = $("table");
+            var ajax_url = "{:U('OrderOperation')}";
+            var DataTable = Table.DataTable({
+                language: dataTables_zh_CN,
+                pageLength: 10,
+            });
+
+        });
+    </script>
 </block>
 
 <block name="body">
@@ -8,6 +19,7 @@
 
         <div class="panel-body">
             <table class="table table-hover table-bordered table-condensed form-inline">
+                <thead>
                 <tr>
                     <th>行为ID</th>
                     <th>改价人账号</th>
@@ -17,6 +29,7 @@
                     <th>修改类型</th>
                     <th>理由</th>
                 </tr>
+                </thead>
                 <foreach name="list" item="vo">
                     <tr>
                         <td>{$vo.tradeid}</td>
@@ -25,18 +38,24 @@
                         <td>{$vo.goal}</td>
                         <td>{$vo.addtime|date="Y-m-d H:i:s",###}</td>
 
-                        <td><if condition="$vo.type eq price">
-                            产品单价<else />订单总价
-                        </if></td>
-                        <td><switch name="vo.gjreason">
-                            <case value="0">客户补差价</case>
-                            <case value="1">厂家降价</case>
-                            <case value="2">简述变更</case>
-                            <case value="3">使用了优惠卷</case>
-                            <case value="5">其他市场价格便宜</case>
-                            <case value="6">市场发货改为厂家发货，便宜了</case>
-                            <default/>暂无订单状态
-                        </switch>
+                        <td>
+                            <if condition="$vo.type eq price">
+                                产品单价
+                                <else/>
+                                订单总价
+                            </if>
+                        </td>
+                        <td>
+                            <switch name="vo.gjreason">
+                                <case value="0">客户补差价</case>
+                                <case value="1">厂家降价</case>
+                                <case value="2">简述变更</case>
+                                <case value="3">使用了优惠卷</case>
+                                <case value="5">其他市场价格便宜</case>
+                                <case value="6">市场发货改为厂家发货，便宜了</case>
+                                <default/>
+                                暂无订单状态
+                            </switch>
                         </td>
                     </tr>
                 </foreach>

@@ -1,15 +1,17 @@
-<extend name="Layout:ly2" />
+<extend name="Layout:ly2"/>
 <block name="head">
-        <script>
-            $(document).ready(function () {
-                var Table = $("table");
-                var ajax_url = "{:U('OrderOperation')}";
-                var DataTable = Table.DataTable({
-                    language: dataTables_zh_CN,
-                    pageLength: 10
-                });
+
+    <script>
+        $(document).ready(function () {
+            var Table = $("table");
+            var ajax_url = "{:U('OrderOperation')}";
+            var DataTable = Table.DataTable({
+                language: dataTables_zh_CN,
+                pageLength: 10,
             });
-        </script>
+
+        });
+    </script>
 </block>
 <block name="body">
     <div class="panel panel-primary">
@@ -26,29 +28,31 @@
                     <th>订单状态</th>
                 </tr>
                 </thead>
-                <foreach name="list" item="vo" >
+                <foreach name="list" item="vo">
                     <tr>
                         <td>{$vo.itemid}</td>
                         <td>{$vo.tradeid}</td>
                         <td>{$vo.editor}</td>
                         <td>{$vo.addtime|date="Y-m-d H:i:s",###}</td>
-                        <td><switch name="vo.status">
-                            <case value="0">买家发起订单,等待卖家确认</case>
-                            <case value="1">卖家已确认订单,等待买家付款</case>
-                            <case value="2">买家已付款等待卖家发货</case>
-                            <case value="3">卖家已发货等待买家确认</case>
-                            <case value="4">交易成功</case>
-                            <case value="5">卖家申请退款</case>
-                            <case value="6">已退款给买家</case>
-                            <case value="7">买家关闭交易</case>
-                            <case value="8">卖家关闭交易</case>
-                            <case value="9">订单处理中</case>
-                            <case value="10">已通知客户提货,7日后将交易自动完成</case>
-                            <default/>暂无订单状态
-                        </switch>
+                        <td>
+                            <switch name="vo.status">
+                                <case value="0">买家发起订单,等待卖家确认</case>
+                                <case value="1">卖家已确认订单,等待买家付款</case>
+                                <case value="2">买家已付款等待卖家发货</case>
+                                <case value="3">卖家已发货等待买家确认</case>
+                                <case value="4">交易成功</case>
+                                <case value="5">卖家申请退款</case>
+                                <case value="6">已退款给买家</case>
+                                <case value="7">买家关闭交易</case>
+                                <case value="8">卖家关闭交易</case>
+                                <case value="9">订单处理中</case>
+                                <case value="10">已通知客户提货,7日后将交易自动完成</case>
+                                <default/>
+                                暂无订单状态
+                            </switch>
                     </tr>
                 </foreach>
             </table>
         </div>
     </div>
-    </block>
+</block>
