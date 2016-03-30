@@ -31,7 +31,7 @@ class BehaviorController extends AdminController
         $list = $change->order('addtime DESC')->limit($_GET['p'],25)->select();
         $this->assign('list', $list);
         $this->assign('pages', $pages);
-
+        $this->display();
     }
 
     /*
