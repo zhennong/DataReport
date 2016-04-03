@@ -8,6 +8,8 @@
 
 namespace Admin\Controller;
 
+use Common\Tools;
+
 class TradeController extends AdminController
 {
 
@@ -184,5 +186,84 @@ class TradeController extends AdminController
 	$yeartrade_total = implode(",",str_replace(0,'',$yeartrade_total));		
 	$this->assign(['yeartrade_name'=>$yeartrade_name,'yeartrade_total'=>$yeartrade_total]);
 	$this->display();	
+    }
+
+    /**
+     * 订单列表
+     */
+    public function orderList()
+    {
+        // 字段
+        $column = [
+            ['select'=>'trade.itemid','as'=>'trade_id','show_name'=>'订单id'],
+            ['select'=>'product.company','as'=>'company','show_name'=>'公司'],
+            ['select'=>'product.cj','as'=>'cj','show_name'=>'厂家'],
+            ['select'=>'trade.title','as'=>'title','show_name'=>'产品名'], // 产品
+            ['select'=>'trade.note','as'=>'standard','show_name'=>'规格'],
+            ['select'=>'trade.total','as'=>'total','show_name'=>'购买数'],
+            ['select'=>'trade.status','as'=>'status','show_name'=>'状态编号'],
+        ];
+        if($draw = I("get.draw")){
+            // 预定义
+            $start = $_GET['start'];
+            $limit = $_GET['length'];
+            $order = $_GET['order'];
+            $search[] = " 1=1 ";
+
+            // 重组条件
+            $order = "{$column[$order[0]['column']]['as']} {$order[0]['dir']}";
+            foreach ($_GET['columns'] as $k => $v) {
+                if ($v['search']['value'] != '') {
+                    $search[] = "{$column[$v['data']]['select']} LIKE '%{$v[search][value]}%'";
+                }
+            }
+            $search = Tools::arr2str($search, " AND ");
+            foreach($column as $k => $v){
+                $field[] = "{$v['select']} AS {$v['as']}";
+            }
+            $field = Tools::arr2str($field);
+
+            // 查询总数
+            $sql = "SELECT {$field} FROM __MALL_finance_trade AS trade
+                LEFT JOIN __MALL_sell_5 AS product ON trade.p_id = product.itemid
+                WHERE {$search}
+                ORDER BY {$order}";
+            $sql = "SELECT COUNT(x.trade_id) as total FROM ({$sql}) AS x ";
+            Tools::_vp($this->MallDb->getSql($sql),0,2);
+            $x = $this->MallDb->list_query($sql);
+            $total = $x[0]['total'];
+
+            // 查询数据并重组
+            $sql = "SELECT {$field} FROM __MALL_finance_trade AS trade
+                LEFT JOIN __MALL_sell_5 AS product ON trade.p_id = product.itemid
+                WHERE {$search}
+                ORDER BY {$order}
+                LIMIT {$start}, {$limit}";
+//            Tools::_vp($this->MallDb->getSql($sql),0,2);
+            $data = $this->MallDb->list_query($sql);
+            foreach ($data as $k => $v) {
+                foreach ($column as $key => $value) {
+                    $x[$k][] = $v[$value['as']];
+                }
+            }
+
+            //获取Datatables发送的参数 必要
+            $show = [
+                "draw" => $draw,
+                "recordsTotal" => $total,
+                "recordsFiltered" => $total,
+                "data" => $x,
+            ];
+            $x = json_encode($show);
+            echo $x;
+            exit();
+        }else{
+            $sql = "SELECT trade.* FROM __MALL_finance_trade AS trade
+            LEFT JOIN __MALL_sell_5 AS product ON trade.p_id = product.itemid
+            LIMIT 0,100";
+            $orderList = $this->MallDb->list_query($sql);
+            $this->assign(['column'=>$column,'orderList'=>$orderList]);
+            $this->display();
+        }
     }
 }
