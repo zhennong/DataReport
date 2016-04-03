@@ -29,22 +29,6 @@ class TradeController extends AdminController
      */
     public function orderTrend()
     {
-        $mouth_solt = get_month_solt($this->month_start,$this->month_end);
-        $model = D('Trade');
-        foreach ($mouth_solt as $k => $v) {
-            $map['addtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
-            $map['status'] = ['in', '2,3,4'];
-            $mouth_solt_trades[$k]['trades'] = $model->field('itemid,amount')->where($map)->select();
-            $x = count($mouth_solt_trades[$k]['trades']);
-            $x = $x==0?'':$x;
-            $mouth_solt_trades[$k]['trade_total'] = $x;
-            $y = get_arr_k_amount($mouth_solt_trades[$k]['trades'],'amount');
-            $y = $y==0?'':$y;
-            $mouth_solt_trades[$k]['trade_amount'] = $y;
-            $mouth_solt_trades[$k]['mouth_solt'] = $v;
-            $mouth_solt_trades[$k]['mouth_name'] = date("Y-m", $v['start']['ts']);
-            unset($mouth_solt_trades[$k]['trades']);
-        }
         /**
          * $mouth_solt_trades = [
          *   ['k'=>[
@@ -61,7 +45,46 @@ class TradeController extends AdminController
          *   ]]
          * ];
          */
-        $this->assign(['mouth_solt_trades' => $mouth_solt_trades]);
+
+        //按照统计
+//        $mouth_solt = get_day_solt($this->month_start,$this->month_end);
+//        $model = D('Trade');
+//        foreach ($mouth_solt as $k => $v) {
+//            $map['addtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
+//            $map['status'] = ['in', '2,3,4'];
+//            $mouth_solt_trades[$k]['trades'] = $model->field('itemid,amount')->where($map)->select();
+//            $x = count($mouth_solt_trades[$k]['trades']);
+//            $x = $x==0?'':$x;
+//            $mouth_solt_trades[$k]['trade_total'] = $x;
+//            $y = get_arr_k_amount($mouth_solt_trades[$k]['trades'],'amount');
+//            $y = $y==0?'':$y;
+//            $mouth_solt_trades[$k]['trade_amount'] = $y;
+//            $mouth_solt_trades[$k]['mouth_solt'] = $v;
+//            $mouth_solt_trades[$k]['mouth_name'] = date("Y-m", $v['start']['ts']);
+//            unset($mouth_solt_trades[$k]['trades']);
+//        }
+//        $this->assign(['mouth_solt_trades' => $mouth_solt_trades]);
+//        $this->display();
+
+        //按照天数统计
+
+        $day_solt = get_day_solt($this->day_start,$this->day_end);
+        $model = D('Trade');
+        foreach ($day_solt as $k => $v) {
+            $map['addtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
+            $map['status'] = ['in', '2,3,4'];
+            $day_solt_trades[$k]['trades'] = $model->field('itemid,amount')->where($map)->select();
+            $x = count($day_solt_trades[$k]['trades']);
+            $x = $x==0?'':$x;
+            $day_solt_trades[$k]['trade_total'] = $x;
+            $y = get_arr_k_amount($day_solt_trades[$k]['trades'],'amount');
+            $y = $y==0?'':$y;
+            $day_solt_trades[$k]['trade_amount'] = $y;
+            $day_solt_trades[$k]['day_solt'] = $v;
+            $day_solt_trades[$k]['day_name'] = date("Y-m-d", $v['start']['ts']);
+            unset($day_solt_trades[$k]['trades']);
+        }
+        $this->assign(['day_solt_trades' => $day_solt_trades]);
         $this->display();
     }
 

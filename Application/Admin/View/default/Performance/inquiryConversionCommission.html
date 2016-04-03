@@ -1,16 +1,7 @@
 <extend name="Layout:ly2"/>
 
 <block name="head">
-    <script>
-        $(document).ready(function () {
-            var Table = $("table");
-            var ajax_url = "{:U('inquiryConversionCommission')}";
-            var DataTable = Table.DataTable({
-                language: dataTables_zh_CN,
-                pageLength: 10
-            });
-        });
-    </script>
+
 </block>
 
 <block name="body">
@@ -25,6 +16,7 @@
                     <th>转换数</th>
                 </tr>
                 </thead>
+
                 <tbody>
                 <?php foreach($list as $k => $v): ?>
                     <tr>
