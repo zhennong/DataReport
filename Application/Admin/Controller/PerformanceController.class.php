@@ -42,6 +42,7 @@ class PerformanceController extends AuthController
             // 询价统计
             $departmembers[$k]['inquiry_status'] = $this->getInquiry($v['username'],true);
         }
+
         $this->assign(['departmembers'=>$departmembers]);
         $this->display();
     }

@@ -7,10 +7,12 @@
  */
 
 namespace Admin\Controller;
-
+use Admin\FixedData;
 use Common\Tools;
+
 class BehaviorController extends AdminController
 {
+    use FixedData;
     //默认配置 对栏目权限判断
     public function behavior_index()
     {
@@ -80,6 +82,12 @@ class BehaviorController extends AdminController
             foreach ($data as $k => $v) {
                 foreach ($column as $key => $value) {
                     $x[$k][] = $v[$value['as']];
+//                    if($value == 'addtime'){
+//                        $x[$k][] = date("Y-m-d H:i:s", $v[$value]);
+//                    }else{
+//                        $x[$k][] = $v[$value];
+//                    }
+                    $data[$k]['status'] = $this->order_status[$v['status_id']]['status_name'];
                 }
             }
             //获取Datatables发送的参数 必要
@@ -96,15 +104,3 @@ class BehaviorController extends AdminController
         $this->display();
     }
 }
-//                            {$vo.addtime|date="Y-m-d H:i:s",###}
-//                            <case value="0">买家发起订单,等待卖家确认</case>
-//                            <case value="1">卖家已确认订单,等待买家付款</case>
-//                            <case value="2">买家已付款等待卖家发货</case>
-//                            <case value="3">卖家已发货等待买家确认</case>
-//                            <case value="4">交易成功</case>
-//                            <case value="5">卖家申请退款</case>
-//                            <case value="6">已退款给买家</case>
-//                            <case value="7">买家关闭交易</case>
-//                            <case value="8">卖家关闭交易</case>
-//                            <case value="9">订单处理中</case>
-//                            <case value="10">已通知客户提货,7日后将交易自动完成</case>

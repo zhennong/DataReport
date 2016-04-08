@@ -39,4 +39,18 @@ trait FixedData
         '5' => ['depart_id' => 1, 'depart_name' => '财务部'],
         '6' => ['depart_id' => 1, 'depart_name' => '货运部'],
     ];
+    //订单状态
+    public $order_status = [
+        '0' =>['status_id'=>1, 'status_name' => '买家发起订单,等待卖家确认'],
+        '1' =>['status_id'=>1, 'status_name' => '卖家已确认订单,等待买家付款'],
+        '2' =>['status_id'=>1, 'status_name' => '买家已付款等待卖家发货'],
+        '3' =>['status_id'=>1, 'status_name' => '卖家已发货等待买家确认'],
+        '4' =>['status_id'=>1, 'status_name' => '交易成功'],
+        '5' =>['status_id'=>1, 'status_name' => '卖家申请退款'],
+        '6' =>['status_id'=>1, 'status_name' => '已退款给买家'],
+        '7' =>['status_id'=>1, 'status_name' => '买家关闭交易'],
+        '8' =>['status_id'=>1, 'status_name' => '卖家关闭交易'],
+        '9' =>['status_id'=>1, 'status_name' => '订单处理中'],
+        '10' =>['status_id'=>1, 'status_name' => '已通知客户提货,7日后将交易自动完成'],
+    ];
 }
