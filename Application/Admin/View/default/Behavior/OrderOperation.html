@@ -15,7 +15,7 @@
                     var api = this.api();
                     api.columns().indexes().flatten().each(function (i) {
                         var column = api.column(i);
-                        if(i!=3&&i!=4&&i!=5&&i!=6){
+                        if(i!=5&&i!=6){
                             var search = $('<input type="search" placeholder="查询 ' + $(column.header()).text() +'"/>');
                             $(column.footer()).empty().html(search);
                             search.on('keyup',function(){

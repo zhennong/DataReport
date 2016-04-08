@@ -96,7 +96,7 @@ class BehaviorController extends AdminController
         $this->display();
     }
 }
-//                              {$vo.addtime|date="Y-m-d H:i:s",###}
+//                            {$vo.addtime|date="Y-m-d H:i:s",###}
 //                            <case value="0">买家发起订单,等待卖家确认</case>
 //                            <case value="1">卖家已确认订单,等待买家付款</case>
 //                            <case value="2">买家已付款等待卖家发货</case>
