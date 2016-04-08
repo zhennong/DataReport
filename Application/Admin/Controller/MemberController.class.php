@@ -67,6 +67,7 @@ class MemberController extends AuthController
             $arealist = getAreaFullNameFromAreaID($v['areaid']);
             $member_info[$k]['area'] = arr2str($arealist,'');
         }
+
         $this->assign(['member_info' => $member_info, 'day_s' => $this->month_start, 'day_e' => $this->month_end, 'show' => $show, 'count' => $count]);
         $this->display();
     }
