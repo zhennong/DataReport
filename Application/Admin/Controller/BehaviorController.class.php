@@ -84,11 +84,6 @@ class BehaviorController extends AdminController
                 $data[$k]['addtime'] = $v['addtime'] = date("Y-m-d H:i:s", $v['addtime']);
                 foreach ($column as $key => $value) {
                     $x[$k][] = $v[$value['as']];
-//                    if($value == 'addtime'){
-//                        $x[$k][] = date("Y-m-d H:i:s", $v[$value]);
-//                    }else{
-//                        $x[$k][] = $v[$value];
-//                    }
                 }
             }
             //获取Datatables发送的参数 必要
