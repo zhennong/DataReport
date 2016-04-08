@@ -80,6 +80,8 @@ class BehaviorController extends AdminController
              //查询数据并重组
             $data = $orderOperation->field($field)->where($search)->group("itemid")->order($order)->limit($start, $limit)->select();
             foreach ($data as $k => $v) {
+                $data[$k]['status'] = $v['status'] = $this->order_status[$v['status']]['status_name'];
+                $data[$k]['addtime'] = $v['addtime'] = date("Y-m-d H:i:s", $v['addtime']);
                 foreach ($column as $key => $value) {
                     $x[$k][] = $v[$value['as']];
 //                    if($value == 'addtime'){
@@ -87,7 +89,6 @@ class BehaviorController extends AdminController
 //                    }else{
 //                        $x[$k][] = $v[$value];
 //                    }
-                    $data[$k]['status'] = $this->order_status[$v['status_id']]['status_name'];
                 }
             }
             //获取Datatables发送的参数 必要
