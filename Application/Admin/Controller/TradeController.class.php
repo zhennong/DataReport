@@ -253,7 +253,7 @@ class TradeController extends AdminController
                 WHERE {$search}
                 ORDER BY {$order}";
             $sql = "SELECT COUNT(x.trade_id) as total FROM ({$sql}) AS x ";
-            Tools::_vp($this->MallDb->getSql($sql),0,2);
+//            Tools::_vp($this->MallDb->getSql($sql),0,2);
             $x = $this->MallDb->list_query($sql);
             $total = $x[0]['total'];
 
@@ -284,7 +284,7 @@ class TradeController extends AdminController
         }else{
             $sql = "SELECT trade.* FROM __MALL_finance_trade AS trade
             LEFT JOIN __MALL_sell_5 AS product ON trade.p_id = product.itemid
-            LIMIT 0,100";
+            LIMIT 0,10";
             $orderList = $this->MallDb->list_query($sql);
             $this->assign(['column'=>$column,'orderList'=>$orderList]);
             $this->display();
