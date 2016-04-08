@@ -98,8 +98,8 @@ class MemberController extends AuthController
                 $member_info[$k]['rate'] = round($v['b'] / $all_amount_count * 100, 5) . '%';
                 $member_info[$k]['buyer_mobile'] = $v['buyer_mobile'];
 //                导出所在地区
-//                $arealist = getAreaFullNameFromAreaID($v['areaid']);
-//                $member_info[$k]['area'] = arr2str($arealist,'');
+                $arealist = getAreaFullNameFromAreaID($v['areaid']);
+                $member_info[$k]['area'] = arr2str($arealist,'');
             }
             $fileName = "会员信息";
             $headArr = array('账号', '姓名', '购买数量', '交易额', '购买率','联系电话');
