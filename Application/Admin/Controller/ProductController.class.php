@@ -361,10 +361,8 @@ LIMIT {$start}, {$limit}";
             $column = [
                 ['select' => 'itemid', 'as' => 'itemid'],
                 ['select' => 'title', 'as' => 'title'],
-                ['select' => 'buyer', 'as' => 'buyer'],
                 ['select' => 'seller', 'as' => 'seller'],
                 ['select' => 'updatetime', 'as' => 'updatetime'],
-                ['select' => 'status', 'as' => 'status'],
                 ['select' => 'status', 'as' => 'status'],
 
             ];
