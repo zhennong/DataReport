@@ -225,6 +225,7 @@ class TradeController extends AdminController
             ['select'=>'trade.title','as'=>'title','show_name'=>'产品名'], // 产品
             ['select'=>'trade.note','as'=>'standard','show_name'=>'规格'],
             ['select'=>'trade.total','as'=>'total','show_name'=>'购买数'],
+            ['select'=>'trade.amount','as'=>'amount','show_name'=>'总额'],
             ['select'=>'trade.status','as'=>'status','show_name'=>'状态编号'],
         ];
         if($draw = I("get.draw")){
