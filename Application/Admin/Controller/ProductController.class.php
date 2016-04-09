@@ -349,4 +349,70 @@ LIMIT {$start}, {$limit}";
         $x = json_encode($show);
         echo $x;
     }
+
+    /**
+     * ajax获取退款产品排行榜
+     */
+    public function refundProduct()
+    {
+        if ($draw = I("get.draw"))
+        {
+            // 字段
+            $column = [
+                ['select' => 'itemid', 'as' => 'itemid'],
+                ['select' => 'title', 'as' => 'title'],
+                ['select' => 'buyer', 'as' => 'buyer'],
+                ['select' => 'seller', 'as' => 'seller'],
+                ['select' => 'updatetime', 'as' => 'updatetime'],
+                ['select' => 'status', 'as' => 'status'],
+                ['select' => 'status', 'as' => 'status'],
+
+            ];
+
+            // 预定义
+            $start = $_GET['start'];
+            $limit = $_GET['length'];
+            $order = $_GET['order'];
+            $search[] = "status in(6)";
+            // 重组条件
+            $order = "{$column[$order[0]['column']]['as']} {$order[0]['dir']}";
+            foreach ($_GET['columns'] as $k => $v) {
+                if ($v['search']['value'] != '') {
+                    $search[] = "{$column[$v['data']]['select']} LIKE '%{$v[search][value]}%'";
+                }
+            }
+            $search = Tools::arr2str($search, " AND ");
+            foreach ($column as $k => $v) {
+                $field[] = "{$v['select']} AS {$v['as']}";
+            }
+            $field = Tools::arr2str($field);
+
+            // 查询总数
+            $Trade = D('Trade');
+            $order_count = $Trade->field(['count(*)' => 'count'])->where($search)->group("itemid")->select();
+            $total = count($order_count);
+
+            //查询数据并重组
+            $data = $Trade->field($field)->where($search)->group("itemid")->order($order)->limit($start, $limit)->select();
+            foreach ($data as $k => $v) {
+                $data[$k]['status'] = $v['status'] = $this->order_status[$v['status']]['status_name'];
+                $data[$k]['updatetime'] = $v['updatetime'] = date("Y-m-d H:i:s", $v['updatetime']);
+                foreach ($column as $key => $value) {
+                    $x[$k][] = $v[$value['as']];
+                }
+
+            }
+            //获取Datatables发送的参数 必要
+            $show = [
+                "draw" => $draw,
+                "recordsTotal" => $total,
+                "recordsFiltered" => $total,
+                "data" => $x,
+            ];
+            $x = json_encode($show);
+            echo $x;
+            exit();
+        }
+        $this->display();
+    }
 }
