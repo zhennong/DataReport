@@ -46,7 +46,7 @@ trait FixedData
         '2' =>['status_id'=>1, 'status_name' => '买家已付款等待卖家发货'],
         '3' =>['status_id'=>1, 'status_name' => '卖家已发货等待买家确认'],
         '4' =>['status_id'=>1, 'status_name' => '交易成功'],
-        '5' =>['status_id'=>1, 'status_name' => '卖家申请退款'],
+        '5' =>['status_id'=>1, 'status_name' => '买家申请退款'],
         '6' =>['status_id'=>1, 'status_name' => '已退款给买家'],
         '7' =>['status_id'=>1, 'status_name' => '买家关闭交易'],
         '8' =>['status_id'=>1, 'status_name' => '卖家关闭交易'],
