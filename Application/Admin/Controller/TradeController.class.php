@@ -216,16 +216,24 @@ class TradeController extends AdminController
      */
     public function orderList()
     {
+        $day_search = I("get.search");
+        $day_search = Tools::str2arr($day_search['value']);
+        $this->day_start = strtotime($day_search[0] . ' 00:00:00');
+        $this->day_end = strtotime($day_search[1] . ' 00:00:00');
         // 字段
         $column = [
             ['select'=>'trade.itemid','as'=>'trade_id','show_name'=>'itemid'],
             ['select'=>'trade.order','as'=>'order_id','show_name'=>'订单编号'],
+            ['select'=>'trade.buyer','as'=>'buyer','show_name'=>'买家'],
+            ['select'=>'trade.buyer_name','as'=>'buyer_name','show_name'=>'买家姓名'],
+            ['select'=>'trade.buyer_phone','as'=>'buyer_phone','show_name'=>'买家电话'],
             ['select'=>'product.company','as'=>'company','show_name'=>'公司'],
             ['select'=>'product.cj','as'=>'cj','show_name'=>'厂家'],
             ['select'=>'trade.title','as'=>'title','show_name'=>'产品名'], // 产品
             ['select'=>'trade.note','as'=>'standard','show_name'=>'规格'],
             ['select'=>'trade.total','as'=>'total','show_name'=>'购买数'],
             ['select'=>'trade.amount','as'=>'amount','show_name'=>'总额'],
+            ['select'=>'trade.pay','as'=>'pay','show_name'=>'支付方式'],
             ['select'=>'trade.status','as'=>'status','show_name'=>'状态编号'],
         ];
         if($draw = I("get.draw")){
@@ -233,7 +241,7 @@ class TradeController extends AdminController
             $start = $_GET['start'];
             $limit = $_GET['length'];
             $order = $_GET['order'];
-            $search[] = " 1=1 ";
+            $search[] = " trade.addtime > {$this->day_start} AND trade.addtime < {$this->day_end} ";
 
             // 重组条件
             $order = "{$column[$order[0]['column']]['as']} {$order[0]['dir']}";
@@ -254,7 +262,7 @@ class TradeController extends AdminController
                 WHERE {$search}
                 ORDER BY {$order}";
             $sql = "SELECT COUNT(x.trade_id) as total FROM ({$sql}) AS x ";
-//            Tools::_vp($this->MallDb->getSql($sql),0,2);
+            Tools::_vp($this->MallDb->getSql($sql),0,2);
             $x = $this->MallDb->list_query($sql);
             $total = $x[0]['total'];
 

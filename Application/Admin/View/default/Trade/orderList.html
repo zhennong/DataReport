@@ -27,11 +27,14 @@
                     });
                 }
             });
+            DataTable.search([$("#day_start").val(),$("#day_end").val()], true, false).draw();
+            $(".dataTables_filter").hide();
         });
     </script>
 </block>
 
 <block name="body">
+    <include file="Includes/daySelect"/>
     <div class="container-fluid padding-top">
         <h1>订单列表：</h1>
         <div class="col-lg-12">
