@@ -263,7 +263,6 @@ class TradeController extends AdminController
                 WHERE {$search}
                 ORDER BY {$order}";
             $sql = "SELECT COUNT(x.trade_id) as total FROM ({$sql}) AS x ";
-            Tools::_vp($this->MallDb->getSql($sql),0,2);
             $x = $this->MallDb->list_query($sql);
             $total = $x[0]['total'];
 

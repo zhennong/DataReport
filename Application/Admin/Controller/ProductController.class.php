@@ -413,4 +413,94 @@ LIMIT {$start}, {$limit}";
         }
         $this->display();
     }
+
+    /**
+     * 产品列表
+     */
+    public function productList()
+    {
+        $day_search = I("get.search");
+        $day_search = Tools::str2arr($day_search['value']);
+        $this->day_start = strtotime($day_search[0] . ' 00:00:00');
+//        $this->day_start = strtotime('2016-01-01 00:00:00');
+        $this->day_end = strtotime($day_search[1] . ' 00:00:00');
+//        $this->day_end = strtotime('2016-05-01 00:00:00');
+        // 字段
+        $column = [
+            ['select'=>'product.itemid','as'=>'product_id','show_name'=>'产品itemid'],
+//            ['select'=>'product.catid','as'=>'catid','show_name'=>'产品类别'],
+            ['select'=>'product.title','as'=>'title','show_name'=>'产品标题'],
+            ['select'=>'product.standard','as'=>'standard','show_name'=>'产品规格'],
+            ['select'=>'product.price','as'=>'price','show_name'=>'产品价格'],
+            ['select'=>'product.yuanprice','as'=>'yuanprice','show_name'=>'原价'],
+            ['select'=>'product.activeid','as'=>'activeid','show_name'=>'活动id'],
+            ['select'=>'product.actprice','as'=>'actprice','show_name'=>'活动价格'],
+            ['select'=>'product.menshiid','as'=>'menshiid','show_name'=>'门市id'],
+            ['select'=>'product.menshiprice','as'=>'menshiprice','show_name'=>'门市价格'],
+            ['select'=>'product.daily_indulgence_yuanprice','as'=>'daily_indulgence_yuanprice','show_name'=>'每日特价原价'],
+            ['select'=>'product.daily_indulgence_price','as'=>'daily_indulgence_price','show_name'=>'每日特价'],
+            ['select'=>'product.buytimes','as'=>'buytimes','show_name'=>'购买次数'],
+//            ['select'=>'product.priceperarea','as'=>'priceperarea','show_name'=>'各地区价格'],
+//            ['select'=>'product.company','as'=>'company','show_name'=>'公司'],
+//            ['select'=>'product.cj','as'=>'cj','show_name'=>'厂家'],
+            ['select'=>'product.status','as'=>'status','show_name'=>'状态'],
+        ];
+        if($draw = I("get.draw")){
+            // 预定义
+            $start = $_GET['start'];
+            $limit = $_GET['length'];
+            $order = $_GET['order'];
+            $search[] = " product.addtime > {$this->day_start} AND product.addtime < {$this->day_end} ";
+
+            // 重组条件
+            $order = "{$column[$order[0]['column']]['as']} {$order[0]['dir']}";
+            foreach ($_GET['columns'] as $k => $v) {
+                if ($v['search']['value'] != '') {
+                    $search[] = "{$column[$v['data']]['select']} LIKE '%{$v[search][value]}%'";
+                }
+            }
+            $search = Tools::arr2str($search, " AND ");
+            foreach($column as $k => $v){
+                $field[] = "{$v['select']} AS {$v['as']}";
+            }
+            $field = Tools::arr2str($field);
+
+            // 查询总数
+            $_sql = "SELECT {$field} FROM __MALL_sell_5 AS product
+                WHERE {$search}
+                ORDER BY {$order}";
+            $sql = "SELECT COUNT(x.product_id) as total FROM ({$_sql}) AS x ";
+            $x = $this->MallDb->list_query($sql);
+            $total = $x[0]['total'];
+
+            // 查询数据并重组
+            $sql = "{$_sql}
+                LIMIT {$start}, {$limit}";
+//            Tools::_vp($this->MallDb->getSql($sql),0,2);
+            $data = $this->MallDb->list_query($sql);
+            foreach ($data as $k => $v) {
+                foreach ($column as $key => $value) {
+                    $x[$k][] = $v[$value['as']];
+                }
+            }
+
+            //获取Datatables发送的参数 必要
+            $show = [
+                "draw" => $draw,
+                "recordsTotal" => $total,
+                "recordsFiltered" => $total,
+                "data" => $x,
+            ];
+            $x = json_encode($show);
+            echo $x;
+            exit();
+        }else{
+            $sql = "SELECT trade.* FROM __MALL_finance_trade AS trade
+            LEFT JOIN __MALL_sell_5 AS product ON trade.p_id = product.itemid
+            LIMIT 0,10";
+            $orderList = $this->MallDb->list_query($sql);
+            $this->assign(['column'=>$column,'orderList'=>$orderList]);
+            $this->display();
+        }
+    }
 }
