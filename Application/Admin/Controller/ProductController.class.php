@@ -513,9 +513,15 @@ LIMIT {$start}, {$limit}";
         if(IS_POST){
             $order_by_name = I('post.order_by_name');
             $order_by = I('post.order_by');
-            $data = $Product->field(["itemid","title","standard"])->where(["cj"=>I("post.cj")])->order("{$order_by_name} {$order_by}")->limit(0,I("post.limit"))->select();
+            if(I("post.cj")!=''){
+                $map['cj'] = I("post.cj");
+            }
+            $data = $Product->field(["itemid","title","model","standard","price","addtime"])->where($map)->order("{$order_by_name} {$order_by}")->limit(0,I("post.limit"))->select();
+            foreach($data as $k => $v){
+                $data[$k]['addtime'] = date("Y-m-d H:i:s",$v['addtime']);
+            }
             $fileName = "产品导出";
-            $headArr = ["编号","标题","规格"];
+            $headArr = ["编号","标题","成份","规格","价格","发布日期"];
             exportExcel($fileName, $headArr, $data);
             exit();
         }
