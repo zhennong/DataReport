@@ -503,4 +503,22 @@ LIMIT {$start}, {$limit}";
             $this->display();
         }
     }
+
+    /**
+     * 产品导出
+     */
+    public function productExport()
+    {
+        $Product = D('Product');
+        if(IS_POST){
+            $order_by_name = I('post.order_by_name');
+            $order_by = I('post.order_by');
+            $data = $Product->field(["itemid","title","standard"])->where(["cj"=>I("post.cj")])->order("{$order_by_name} {$order_by}")->limit(0,I("post.limit"))->select();
+            $fileName = "产品导出";
+            $headArr = ["编号","标题","规格"];
+            exportExcel($fileName, $headArr, $data);
+            exit();
+        }
+        $this->display();
+    }
 }
