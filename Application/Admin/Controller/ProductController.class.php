@@ -513,15 +513,28 @@ LIMIT {$start}, {$limit}";
         if(IS_POST){
             $order_by_name = I('post.order_by_name');
             $order_by = I('post.order_by');
+            if(I("post.menshi")!=''){
+                $menshi = I("post.menshi");
+                $sql = "SELECT gy.pid FROM __MALL_fahuo_gongying AS gy
+                    LEFT JOIN __MALL_fahuo AS fh ON gy.fid = fh.id
+                    WHERE fh.title = '{$menshi}'";
+                $product_list = $this->MallDb->list_query($sql);
+                foreach ($product_list as $k => $v) {
+                    $product_arr[] = $v['pid'];
+                }
+                $product_str = Tools::arr2str($product_list);
+            }
             if(I("post.cj")!=''){
                 $map['cj'] = I("post.cj");
+                $map['itemid'] = ['in',$product_str];
             }
             $data = $Product->field(["itemid","title","model","standard","price","addtime"])->where($map)->order("{$order_by_name} {$order_by}")->limit(0,I("post.limit"))->select();
             foreach($data as $k => $v){
+                $data[$k]['menshi'] = $menshi;
                 $data[$k]['addtime'] = date("Y-m-d H:i:s",$v['addtime']);
             }
             $fileName = "产品导出";
-            $headArr = ["编号","标题","成份","规格","价格","发布日期"];
+            $headArr = ["编号","标题","成份","规格","价格","发布日期","门市"];
             exportExcel($fileName, $headArr, $data);
             exit();
         }
