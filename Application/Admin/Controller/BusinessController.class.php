@@ -328,4 +328,20 @@ class BusinessController extends AdminController
         $this->assign(['month_start'=>$month_start]);
         $this->display();
     }
+    /**
+     * 企业入驻
+     * @author Edwin <junqianhen@gmail.com>
+     */
+    public function enterpriseSettled()
+    {
+        $Enterprise = D('Enterprise');
+        //查询数据
+        $enterprise_data = $Enterprise->select();
+        foreach($enterprise_data as $k => $v){
+            $enterprise_data_list[$k] = $v;
+        }
+        //注入显示
+        $this->assign(['data_list'=>$enterprise_data_list]);
+        $this->display();
+    }
 }

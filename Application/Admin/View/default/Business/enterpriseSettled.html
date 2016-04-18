@@ -1,0 +1,43 @@
+<extend name="Layout:ly2"/>
+
+<block name="head">
+    <script>
+        $(document).ready(function () {
+            var Table = $('table');
+            var DataTable = Table.DataTable({
+                language: dataTables_zh_CN,
+                pageLength: 10
+            });
+        });
+    </script>
+</block>
+
+<block name="body">
+    <div class="container-fluid padding-top">
+        <h1>询价处理（开始时间：<?= date("Y-m-d",$month_start )?> - 结束时间：<?= date("Y-m-d",$month_end ) ?>）：</h1>
+        <div class="col-lg-12">
+            <table id="member_inquiry_table" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>id</th>
+                    <th>企业名称</th>
+                    <th>姓名</th>
+                    <th>联系方式</th>
+                    <th>备注</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach($data_list as $k => $v): ?>
+                <tr>
+                    <th>{$v['id']}</th>
+                    <th>{$v['enterprise_name']}</th>
+                    <th>{$v['username']}</th>
+                    <th>{$v['contact_way']}</th>
+                    <th>{$v['note']}</th>
+                </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</block>

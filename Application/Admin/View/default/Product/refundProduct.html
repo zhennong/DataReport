@@ -3,7 +3,7 @@
     <script type="text/javascript">
         $(document).ready(function () {
             var ajax_url = "{:U('Admin/Product/refundProduct')}";
-            var Table = $('table');
+            var Table = $('#title_p');
             var DataTable = Table.DataTable({
                 language: dataTables_zh_CN,
                 pageLength: 10,
@@ -38,7 +38,7 @@
     <div class="container-fluid">
         <h3>订单操作记录</h3>
         <div class="col-lg-12">
-            <table class="table table-bordered table-hover">
+            <table class="table table-bordered table-hover" id="title_p">
                 <thead>
                 <tr>
                     <th>商品id</th>
@@ -59,6 +59,8 @@
                 </tr>
                 </tfoot>
             </table>
+
+
         </div>
     </div>
 </block>

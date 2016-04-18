@@ -391,7 +391,7 @@ LIMIT {$start}, {$limit}";
             $total = count($order_count);
 
             //查询数据并重组
-            $data = $Trade->field($field)->where($search)->group("itemid")->order($order)->limit($start, $limit)->select();
+            $data = $Trade->distinct(true)->field($field)->where($search)->group("itemid")->order($order)->limit($start, $limit)->select();
             foreach ($data as $k => $v) {
                 $data[$k]['status'] = $v['status'] = $this->order_status[$v['status']]['status_name'];
                 $data[$k]['updatetime'] = $v['updatetime'] = date("Y-m-d H:i:s", $v['updatetime']);
@@ -409,6 +409,12 @@ LIMIT {$start}, {$limit}";
             ];
             $x = json_encode($show);
             echo $x;
+
+            //I('get.title_c');
+            $sql = "SELECT title,count(*) AS count from destoon_finance_trade WHERE title like '%.I('get.title_c').%' AND status IN (6)";
+            $data_count = queryMysql($sql);
+            $this->assign(['data_count'=>$data_count]);
+
             exit();
         }
         $this->display();
