@@ -536,6 +536,9 @@ LIMIT {$start}, {$limit}";
             if(I("post.cj")!=''){
                 $map['cj'] = I("post.cj");
             }
+            if(I("post.company")!=''){
+                $map['company'] = I("post.company");
+            }
             $data = $Product->field(["itemid","title","model","standard","price","addtime"])->where($map)->order("{$order_by_name} {$order_by}")->limit(0,I("post.limit"))->select();
             foreach($data as $k => $v){
                 $data[$k]['menshi'] = $menshi;
@@ -543,8 +546,12 @@ LIMIT {$start}, {$limit}";
             }
             $fileName = "产品导出";
             $headArr = ["编号","标题","成份","规格","价格","发布日期","门市"];
-            exportExcel($fileName, $headArr, $data);
-            exit();
+            if(count($data)==0){
+                echo "没有数据可以导出";
+            }else{
+                exportExcel($fileName, $headArr, $data);
+                exit();
+            }
         }
         $this->display();
     }
