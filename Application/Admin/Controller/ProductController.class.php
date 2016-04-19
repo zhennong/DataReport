@@ -529,10 +529,12 @@ LIMIT {$start}, {$limit}";
                     $product_arr[] = $v['pid'];
                 }
                 $product_str = Tools::arr2str($product_list);
+                $map['itemid'] = ['in',$product_str];
+            }else{
+                $menshi = "";
             }
             if(I("post.cj")!=''){
                 $map['cj'] = I("post.cj");
-                $map['itemid'] = ['in',$product_str];
             }
             $data = $Product->field(["itemid","title","model","standard","price","addtime"])->where($map)->order("{$order_by_name} {$order_by}")->limit(0,I("post.limit"))->select();
             foreach($data as $k => $v){
