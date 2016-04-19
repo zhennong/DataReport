@@ -542,10 +542,11 @@ LIMIT {$start}, {$limit}";
             $data = $Product->field(["itemid","title","model","standard","price","addtime"])->where($map)->order("{$order_by_name} {$order_by}")->limit(0,I("post.limit"))->select();
             foreach($data as $k => $v){
                 $data[$k]['menshi'] = $menshi;
+                $data[$k]['total'] = count(D('Trade')->where("p_id = {$v['itemid']}")->field("itemid")->select());
                 $data[$k]['addtime'] = date("Y-m-d H:i:s",$v['addtime']);
             }
             $fileName = "产品导出";
-            $headArr = ["编号","标题","成份","规格","价格","发布日期","门市"];
+            $headArr = ["编号","标题","成份","规格","价格","发布日期","销售数","门市"];
             if(count($data)==0){
                 echo "没有数据可以导出";
             }else{
