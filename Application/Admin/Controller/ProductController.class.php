@@ -519,6 +519,7 @@ LIMIT {$start}, {$limit}";
         if(IS_POST){
             $order_by_name = I('post.order_by_name');
             $order_by = I('post.order_by');
+
             if(I("post.limit")!=''){
                 $limit = I("post.limit");
             }else{
@@ -538,22 +539,27 @@ LIMIT {$start}, {$limit}";
             }else{
                 $menshi = "";
             }
+            if(I("post.username")!=''){
+                $map['username'] = I("post.username");
+            }
             if(I("post.cj")!=''){
                 $map['cj'] = I("post.cj");
             }
             if(I("post.company")!=''){
                 $map['company'] = I("post.company");
             }
-            $data = $Product->field(["itemid","title","model","standard","price","addtime"])->where($map)->order("{$order_by_name} {$order_by}")->limit(0,$limit)->select();
+
+            $data = $Product->field(["itemid","title","model","standard","price","username","addtime"])->where($map)->order("{$order_by_name} {$order_by}")->limit(0,$limit)->select();
             foreach($data as $k => $v){
                 $data[$k]['menshi'] = $menshi;
                 $data[$k]['total'] = count(D('Trade')->where("p_id = {$v['itemid']}")->field("itemid")->select());
                 $data[$k]['addtime'] = date("Y-m-d H:i:s",$v['addtime']);
             }
             $fileName = "产品导出";
-            $headArr = ["编号","标题","成份","规格","价格","发布日期","销售数","门市"];
+            $headArr = ["编号","标题","成份","规格","价格","用户名","发布日期","销售数","门市"];
             if(count($data)==0){
                 echo "没有数据可以导出";
+                exit();
             }else{
                 exportExcel($fileName, $headArr, $data);
                 exit();
