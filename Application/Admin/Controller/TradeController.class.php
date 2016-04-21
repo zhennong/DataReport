@@ -258,19 +258,16 @@ class TradeController extends AdminController
             $field = Tools::arr2str($field);
 
             // 查询总数
-            $sql = "SELECT {$field} FROM __MALL_finance_trade AS trade
+            $_sql = "SELECT {$field} FROM __MALL_finance_trade AS trade
                 LEFT JOIN __MALL_sell_5 AS product ON trade.p_id = product.itemid
                 WHERE {$search}
                 ORDER BY {$order}";
-            $sql = "SELECT COUNT(x.trade_id) as total FROM ({$sql}) AS x ";
+            $sql = "SELECT COUNT(x.trade_id) as total FROM ({$_sql}) AS x ";
             $x = $this->MallDb->list_query($sql);
             $total = $x[0]['total'];
 
             // 查询数据并重组
-            $sql = "SELECT {$field} FROM __MALL_finance_trade AS trade
-                LEFT JOIN __MALL_sell_5 AS product ON trade.p_id = product.itemid
-                WHERE {$search}
-                ORDER BY {$order}
+            $sql = "{$_sql}
                 LIMIT {$start}, {$limit}";
 //            Tools::_vp($this->MallDb->getSql($sql),0,2);
             $data = $this->MallDb->list_query($sql);
@@ -296,6 +293,80 @@ class TradeController extends AdminController
             LIMIT 0,10";
             $orderList = $this->MallDb->list_query($sql);
             $this->assign(['column'=>$column,'orderList'=>$orderList]);
+            $this->display();
+        }
+    }
+
+    /**
+     * 合并订单列表
+     */
+    public function tradeOrderList()
+    {
+        $day_search = I("get.search");
+        $day_search = Tools::str2arr($day_search['value']);
+        $this->day_start = strtotime($day_search[0] . ' 00:00:00');
+        $this->day_start = strtotime('2015-01-01 00:00:00');
+        $this->day_end = strtotime($day_search[1] . ' 00:00:00');
+        // 字段
+        $column = [
+            ['select'=>'trade.itemid','as'=>'trade_id','show_name'=>'itemid'],
+            ['select'=>'trade.ordercode','as'=>'ordercode','show_name'=>'订单编号'],
+            ['select'=>'trade.buyer_name','as'=>'buyer_name','show_name'=>'买家姓名'],
+            ['select'=>'trade.total','as'=>'total','show_name'=>'数量'],
+            ['select'=>'trade.amount','as'=>'amount','show_name'=>'总额'],
+            ['select'=>'trade.buyer','as'=>'buyer','show_name'=>'买家'],
+        ];
+        if($draw = I("get.draw")){
+            // 预定义
+            $start = $_GET['start'];
+            $limit = $_GET['length'];
+            $order = $_GET['order'];
+            $search[] = " trade.addtime > {$this->day_start} AND trade.addtime < {$this->day_end} ";
+
+            // 重组条件
+            $order = "{$column[$order[0]['column']]['as']} {$order[0]['dir']}";
+            foreach ($_GET['columns'] as $k => $v) {
+                if ($v['search']['value'] != '') {
+                    $search[] = "{$column[$v['data']]['select']} LIKE '%{$v[search][value]}%'";
+                }
+            }
+            $search = Tools::arr2str($search, " AND ");
+            foreach($column as $k => $v){
+                $field[] = "{$v['select']} AS {$v['as']}";
+            }
+            $field = Tools::arr2str($field);
+
+            // 查询总数
+            $_sql = "SELECT {$field} FROM __MALL_finance_trade_orders AS trade
+                WHERE {$search}
+                ORDER BY {$order}";
+            $sql = "SELECT COUNT(*) as total FROM ({$_sql}) AS x ";
+            $x = $this->MallDb->list_query($sql);
+            $total = $x[0]['total'];
+
+            // 查询数据并重组
+            $sql = "{$_sql}
+                LIMIT {$start}, {$limit}";
+//            Tools::_vp($this->MallDb->getSql($sql),0,2);
+            $data = $this->MallDb->list_query($sql);
+            foreach ($data as $k => $v) {
+                foreach ($column as $key => $value) {
+                    $x[$k][] = $v[$value['as']];
+                }
+            }
+
+            //获取Datatables发送的参数 必要
+            $show = [
+                "draw" => $draw,
+                "recordsTotal" => $total,
+                "recordsFiltered" => $total,
+                "data" => $x,
+            ];
+            $x = json_encode($show);
+            echo $x;
+            exit();
+        }else{
+            $this->assign(['column'=>$column]);
             $this->display();
         }
     }
