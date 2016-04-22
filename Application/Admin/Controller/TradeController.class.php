@@ -219,7 +219,7 @@ class TradeController extends AdminController
         $day_search = I("get.search");
         $day_search = Tools::str2arr($day_search['value']);
         $this->day_start = strtotime($day_search[0] . ' 00:00:00');
-        $this->day_end = strtotime($day_search[1] . ' 00:00:00');
+        $this->day_end = strtotime($day_search[1] . ' 23:59:59');
         // 字段
         $column = [
             ['select'=>'trade.itemid','as'=>'trade_id','show_name'=>'itemid'],
@@ -305,8 +305,7 @@ class TradeController extends AdminController
         $day_search = I("get.search");
         $day_search = Tools::str2arr($day_search['value']);
         $this->day_start = strtotime($day_search[0] . ' 00:00:00');
-        $this->day_start = strtotime('2015-01-01 00:00:00');
-        $this->day_end = strtotime($day_search[1] . ' 00:00:00');
+        $this->day_end = strtotime($day_search[1] . ' 23:59:59');
         // 字段
         $column = [
             ['select'=>'trade.itemid','as'=>'trade_id','show_name'=>'itemid'],
