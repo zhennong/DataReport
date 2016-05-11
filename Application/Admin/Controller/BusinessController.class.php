@@ -50,12 +50,18 @@ class BusinessController extends AdminController
     }
 
     //缓存数据
-    public function getTotalData(){
+    protected function getTotalData(){
+        S('TotalData',null);
         if(!S('TotalData')){
-            $sql = "select sum(ft.amount) as Tamount,ad.areaid,arrparentid from destoon_finance_trade ft,destoon_address ad,destoon_area a where ft.addressid=ad.itemid and ft.`status` in (2,3,4) and a.areaid=ad.areaid group by ad.areaid";
+            $sql = "SELECT SUM(trade.amount) AS tamount, address.areaid AS areaid, area.arrparentid
+                FROM __MALL_finance_trade AS trade
+                INNER JOIN __MALL_address AS address ON trade.addressid = address.itemid
+                INNER JOIN __MALL_area AS area ON address.areaid = area.areaid
+                WHERE trade.status IN(2,3,4)
+                GROUP BY address.areaid";
             $data = $this->MallDb->list_query($sql);
             foreach($data as $k=>$v){
-                $v['arrparentid'] = explode(',',$v['arrparentid']);
+                $v['arrparentid'] = Tools::str2arr($v['arrparentid']);
                 $data_new[$v['areaid']]['areaid'] = $v['areaid'];
                 $data_new[$v['areaid']]['topid'] = $v['arrparentid'][1];
                 $data_new[$v['areaid']]['parentid'] = $v['arrparentid'][2];
@@ -67,8 +73,8 @@ class BusinessController extends AdminController
     }
 
     //获取代理商数量
-    public function getAgentList($areaid){
-        $sql = "SELECT COUNT(*) AS count FROM __MALL_agent WHERE agareaid IN (".$areaid.")";
+    private function getAgentList($areaid){
+        $sql = "SELECT COUNT(*) AS count FROM __MALL_agent WHERE agareaid IN {$areaid}";
         $agent_list = $this->MallDb->list_query($sql);
         foreach($agent_list AS $k=>$v){
             if($v['count']){
@@ -79,16 +85,16 @@ class BusinessController extends AdminController
     }
 
     //获取合作商名字和和下线数
-    public function getAgentNameAndDownLine($areaid){
-        $sql = "SELECT a.*,m.username,m.truename,m.userid,at.isok,s.score FROM destoon_area a ".
-            "LEFT JOIN destoon_agent at ON at.agareaid=a.areaid ".
-            "LEFT JOIN destoon_member m ON m.userid=at.aguid ".
-            "LEFT JOIN destoon_agent_score s ON s.aguid=m.userid ".
+    private function getAgentNameAndDownLine($areaid){
+        $sql = "SELECT a.*,m.username,m.truename,m.userid,at.isok,s.score FROM __MALL_area a ".
+            "LEFT JOIN __MALL_agent at ON at.agareaid=a.areaid ".
+            "LEFT JOIN __MALL_member m ON m.userid=at.aguid ".
+            "LEFT JOIN __MALL_agent_score s ON s.aguid=m.userid ".
             "WHERE a.areaid=".$areaid;
         $data = $this->MallDb->list_query($sql);
         foreach($data as $k=>$v){
             if($v['userid'] > 0){
-                $sql2 = "SELECT COUNT(*) AS count FROM destoon_agent_downline WHERE agentuid=".$v['userid'];
+                $sql2 = "SELECT COUNT(*) AS count FROM __MALL_agent_downline WHERE agentuid=".$v['userid'];
                 $data2 = $this->MallDb->list_query($sql2);
                 foreach($data2 as $k2=>$v2){
                     $data[$k]['truename'] = $v['truename'];
@@ -100,11 +106,10 @@ class BusinessController extends AdminController
     }
 
     //获取省数据
-    public function getProviceTotal(){
+    private function getProviceTotal(){
         $area = D('area');
         $arealist = $area->where(['parentid' => 0])->select();
         $totalData = S('TotalData');
-        $s = array();
         foreach($arealist as $k=>$v){
             $agent_count = $this->getAgentList($v['arrchildid']);
             $total = 0;
@@ -121,7 +126,7 @@ class BusinessController extends AdminController
     }
 
     //获取市数据
-    public function getCityTotal(){
+    private function getCityTotal(){
         $id = I('get.pid');
         if(!empty($id)){
             if($id > 4){
@@ -165,7 +170,7 @@ class BusinessController extends AdminController
     }
 
     //获取县数据
-    public function getCountyTotal(){
+    private function getCountyTotal(){
         $id = I('get.cid');
         if(!empty($id)){
             $area = D('area');
@@ -190,7 +195,7 @@ class BusinessController extends AdminController
     }
 
     //各县合作商金额统计
-    public function businessAgentTotal(){
+    private function businessAgentTotal(){
         $Agent = D('Agent');
         $areaid = I('get.areaid');
         if(!empty($areaid)){
@@ -206,7 +211,7 @@ class BusinessController extends AdminController
     }
 
     //获取合作商详细信息
-    protected function getAgentDetail(){
+    private function getAgentDetail(){
         $area = D('Area');
         $agdl = D('AgentDownLine');
         $data = $area->cache(true)->alias('a')->field('a.*,c.truename,c.userid')->join('LEFT JOIN '.C('BUSINESS_DB_TABLE_PREFIX').'agent b ON b.agareaid = a.areaid LEFT JOIN '.C('BUSINESS_DB_TABLE_PREFIX').'member c ON c.userid = b.aguid')->select();
@@ -222,7 +227,7 @@ class BusinessController extends AdminController
     }
 
     //通过县areaid获取所属市
-    protected function getPidByCity(){
+    private function getPidByCity(){
         $data = $this->getAgentDetail();
         $area = D('Area');
         foreach($data as $k=>$v){
