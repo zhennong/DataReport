@@ -50,7 +50,7 @@ class BusinessController extends AdminController
     }
 
     //缓存数据
-    protected function getTotalData(){
+    private function getTotalData(){
         S('TotalData',null);
         if(!S('TotalData')){
             $sql = "SELECT SUM(trade.amount) AS tamount, address.areaid AS areaid, area.arrparentid
@@ -74,7 +74,7 @@ class BusinessController extends AdminController
 
     //获取代理商数量
     private function getAgentList($areaid){
-        $sql = "SELECT COUNT(*) AS count FROM __MALL_agent WHERE agareaid IN {$areaid}";
+        $sql = "SELECT COUNT(*) AS count FROM __MALL_agent WHERE agareaid IN (".$areaid.")";
         $agent_list = $this->MallDb->list_query($sql);
         foreach($agent_list AS $k=>$v){
             if($v['count']){
@@ -85,7 +85,7 @@ class BusinessController extends AdminController
     }
 
     //获取合作商名字和和下线数
-    private function getAgentNameAndDownLine($areaid){
+    public function getAgentNameAndDownLine($areaid){
         $sql = "SELECT a.*,m.username,m.truename,m.userid,at.isok,s.score FROM __MALL_area a ".
             "LEFT JOIN __MALL_agent at ON at.agareaid=a.areaid ".
             "LEFT JOIN __MALL_member m ON m.userid=at.aguid ".
