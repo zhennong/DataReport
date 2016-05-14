@@ -59,13 +59,21 @@ class BusinessController extends AdminController
                 INNER JOIN __MALL_area AS area ON address.areaid = area.areaid
                 WHERE trade.status IN(2,3,4)
                 GROUP BY address.areaid";
+
             $data = $this->MallDb->list_query($sql);
             foreach($data as $k=>$v){
                 $v['arrparentid'] = Tools::str2arr($v['arrparentid']);
-                $data_new[$v['areaid']]['areaid'] = $v['areaid'];
-                $data_new[$v['areaid']]['topid'] = $v['arrparentid'][1];
-                $data_new[$v['areaid']]['parentid'] = $v['arrparentid'][2];
-                $data_new[$v['areaid']]['tamount'] = $v['tamount'];
+                if(count($v['arrparentid']) == 2){
+                    $data_new[$v['areaid']]['areaid'] = $v['areaid'];
+                    $data_new[$v['areaid']]['topid'] = $v['arrparentid'][1];
+                    $data_new[$v['areaid']]['parentid'] = $v['areaid'];
+                    $data_new[$v['areaid']]['tamount'] = $v['tamount'];
+                }else{
+                    $data_new[$v['areaid']]['areaid'] = $v['areaid'];
+                    $data_new[$v['areaid']]['topid'] = $v['arrparentid'][1];
+                    $data_new[$v['areaid']]['parentid'] = $v['arrparentid'][2];
+                    $data_new[$v['areaid']]['tamount'] = $v['tamount'];
+                }
             }
             unset($data);
             S('TotalData',$data_new);
