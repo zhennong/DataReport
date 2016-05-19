@@ -437,6 +437,8 @@ LIMIT {$start}, {$limit}";
 //            ['select'=>'product.catid','as'=>'catid','show_name'=>'产品类别'],
             ['select'=>'product.title','as'=>'title','show_name'=>'产品标题'],
             ['select'=>'product.standard','as'=>'standard','show_name'=>'产品规格'],
+            ['select'=>'product.cj','as'=>'cj','show_name'=>'厂家'],
+            ['select'=>'product.company','as'=>'company','show_name'=>'公司'],
             ['select'=>'product.price','as'=>'price','show_name'=>'产品价格'],
             ['select'=>'product.yuanprice','as'=>'yuanprice','show_name'=>'原价'],
             ['select'=>'product.activeid','as'=>'activeid','show_name'=>'活动id'],
