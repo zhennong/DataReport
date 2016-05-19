@@ -567,4 +567,19 @@ LIMIT {$start}, {$limit}";
         }
         $this->display();
     }
+
+    /**
+     * 门市信息
+     */
+    public function salesDetail()
+    {
+        $sql = "SELECT market.name, product.itemid, product.title FROM __MALL_sell_5 AS product
+            INNER JOIN __MALL_fahuo_gongying AS gy ON product.itemid = gy.pid
+            INNER JOIN __MALL_fahuo AS fh ON gy.fid = fh.id
+            INNER JOIN __MALL_fahuo_market AS market ON fh.marketid = market.id";
+
+        $markets = $this->MallDb->list_query($sql);
+        $this->assign(['markets'=>$markets]);
+        $this->display();
+    }
 }
