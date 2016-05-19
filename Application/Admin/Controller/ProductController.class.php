@@ -577,6 +577,10 @@ LIMIT {$start}, {$limit}";
             INNER JOIN __MALL_fahuo_gongying AS gy ON product.itemid = gy.pid
             INNER JOIN __MALL_fahuo AS fh ON gy.fid = fh.id
             INNER JOIN __MALL_fahuo_market AS market ON fh.marketid = market.id";
+        $sql = "SELECT market.name, product.itemid, product.title FROM __MALL_fahuo_market AS market
+            INNER JOIN __MALL_fahuo AS fh ON market.id = fh.marketid
+            INNER JOIN __MALL_fahuo_gongying AS gy ON fh.id = gy.fid
+            INNER JOIN __MALL_sell_5 AS product ON gy.pid = product.itemid";
 
         $markets = $this->MallDb->list_query($sql);
         $this->assign(['markets'=>$markets]);
