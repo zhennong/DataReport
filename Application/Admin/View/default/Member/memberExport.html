@@ -1,0 +1,35 @@
+<extend name="Layout:ly2"/>
+
+<block name="head"></block>
+
+<block name="body">
+    <include file="Includes/memberExcel"/>
+    <div class="container-fluid">
+        <div class="col-lg-12">
+            <table id="order_trend_datatable" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>用户名</th>
+                    <th>姓名</th>
+                    <th>联系方式</th>
+                    <th>所在地区</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <foreach name="member_info" item="vo" key="k">
+                    <tr>
+                        <td>{$vo['username']}</td>
+                        <td>{$vo['truename']}</td>
+                        <td>{$vo['mobile']}</td>
+                        <td>{$vo['areaname']}</td>
+                    </tr>
+                </foreach>
+                </tbody>
+            </table>
+
+            <div class="page"><?= $show ?></div>
+        </div>
+
+    </div>
+</block>
