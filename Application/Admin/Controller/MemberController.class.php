@@ -378,11 +378,22 @@ class MemberController extends AuthController
         $this->assign(['member_info' => $member_info, 'show' => $show, 'count' => $count]);
         $this->display();
     }
+    protected function getCacheMember(){
+        if(!S('data')){
+            $sql = "SELECT a.username,a.truename,a.mobile,a.areaid,b.areaname FROM destoon_member AS a LEFT JOIN destoon_area AS b ON (a.areaid = b.areaid)";
+            $data = queryMysql($sql);
+            S('data',$data);
+        }
+    }
     public function memberExcel()
     {
             if (I('get.type') == 'export') {
-                $sql = "SELECT a.username,a.truename,a.mobile,a.areaid,b.areaname FROM destoon_member AS a LEFT JOIN destoon_area AS b ON (a.areaid = b.areaid) LIMIT " . 0 ."," . 10000 ;
-                $data = queryMysql($sql);
+                //获取缓存
+                $this->getCacheMember();
+                $data = S('data');
+                //如果缓存使用失败，请手动进行
+//              $sql = "SELECT a.username,a.truename,a.mobile,a.areaid,b.areaname FROM destoon_member AS a LEFT JOIN destoon_area AS b ON (a.areaid = b.areaid) LIMIT " . 0 ."," . 10000 ;
+//              $data = queryMysql($sql);
                 foreach ($data as $k => $v) {
                     $member_info[$k]['username'] = $v['username'];
                     $member_info[$k]['truename'] = $v['truename'];
