@@ -389,12 +389,13 @@ class MemberController extends AuthController
     public function memberExcel()
     {
             $limit = I('get.limit');
+        $count = I('get.count');
             if (I('get.type') == 'export') {
 
                 //$data = S('data');
 
                 //如果缓存使用失败，请手动进行
-              $sql = "SELECT a.username,a.truename,a.mobile,a.areaid,b.areaname FROM destoon_member AS a LEFT JOIN destoon_area AS b ON (a.areaid = b.areaid) LIMIT " . $limit ."," . 10000 ;
+              $sql = "SELECT a.username,a.truename,a.mobile,a.areaid,b.areaname FROM destoon_member AS a LEFT JOIN destoon_area AS b ON (a.areaid = b.areaid) LIMIT " . $limit ."," . $count ;
               $data = queryMysql($sql);
 
                 if(!empty($data)){
