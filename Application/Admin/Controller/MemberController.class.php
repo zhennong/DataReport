@@ -382,6 +382,9 @@ class MemberController extends AuthController
         //获取缓存
         $this->getCacheMember();
 
+        $data = S('data');
+        dump($data);
+
     }
     protected function getCacheMember(){
         if(!S('data')){
