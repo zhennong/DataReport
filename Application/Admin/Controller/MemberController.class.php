@@ -378,13 +378,6 @@ class MemberController extends AuthController
 
         $this->assign(['member_info' => $member_info, 'show' => $show, 'count' => $count]);
         $this->display();
-
-        //获取缓存
-        $this->getCacheMember();
-
-        $data = S('data');
-        dump($data);
-
     }
     protected function getCacheMember(){
         if(!S('data')){
@@ -395,13 +388,14 @@ class MemberController extends AuthController
     }
     public function memberExcel()
     {
+            $limit = I('get.limit');
             if (I('get.type') == 'export') {
 
-                $data = S('data');
+                //$data = S('data');
 
                 //如果缓存使用失败，请手动进行
-//              $sql = "SELECT a.username,a.truename,a.mobile,a.areaid,b.areaname FROM destoon_member AS a LEFT JOIN destoon_area AS b ON (a.areaid = b.areaid) LIMIT " . 0 ."," . 10000 ;
-//              $data = queryMysql($sql);
+              $sql = "SELECT a.username,a.truename,a.mobile,a.areaid,b.areaname FROM destoon_member AS a LEFT JOIN destoon_area AS b ON (a.areaid = b.areaid) LIMIT " . $limit ."," . 10000 ;
+              $data = queryMysql($sql);
 
                 if(!empty($data)){
                     foreach ($data as $k => $v) {
