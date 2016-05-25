@@ -588,4 +588,68 @@ LIMIT {$start}, {$limit}";
         $this->assign(['markets'=>$markets]);
         $this->display();
     }
+
+    /**
+     * 市场管理
+     */
+    public function marketInfo()
+    {
+        if($market_id = I('get.market_id')){
+            if($sale_id = I('get.sale_id')){
+                $sql = "SELECT id, name, areaid FROM __MALL_fahuo_market WHERE id = {$market_id}";
+                $markets = $this->MallDb->list_query($sql);
+                foreach ($markets as $k => $v) {
+                    $sql = "SELECT id, title FROM __MALL_fahuo WHERE marketid = {$v['id']} AND id = {$sale_id}";
+                    $sales = $this->MallDb->list_query($sql);
+                    $markets[$k]['sales_count'] = count($sales);
+                    foreach ($sales as $key => $value) {
+                        $sql = "SELECT product, standard, cj, pid FROM __MALL_fahuo_gongying WHERE fid = {$value['id']}";
+                        $products = $this->MallDb->list_query($sql);
+                        $sales[$key]['products_count'] = count($products);
+                        $sales[$key]['products'] = $products;
+                    }
+                    $markets[$k]['sales_count'] = count($sales);
+                    $markets[$k]['sales'] = $sales;
+                }
+                $this->assign(['markets' => $markets]);
+                $this->display('products');
+            }else{
+                $sql = "SELECT id, name, areaid FROM __MALL_fahuo_market WHERE id = {$market_id}";
+                $markets = $this->MallDb->list_query($sql);
+                foreach ($markets as $k => $v) {
+                    $sql = "SELECT id, title FROM __MALL_fahuo WHERE marketid = {$v['id']}";
+                    $sales = $this->MallDb->list_query($sql);
+                    $markets[$k]['sales_count'] = count($sales);
+                    foreach ($sales as $key => $value) {
+                        $sql = "SELECT product, standard, cj, pid FROM __MALL_fahuo_gongying WHERE fid = {$value['id']}";
+                        $products = $this->MallDb->list_query($sql);
+                        $sales[$key]['products_count'] = count($products);
+                        $sales[$key]['products'] = $products;
+                    }
+                    $markets[$k]['sales_count'] = count($sales);
+                    $markets[$k]['sales'] = $sales;
+                }
+                $this->assign(['markets' => $markets]);
+                $this->display('sales');
+            }
+        } else {
+            $sql = "SELECT id, name, areaid FROM __MALL_fahuo_market";
+            $markets = $this->MallDb->list_query($sql);
+            foreach ($markets as $k => $v) {
+                $sql = "SELECT id, title FROM __MALL_fahuo WHERE marketid = {$v['id']}";
+                $sales = $this->MallDb->list_query($sql);
+                $markets[$k]['sales_count'] = count($sales);
+                foreach ($sales as $key => $value) {
+                    $sql = "SELECT product, standard, cj, pid FROM __MALL_fahuo_gongying WHERE fid = {$value['id']}";
+                    $products = $this->MallDb->list_query($sql);
+                    $sales[$key]['products_count'] = count($products);
+                    $sales[$key]['products'] = $products;
+                }
+                $markets[$k]['sales_count'] = count($sales);
+                $markets[$k]['sales'] = $sales;
+            }
+            $this->assign(['markets' => $markets]);
+            $this->display();
+        }
+    }
 }
