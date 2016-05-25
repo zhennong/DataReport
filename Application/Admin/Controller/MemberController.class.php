@@ -359,4 +359,60 @@ class MemberController extends AuthController
         $this->assign(['appChart_pc' => $appChart_pc, 'appChart_mobel' => $appChart_mobel]);
         $this->display();
     }
+    public function memberExport()
+    {
+        $Member = D('Member');
+        $map['status'] = array('in', '2,3,4');
+        $count = $Member->field('userid')->where($map)->count(('DISTINCT userid'));
+        $Page = new \Think\Page($count, 20);
+        $show = $Page->show();
+        $sql = "SELECT a.username,a.truename,a.mobile,a.areaid,b.areaname FROM destoon_member AS a LEFT JOIN destoon_area AS b ON (a.areaid = b.areaid) LIMIT ".$Page->firstRow . "," . $Page->listRows ;
+        $data = queryMysql($sql);
+        foreach ($data as $k => $v) {
+            $member_info[$k]['username'] = $v['username'];
+            $member_info[$k]['truename'] = $v['truename'];
+            $member_info[$k]['mobile'] = $v['mobile'];
+            $arealist = getAreaFullNameFromAreaID($v['areaid']);
+            $member_info[$k]['areaname'] = arr2str($arealist,'');
+        }
+
+        $this->assign(['member_info' => $member_info, 'show' => $show, 'count' => $count]);
+        $this->display();
+    }
+    protected function getCacheMember(){
+        if(!S('data')){
+            $sql = "SELECT a.username,a.truename,a.mobile,a.areaid,b.areaname FROM destoon_member AS a LEFT JOIN destoon_area AS b ON (a.areaid = b.areaid)";
+            $data = queryMysql($sql);
+            S('data',$data);
+        }
+    }
+    public function memberExcel()
+    {
+            $limit = I('get.limit');
+        $count = I('get.count');
+            if (I('get.type') == 'export') {
+
+                //$data = S('data');
+
+                //如果缓存使用失败，请手动进行
+              $sql = "SELECT a.username,a.truename,a.mobile,a.areaid,b.areaname FROM destoon_member AS a LEFT JOIN destoon_area AS b ON (a.areaid = b.areaid) LIMIT " . $limit ."," . $count ;
+              $data = queryMysql($sql);
+
+                if(!empty($data)){
+                    foreach ($data as $k => $v) {
+                        $member_info[$k]['username'] = $v['username'];
+                        $member_info[$k]['truename'] = $v['truename'];
+                        $member_info[$k]['mobile'] = $v['mobile'];
+                        $arealist = getAreaFullNameFromAreaID($v['areaid']);
+                        $member_info[$k]['areaname'] = arr2str($arealist,'');
+                    }
+
+                    $fileName = "会员信息";
+                    $headArr = array('用户名', '姓名', '联系方式', '所在地区');
+                    exportExcel($fileName, $headArr, $member_info); //数据导出
+                }else{
+                    $this->error('暂未缓存完');
+                }
+            }
+    }
 }
