@@ -551,14 +551,14 @@ LIMIT {$start}, {$limit}";
                 $map['company'] = I("post.company");
             }
 
-            $data = $Product->field(["itemid","title","model","standard","price","username","cj","company","addtime"])->where($map)->order("{$order_by_name} {$order_by}")->limit(0,$limit)->select();
+            $data = $Product->field(["itemid","title","model","standard","price","pricebak","username","cj","company","addtime"])->where($map)->order("{$order_by_name} {$order_by}")->limit(0,$limit)->select();
             foreach($data as $k => $v){
                 $data[$k]['addtime'] = date("Y-m-d H:i:s",$v['addtime']);
                 $data[$k]['total'] = count(D('Trade')->where("p_id = {$v['itemid']}")->field("itemid")->select());
                 $data[$k]['menshi'] = $menshi;
             }
             $fileName = "产品导出";
-            $headArr = ["编号","标题","成份","规格","价格","用户名","厂家","公司","发布日期","销售数","门市"];
+            $headArr = ["编号","标题","成份","规格","价格","底价","用户名","厂家","公司","发布日期","销售数","门市"];
             if(count($data)==0){
                 echo "没有数据可以导出";
                 exit();
@@ -649,6 +649,87 @@ LIMIT {$start}, {$limit}";
                 $markets[$k]['sales'] = $sales;
             }
             $this->assign(['markets' => $markets]);
+            $this->display();
+        }
+    }
+
+    /**
+     * 门市产品
+     */
+    public function marketProducts()
+    {
+        // 字段
+        $column = [
+            ['select'=>'product.itemid','as'=>'product_id','show_name'=>'产品id'],
+            ['select'=>'product.thumb','as'=>'thumb','show_name'=>'产品缩略图'],
+            ['select'=>'supply.product','as'=>'product','show_name'=>'产品'],
+            ['select'=>'supply.standard','as'=>'standard','show_name'=>'规格'],
+            ['select'=>'supply.cj','as'=>'cj','show_name'=>'厂家'],
+            ['select'=>'sale.title','as'=>'sale_name','show_name'=>'门市'],
+//            ['select'=>'market.name','as'=>'market_name','show_name'=>'市场'],
+        ];
+        if($draw = I("get.draw")){
+            // 预定义
+            $start = $_GET['start'];
+            $limit = $_GET['length'];
+            $order = $_GET['order'];
+            $search[] = "1 = 1";
+
+            // 重组条件
+            $order = "{$column[$order[0]['column']]['as']} {$order[0]['dir']}";
+            foreach ($_GET['columns'] as $k => $v) {
+                if ($v['search']['value'] != '') {
+                    $search[] = "{$column[$v['data']]['select']} LIKE '%{$v[search][value]}%'";
+                }
+            }
+            $search = Tools::arr2str($search, " AND ");
+            foreach($column as $k => $v){
+                $field[] = "{$v['select']} AS {$v['as']}";
+            }
+            $field = Tools::arr2str($field);
+
+            // 查询总数
+            $_sql = "SELECT {$field} FROM __MALL_sell_5 AS product
+                INNER JOIN __MALL_fahuo_gongying AS supply ON product.itemid = supply.pid
+                INNER JOIN __MALL_fahuo AS sale ON supply.fid = sale.id
+                INNER JOIN __MALL_fahuo_market AS market ON sale.marketid = market.id
+                WHERE {$search}
+                ORDER BY {$order}";
+            $sql = "SELECT COUNT(x.product_id) as total FROM ({$_sql}) AS x ";
+            $x = $this->MallDb->list_query($sql);
+            $total = $x[0]['total'];
+
+            // 查询数据并重组
+            $sql = "{$_sql}
+                LIMIT {$start}, {$limit}";
+//            Tools::_vp($this->MallDb->getSql($sql),0,2);
+            $data = $this->MallDb->list_query($sql);
+//            Tools::_vp($data,0,2);
+            foreach ($data as $k => $v){
+                $data[$k]['thumb'] = "<img src='".$v['thumb']."' />";
+            }
+            foreach ($data as $k => $v) {
+                foreach ($column as $key => $value) {
+                    $x[$k][] = $v[$value['as']];
+                }
+            }
+
+            //获取Datatables发送的参数 必要
+            $show = [
+                "draw" => $draw,
+                "recordsTotal" => $total,
+                "recordsFiltered" => $total,
+                "data" => $x,
+            ];
+            $x = json_encode($show);
+            echo $x;
+            exit();
+        }else{
+            $sql = "SELECT trade.* FROM __MALL_finance_trade AS trade
+            LEFT JOIN __MALL_sell_5 AS product ON trade.p_id = product.itemid
+            LIMIT 0,10";
+            $orderList = $this->MallDb->list_query($sql);
+            $this->assign(['column'=>$column,'orderList'=>$orderList]);
             $this->display();
         }
     }
