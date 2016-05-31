@@ -53,7 +53,7 @@ class MemberController extends AuthController
         $Page = new \Think\Page($count, 20);
         $show = $Page->show();
 
-        $sql = "SELECT ft.addressid,ft.buyer,ft.buyer_name,ft.buyer_mobile,SUM(ft.total) as a,SUM(ft.amount) as b,ad.areaid FROM destoon_finance_trade AS ft,destoon_address AS ad WHERE ft.addressid = ad.itemid AND status in (2,3,4) GROUP BY buyer LIMIT ".$Page->firstRow . "," . $Page->listRows ;
+        $sql = "SELECT ft.addressid,ft.buyer,ft.buyer_name,ft.buyer_mobile,SUM(ft.total) as a,SUM(ft.amount) as b,ad.areaid FROM destoon_finance_trade AS ft,destoon_address AS ad WHERE ft.addressid = ad.itemid AND status in (2,3,4) GROUP BY buyer ORDER BY b LIMIT ".$Page->firstRow . "," . $Page->listRows ;
         $data = queryMysql($sql);
         $all_amount_count = $Trade->where($map)->field('amount')->sum('amount');
         foreach ($data as $k => $v) {
@@ -74,7 +74,7 @@ class MemberController extends AuthController
 
     protected function getCacheTrade(){
         if(!S('data')){
-            $sql = "SELECT ft.addressid,ft.buyer,ft.buyer_name,ft.buyer_mobile,SUM(ft.total) as a,SUM(ft.amount) as b,ad.areaid FROM destoon_finance_trade AS ft,destoon_address AS ad WHERE ft.addressid = ad.itemid AND status in (2,3,4) GROUP BY buyer";
+            $sql = "SELECT ft.addressid,ft.buyer,ft.buyer_name,ft.buyer_mobile,SUM(ft.total) as a,SUM(ft.amount) as b,ad.areaid FROM destoon_finance_trade AS ft,destoon_address AS ad WHERE ft.addressid = ad.itemid AND status in (2,3,4) GROUP BY buyer ORDER BY b";
             $data = queryMysql($sql);
             S('data',$data);
         }
