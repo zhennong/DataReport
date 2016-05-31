@@ -85,13 +85,13 @@ class MemberController extends AuthController
         $Trade = D('Trade');
         $map['status'] = array('in', '2,3,4');
         $map['status'] = array('neq', '');
-        $limit = I('get.limit');
-        $count = I('get.count');
+//        $limit = I('get.limit');
+//        $count = I('get.count');
         if (I('get.type') == 'export') {
-//            $this->getCacheTrade();
-//            $data = S('data');
-            $sql = "SELECT ft.addressid,ft.buyer,ft.buyer_name,ft.buyer_mobile,SUM(ft.total) as a,SUM(ft.amount) as b,ad.areaid FROM destoon_finance_trade AS ft,destoon_address AS ad WHERE ft.addressid = ad.itemid AND status in (2,3,4) GROUP BY buyer ORDER BY b LIMIT " . $limit ."," . $count ;
-            $data = queryMysql($sql);
+            $this->getCacheTrade();
+            $data = S('data');
+//            $sql = "SELECT ft.addressid,ft.buyer,ft.buyer_name,ft.buyer_mobile,SUM(ft.total) as a,SUM(ft.amount) as b,ad.areaid FROM destoon_finance_trade AS ft,destoon_address AS ad WHERE ft.addressid = ad.itemid AND status in (2,3,4) GROUP BY buyer ORDER BY b LIMIT " . $limit ."," . $count ;
+//            $data = queryMysql($sql);
             $all_amount_count = $Trade->where($map)->field('amount')->sum('amount');
             foreach ($data as $k => $v) {
                 $member_info[$k]['buyer'] = $v['buyer'];
