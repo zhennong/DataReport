@@ -545,7 +545,7 @@ LIMIT {$start}, {$limit}";
                 $map['company'] = I("post.company");
             }
 
-            $data = $Product->field(["itemid","title","model","standard","price","pricebak","username","cj","company","addtime"])->where($map)->order("{$order_by_name} {$order_by}")->select();
+            $data = $Product->field(["itemid","title","model","standard","price","diprice","username","cj","company","addtime"])->where($map)->order("{$order_by_name} {$order_by}")->select();
             foreach($data as $k => $v){
                 $data[$k]['addtime'] = date("Y-m-d H:i:s",$v['addtime']);
                 $data[$k]['total'] = count(D('Trade')->where("p_id = {$v['itemid']}")->field("itemid")->select());
