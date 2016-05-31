@@ -536,7 +536,7 @@ LIMIT {$start}, {$limit}";
                 foreach ($product_list as $k => $v) {
                     $product_arr[] = $v['pid'];
                 }
-                $product_str = Tools::arr2str($product_list);
+                $product_str = Tools::arr2str($product_arr);
                 $map['itemid'] = ['in',$product_str];
             }else{
                 $menshi = "";

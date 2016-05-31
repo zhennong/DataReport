@@ -57,5 +57,39 @@
                 </div>
             </div>
         </form>
+        <form class="form-horizontal" action="" method="post">
+           <h2>如填写上方可以不用填写下方</h2>
+        <div class="form-group">
+        <label for="limit" class="col-sm-2 control-label">导出数量</label>
+        <div class="col-sm-4">
+        <input type="text" class="form-control" name="limit" id="limit1" placeholder="导出数量" value="100">
+        </div>
+        </div>
+        <div class="form-group">
+        <label for="menshi" class="col-sm-2 control-label">门市</label>
+        <div class="col-sm-4">
+        <input type="text" name="menshi" class="form-control" id="menshi1" placeholder="门市">
+        </div>
+        </div>
+        <div class="form-group">
+        <label for="order_by_name" class="col-sm-2 control-label">排序</label>
+        <div class="col-sm-2">
+        <select name="order_by_name" class="form-control" id="order_by_name1">
+        <option value="addtime">添加时间</option>
+        </select>
+        </div>
+        <div class="col-sm-2">
+        <select name="order_by" class="form-control" id="order_by1">
+        <option value="DESC">降序</option>
+        <option value="ASC">升序</option>
+        </select>
+        </div>
+        </div>
+        <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+        <button type="submit" class="btn btn-primary">确认导出</button>
+        </div>
+        </div>
+        </form>
     </div>
 </block>
