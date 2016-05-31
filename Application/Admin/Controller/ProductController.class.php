@@ -521,12 +521,6 @@ LIMIT {$start}, {$limit}";
         if(IS_POST){
             $order_by_name = I('post.order_by_name');
             $order_by = I('post.order_by');
-
-            if(I("post.limit")!=''){
-                $limit = I("post.limit");
-            }else{
-                $limit = 10;
-            }
             if(I("post.menshi")!=''){
                 $menshi = I("post.menshi");
                 $sql = "SELECT gy.pid FROM __MALL_fahuo_gongying AS gy
@@ -551,7 +545,7 @@ LIMIT {$start}, {$limit}";
                 $map['company'] = I("post.company");
             }
 
-            $data = $Product->field(["itemid","title","model","standard","price","pricebak","username","cj","company","addtime"])->where($map)->order("{$order_by_name} {$order_by}")->limit(0,$limit)->select();
+            $data = $Product->field(["itemid","title","model","standard","price","pricebak","username","cj","company","addtime"])->where($map)->order("{$order_by_name} {$order_by}")->select();
             foreach($data as $k => $v){
                 $data[$k]['addtime'] = date("Y-m-d H:i:s",$v['addtime']);
                 $data[$k]['total'] = count(D('Trade')->where("p_id = {$v['itemid']}")->field("itemid")->select());
