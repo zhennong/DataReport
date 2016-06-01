@@ -1,0 +1,83 @@
+<extend name="Layout:ly2"/>
+
+<block name="head"></block>
+
+<block name="body">
+    <h1>导出产品</h1>
+    <hr>
+    <div class="row">
+        <form class="form-horizontal" action="" method="post">
+            <div class="form-group">
+                <label for="menshi" class="col-sm-2 control-label">门市</label>
+                <div class="col-sm-4">
+                    <input type="text" name="menshi" class="form-control" id="menshi" placeholder="门市">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="username" class="col-sm-2 control-label">用户名</label>
+                <div class="col-sm-4">
+                    <input type="text" name="username" class="form-control" id="username" placeholder="用户名">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="cj" class="col-sm-2 control-label">厂家</label>
+                <div class="col-sm-4">
+                    <input type="text" name="cj" class="form-control" id="cj" placeholder="厂家">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="company" class="col-sm-2 control-label">公司</label>
+                <div class="col-sm-4">
+                    <input type="text" name="company" class="form-control" id="company" placeholder="公司">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="order_by_name" class="col-sm-2 control-label">排序</label>
+                <div class="col-sm-2">
+                    <select name="order_by_name" class="form-control" id="order_by_name">
+                        <option value="addtime">添加时间</option>
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select name="order_by" class="form-control" id="order_by">
+                        <option value="DESC">降序</option>
+                        <option value="ASC">升序</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-primary">确认导出</button>
+                </div>
+            </div>
+        </form>
+        <form class="form-horizontal" action="" method="post">
+           <h2>如填写上方可以不用填写下方</h2>
+        <div class="form-group">
+        <label for="menshi" class="col-sm-2 control-label">门市</label>
+        <div class="col-sm-4">
+        <input type="text" name="menshi" class="form-control" id="menshi1" placeholder="门市">
+        </div>
+        </div>
+        <div class="form-group">
+        <label for="order_by_name" class="col-sm-2 control-label">排序</label>
+        <div class="col-sm-2">
+        <select name="order_by_name" class="form-control" id="order_by_name1">
+        <option value="addtime">添加时间</option>
+        </select>
+        </div>
+        <div class="col-sm-2">
+        <select name="order_by" class="form-control" id="order_by1">
+        <option value="DESC">降序</option>
+        <option value="ASC">升序</option>
+        </select>
+        </div>
+        </div>
+        <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+        <button type="submit" class="btn btn-primary">确认导出</button>
+        </div>
+        </div>
+        </form>
+    </div>
+</block>
