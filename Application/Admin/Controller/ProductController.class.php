@@ -667,7 +667,7 @@ LIMIT {$start}, {$limit}";
             $start = $_GET['start'];
             $limit = $_GET['length'];
             $order = $_GET['order'];
-            $search[] = "product.status = 3";
+            $search[] = "product.status > 0";
 
             // 重组条件
             $order = "{$column[$order[0]['column']]['as']} {$order[0]['dir']}";
