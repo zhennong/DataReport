@@ -368,7 +368,7 @@ class MemberController extends AuthController
 				$arealist = getAreaFullNameFromAreaID($value['areaid']);
 				$member_info[$key]['areaname'] = arr2str($arealist,'');
 		}
-		$this->assign(['member_info' => $member_info, 'pages' => $pages, 'count' => $count]);
+		$this->assign(['member_info' => $member_info, 'pages' => $pages, 'count' => $count,'month_start'=>$this->month_start,'month_end'=>$this->month_end]);
 		$this->display();
 	}
 	protected function getCacheMember(){
@@ -380,9 +380,12 @@ class MemberController extends AuthController
 	}
 	public function memberExcel()
 	{
+		$Member = D('Member');
+		$map['status'] = ['in', '2,3,4'];
+		$month_start = I('get.month_start');
+		$month_end = I('get.month_end');
+		$mouth_solt = get_month_solt($month_start,$month_end);
 		if (I('get.type') == 'export') {
-			$Member = D('Member');
-			$mouth_solt = get_month_solt($this->month_start,$this->month_end);
 			foreach ($mouth_solt as $k => $v)
 			{
 				$time_start = $mouth_solt[1]['start']['ts'];
