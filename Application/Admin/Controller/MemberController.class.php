@@ -394,7 +394,7 @@ class MemberController extends AuthController
 			}
 			$time_start = $mouth_solt[1]['start']['ts'];
 			$time_end = $mouth_solt_data[$k]['mouth_solt']['end']['ts'];
-			$sql = "SELECT a.username,a.truename,a.mobile,a.areaid,b.areaname FROM destoon_member AS a LEFT JOIN destoon_area AS b ON (a.areaid = b.areaid) where a.regtime between $time_start and $time_end LIMIT ".$Page->firstRow . "," . $Page->listRows;
+			$sql = "SELECT a.username,a.truename,a.mobile,a.areaid,b.areaname FROM destoon_member AS a LEFT JOIN destoon_area AS b ON (a.areaid = b.areaid) where a.regtime between $time_start and $time_end ";
 			$data = queryMysql($sql);
 			if(!empty($data)){
 				foreach ($data as $k => $v) {
