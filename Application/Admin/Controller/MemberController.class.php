@@ -356,6 +356,8 @@ class MemberController extends AuthController
 		$count = $mouth_solt_data[$k]['count'];
 		$Page = new \Think\Page($count, 20);
 		$pages = $Page->show();
+		$time_start = $mouth_solt[1]['start']['ts'];
+		$time_end = $mouth_solt_data[$k]['mouth_solt']['end']['ts'];
 		$sql = "SELECT a.username,a.truename,a.mobile,a.areaid,b.areaname FROM destoon_member AS a LEFT JOIN destoon_area AS b ON (a.areaid = b.areaid) where a.regtime between $time_start and $time_end LIMIT ".$Page->firstRow . "," . $Page->listRows;
 		$data = queryMysql($sql);
 		foreach ($data as $key=>$value)
@@ -390,6 +392,8 @@ class MemberController extends AuthController
 				$x = $Member->field('userid')->where($map)->select();
 				$mouth_solt_data[$k]['count'] = count($x);
 			}
+			$time_start = $mouth_solt[1]['start']['ts'];
+			$time_end = $mouth_solt_data[$k]['mouth_solt']['end']['ts'];
 			$sql = "SELECT a.username,a.truename,a.mobile,a.areaid,b.areaname FROM destoon_member AS a LEFT JOIN destoon_area AS b ON (a.areaid = b.areaid) where a.regtime between $time_start and $time_end";
 			$data = queryMysql($sql);
 			if(!empty($data)){
