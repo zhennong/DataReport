@@ -1,0 +1,39 @@
+<extend name="Layout:ly2"/>
+
+<block name="head">
+    <script>
+        $(document).ready(function () {
+            var Table = $('table');
+            var DataTable = Table.DataTable({
+                language: dataTables_zh_CN,
+                pageLength: 10
+            });
+        });
+    </script>
+</block>
+
+<block name="body">
+    <div class="container-fluid padding-top">
+        <h1>门市列表：</h1>
+        <div class="col-lg-12">
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>门市</th>
+                    <th>产品id</th>
+                    <th>产品标题</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach($markets as $k => $v): ?>
+                <tr>
+                    <th>{$v['name']}</th>
+                    <th>{$v['itemid']}</th>
+                    <th>{$v['title']}</th>
+                </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</block>

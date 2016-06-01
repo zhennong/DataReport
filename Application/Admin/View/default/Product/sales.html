@@ -1,0 +1,39 @@
+<extend name="Layout:ly2"/>
+
+<block name="head">
+    <script>
+        $(document).ready(function () {
+            var Table = $('table');
+            var DataTable = Table.DataTable({
+                language: dataTables_zh_CN,
+                pageLength: 10
+            });
+        });
+    </script>
+</block>
+
+<block name="body">
+    <div class="container-fluid padding-top">
+        <h1>门市列表：</h1>
+        <div class="col-lg-12">
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>市场</th>
+                    <th>门市id</th>
+                    <th>标题</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach($markets[0]['sales'] as $k => $v): ?>
+                <tr>
+                    <td>{$markets[0]['name']}</td>
+                    <td>{$v['id']}</td>
+                    <td><a href="{:U('marketInfo', ['market_id'=>$markets[0]['id'], 'sale_id'=>$v['id']])}">{$v['title']}</a></td>
+                </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</block>
