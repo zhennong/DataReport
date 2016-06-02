@@ -719,11 +719,22 @@ LIMIT {$start}, {$limit}";
             echo $x;
             exit();
         }else{
-            $sql = "SELECT trade.* FROM __MALL_finance_trade AS trade
-            LEFT JOIN __MALL_sell_5 AS product ON trade.p_id = product.itemid
-            LIMIT 0,10";
-            $orderList = $this->MallDb->list_query($sql);
-            $this->assign(['column'=>$column,'orderList'=>$orderList]);
+            foreach($column as $k => $v){
+                $field[] = "{$v['select']} AS {$v['as']}";
+            }
+            $field = Tools::arr2str($field);
+            $sql = "SELECT count(product.itemid) AS total, {$field} FROM __MALL_sell_5 AS product
+                INNER JOIN __MALL_fahuo_gongying AS supply ON product.itemid = supply.pid
+                INNER JOIN __MALL_fahuo AS sale ON supply.fid = sale.id
+                INNER JOIN __MALL_fahuo_market AS market ON sale.marketid = market.id
+                GROUP BY product.itemid";
+            $x = $this->MallDb->list_query($sql);
+            foreach($x as $k => $v){
+                if($v['total']>1){
+                    $repeat_products[] = $v;
+                }
+            }
+            $this->assign(['column'=>$column, 'repeat_products'=>$repeat_products]);
             $this->display();
         }
     }

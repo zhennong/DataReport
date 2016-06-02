@@ -3,7 +3,7 @@
 <block name="head">
     <script>
         $(document).ready(function () {
-            var Table = $("table");
+            var Table = $("#inquiry_table");
             var ajax_url = "{:U('marketProducts')}";
             var DataTable = Table.DataTable({
                 language: dataTables_zh_CN,
@@ -31,7 +31,11 @@
                     });
                 }
             });
-            $(".dataTables_filter").hide();
+//            $(".dataTables_filter").hide();
+            $("#repeat_products").DataTable({
+                language: dataTables_zh_CN,
+                pageLength: 10,
+            });
         });
     </script>
 </block>
@@ -55,6 +59,35 @@
                     <?php endforeach; ?>
                 </tr>
                 </tfoot>
+            </table>
+        </div>
+        <h1>重复产品列表：</h1>
+        <div class="col-lg-12">
+            <table id="repeat_products" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>产品id</th>
+                    <th>重复</th>
+                    <th>产品缩略图</th>
+                    <th>产品</th>
+                    <th>规格</th>
+                    <th>厂家</th>
+                    <th>门市</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach($repeat_products as $k => $v): ?>
+                    <tr>
+                        <td>{$v['product_id']}</td>
+                        <td>{$v['total']}</td>
+                        <td><img src="{$v['thumb']}" alt=""></td>
+                        <td>{$v['product']}</td>
+                        <td>{$v['standard']}</td>
+                        <td>{$v['cj']}</td>
+                        <td>{$v['sale_name']}</td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
             </table>
         </div>
     </div>
