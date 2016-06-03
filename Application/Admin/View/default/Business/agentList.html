@@ -1,0 +1,47 @@
+<extend name="Layout:ly2"/>
+
+<block name="head">
+
+</block>
+
+<block name="body">
+    <div class="container-fluid padding-top">
+        <h1>代理商列表</h1>
+        <div class="col-lg-12">
+            <table id="member_inquiry_table" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>userid</th>
+                    <th>名称</th>
+                    <th>姓名</th>
+                    <th>手机</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach($agents as $k => $v): ?>
+                <tr>
+                    <th>{$v['username']}</th>
+                    <th>{$v['userid']}</th>
+                    <th>{$v['username']}</th>
+                    <th>{$v['truename']}</th>
+                    <th>{$v['mobile']}</th>
+                </tr>
+                <?php if($v['_child']): ?>
+                <?php foreach($v['_child'] as $k1 => $v1): ?>
+                <tr>
+                    <th></th>
+                    <th>{$v1['userid']}</th>
+                    <th>{$v1['username']}</th>
+                    <th>  ┠─ {$v1['truename']}</th>
+                    <th>{$v1['mobile']}</th>
+                </tr>
+                <?php endforeach; ?>
+                <?php else: ?>
+                <?php endif; ?>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</block>

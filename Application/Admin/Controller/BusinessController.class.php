@@ -357,4 +357,22 @@ class BusinessController extends AdminController
         $this->assign(['data_list'=>$enterprise_data_list]);
         $this->display();
     }
+
+    /**
+     * 代理商列表
+     */
+    public function agentList()
+    {
+        $sql = "SELECT userid, username, truename, mobile, topagentid FROM __MALL_member";
+        $agents = $this->MallDb->list_query($sql);
+        $agents = Tools::list2tree($agents, 'userid', 'topagentid');
+        foreach($agents as $k => $v){
+            if($v['_child']){
+                $x[] = $v;
+            }
+        }
+        $agents = $x;
+        $this->assign(['agents'=>$agents]);
+        $this->display();
+    }
 }
