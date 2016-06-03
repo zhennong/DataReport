@@ -420,4 +420,23 @@ class MemberController extends AuthController
 			}
 		}
 	}
+	
+	/*
+	 *会员年注册比例 
+	 */
+	public function memberYear(){
+		$Member = D("Member");
+		$year_solt = get_year_solt($this->year_start, $this->year_end);
+		$map['status'] = ['in', '2,3,4'];
+		foreach ($year_solt as $k => $v) {
+			$map['regtime'] = [['gt', $v['start']['ts']], ['lt', $v['end']['ts']]];
+			$x = $Member->field('userid')->where($map)->select();
+			$member_year_data[$k]['year_name'] = date("Y", $v['start']['ts']);
+			$member_year_data[$k]['count'] = count($x);
+		}
+		$xAxis_data = Tools::arr2str(Tools::getCols($member_year_data, 'year_name', true));
+		$series_data_information = Tools::arr2str(Tools::getCols($member_year_data, 'count'));
+		$this->assign(['xAxis_data' => $xAxis_data, 'series_data_information' => $series_data_information,]);
+		$this->display();
+	}
 }
