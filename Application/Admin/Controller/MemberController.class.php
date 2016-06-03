@@ -378,6 +378,10 @@ class MemberController extends AuthController
 			S('data',$data);
 		}
 	}
+
+	/**
+	 * 导出用户数据
+	 */
 	public function memberExcel()
 	{
 		//
