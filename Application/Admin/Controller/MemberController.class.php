@@ -420,9 +420,86 @@ class MemberController extends AuthController
 			}
 		}
 	}
-	
+
+    public function memberList()
+    {
+        $day_search = I("get.search");
+        $day_search = Tools::str2arr($day_search['value']);
+        $this->day_start = strtotime($day_search[0] . ' 00:00:00');
+        $this->day_end = strtotime($day_search[1] . ' 23:59:59');
+        // 字段
+        $column = [
+            ['select'=>'member.userid','as'=>'userid','show_name'=>'用户id'],
+            ['select'=>'member.username','as'=>'username','show_name'=>'账号'],
+            ['select'=>'member.truename','as'=>'truename','show_name'=>'姓名'],
+            ['select'=>'member.topagentid','as'=>'agent_id','show_name'=>'代理商id'],
+            ['select'=>'member.mobile','as'=>'mobile','show_name'=>'手机'],
+            ['select'=>'member_trade.trade_count','as'=>'trade_count','show_name'=>'订单数'],
+            ['select'=>'member_trade.trade_total','as'=>'trade_total','show_name'=>'订单产品数'],
+            ['select'=>'member_trade.amount','as'=>'amount','show_name'=>'订单总额'],
+        ];
+        if($draw = I("get.draw")){
+            // 预定义
+            $start = $_GET['start'];
+            $limit = $_GET['length'];
+            $order = $_GET['order'];
+            $search[] = " member.regtime > {$this->day_start} AND member.regtime < {$this->day_end}";
+
+            // 重组条件
+            $order = "{$column[$order[0]['column']]['as']} {$order[0]['dir']}";
+            foreach ($_GET['columns'] as $k => $v) {
+                if ($v['search']['value'] != '') {
+                    $search[] = "{$column[$v['data']]['select']} LIKE '%{$v[search][value]}%'";
+                }
+            }
+            $search = Tools::arr2str($search, " AND ");
+            foreach($column as $k => $v){
+                $field[] = "{$v['select']} AS {$v['as']}";
+            }
+            $field = Tools::arr2str($field);
+
+            // 查询总数
+            $_sql = "SELECT {$field} FROM (SELECT userid, username, mobile, topagentid, regtime, truename FROM __MALL_member WHERE regtime > {$this->day_start} AND regtime < {$this->day_end} GROUP BY mobile) AS member
+                LEFT JOIN (SELECT buyer, COUNT(itemid) AS trade_count, SUM(total) AS trade_total, SUM(amount) AS amount FROM __MALL_finance_trade WHERE addtime > {$this->day_start} AND addtime < {$this->day_end} AND status IN(2, 3, 4) GROUP BY buyer) AS member_trade ON member.username = member_trade.buyer
+                WHERE {$search}
+                ORDER BY {$order}";
+            $sql = "SELECT COUNT(*) as total FROM ({$_sql}) AS x ";
+            $x = $this->MallDb->list_query($sql);
+            $total = $x[0]['total'];
+
+            // 查询数据并重组
+            $sql = "{$_sql}
+                LIMIT {$start}, {$limit}";
+//            Tools::_vp($this->MallDb->getSql($sql),0,2);
+            $data = $this->MallDb->list_query($sql);
+            foreach ($data as $k => $v) {
+                foreach ($column as $key => $value) {
+                    $x[$k][] = $v[$value['as']];
+                }
+            }
+
+            //获取Datatables发送的参数 必要
+            $show = [
+                "draw" => $draw,
+                "recordsTotal" => $total,
+                "recordsFiltered" => $total,
+                "data" => $x,
+            ];
+            $x = json_encode($show);
+            echo $x;
+            exit();
+        }else{
+            $sql = "SELECT trade.* FROM __MALL_finance_trade AS trade
+            LEFT JOIN __MALL_sell_5 AS product ON trade.p_id = product.itemid
+            LIMIT 0,10";
+            $orderList = $this->MallDb->list_query($sql);
+            $this->assign(['column'=>$column,'orderList'=>$orderList]);
+            $this->display();
+        }
+    }
+
 	/*
-	 *会员年注册比例 
+	 *会员年注册比例
 	 */
 	public function memberYear(){
 		$Member = D("Member");
