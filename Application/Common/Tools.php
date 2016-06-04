@@ -811,7 +811,7 @@ class Tools
 *差集，二维数组内部判断
 */
 
-    function arrayDiff($arr)
+    public function arrayDiff($arr)
     {
         if (count($arr)>0)
         {
@@ -832,7 +832,7 @@ class Tools
     /*
     *交集，二维数组内部判断
     */
-    function arrayIntersect($arr)
+    public function arrayIntersect($arr)
     {
         if (count($arr)>0)
         {
@@ -874,7 +874,7 @@ class Tools
     /*
     *差集,两个数组比较
     */
-    function arrayDiff2($arr1,$arr2,$arr3)
+    public function arrayDiff2($arr1,$arr2,$arr3)
     {
         foreach ($arr1 as $key => $value)
         {
