@@ -735,4 +735,153 @@ class Tools
         eval('array_multisort(' . $sortRule . '$rowset);');
         return $rowset;
     }
+
+
+    /*
+     * 判断语句是否符合安全问题
+     * @param $sql   sql语句，仅限sql查询语句
+     */
+
+    protected static function checkSql($sql) {
+        $str = array('update', 'insert', 'delete', ';', '\\', '\'', '"', );
+        for ($i = 0; $i <= count($str); $i++) {
+            $strbool = strpos($sql, $str[$i]);
+            if ($strbool) {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 导出数据为excel表格
+     *@param $sql   一条sql查询语句
+     *@param $data    一个二维数组,结构如同从数据库查出来的数组
+     *@param $title   excel的第一行标题,一个数组,如果为空则没有标题
+     *@param $filename 下载的文件名
+     *@Edwin
+     *$arr = $stu -> select();
+     *exportexcel($arr,array('id','账户','密码','昵称'),'文件名!');
+     */
+    public static function exportexcel($sql,$title,$filename='report')
+    {
+        //判断语句返回属性
+
+        if($result=self::checkSql($sql))
+        {
+            echo "含有非法字符,本语句只能用于查询";
+            return false;
+        }else{
+            $data = queryMysql($sql);
+            if($data)
+            {
+                header("Content-type:application/octet-stream");
+                header("Accept-Ranges:bytes");
+                header("Content-type:application/vnd.ms-excel");
+                header("Content-Disposition:attachment;filename=".$filename.".xls");
+                header("Pragma: no-cache");
+                header("Expires: 0");
+                //导出xls 开始
+                if (!empty($title)){
+                    foreach ($title as $k => $v) {
+                        $title[$k]=iconv("UTF-8", "GB2312",$v);
+                    }
+                    $title= implode("\t", $title);
+                    echo "$title\n";
+                }
+                if (!empty($data))
+                {
+                    foreach($data as $key=>$val){
+                        foreach ($val as $ck => $cv) {
+                            $data[$key][$ck]=iconv("UTF-8", "GB2312", $cv);
+                        }
+                        $data[$key]=implode("\t", $data[$key]);
+                    }
+                    echo implode("\n",$data);
+                }
+
+            }else{
+                echo  "sql执行失败，请检查sql";
+                }
+            }
+    }
+
+
+    /*
+*差集，二维数组内部判断
+*/
+
+    function arrayDiff($arr)
+    {
+        if (count($arr)>0)
+        {
+            foreach($arr as $key=>$val)
+            {
+                if ($key==0)//第一个先取出来
+                {
+                    $tmp_arr = $val;
+                }else
+                {
+                    $tmp_arr = array_diff($tmp_arr,$val);
+                }
+            }
+        }
+        return $tmp_arr;
+    }
+
+    /*
+    *交集，二维数组内部判断
+    */
+    function arrayIntersect($arr)
+    {
+        if (count($arr)>0)
+        {
+            foreach($arr as $key=>$val)
+            {
+                if ($key==0)//第一个先取出来
+                {
+                    $tmp_arr = $val;
+                }else
+                {
+                    $tmp_arr = array_intersect_assoc($tmp_arr,$val);
+                }
+            }
+        }
+        return $tmp_arr;
+    }
+
+    /*
+    *并集，二维数组内部判断
+    */
+    function arrayMerge($arr)
+    {
+        if (count($arr)>0)
+        {
+            foreach($arr as $key=>$val)
+            {
+                if ($key==0)//第一个先取出来
+                {
+                    $tmp_arr = $val;
+                }else
+                {
+                    $tmp_arr = array_merge($tmp_arr,$val);
+                }
+            }
+        }
+        return $tmp_arr;
+    }
+
+    /*
+    *差集,两个数组比较
+    */
+    function arrayDiff2($arr1,$arr2,$arr3)
+    {
+        foreach ($arr1 as $key => $value)
+        {
+            if(!in_array($value,$arr2)){
+                $arr3[]=$value;
+            }
+        }
+        return $arr3;
+    }
 }
