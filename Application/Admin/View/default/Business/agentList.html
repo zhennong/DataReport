@@ -11,7 +11,7 @@
             <table id="member_inquiry_table" class="table table-bordered table-hover">
                 <thead>
                 <tr>
-                    <th></th>
+                    <th>代理地区</th>
                     <th>userid</th>
                     <th>名称</th>
                     <th>姓名</th>
@@ -21,23 +21,22 @@
                 <tbody>
                 <?php foreach($agents as $k => $v): ?>
                 <tr>
-                    <th>{$v['username']}</th>
-                    <th>{$v['userid']}</th>
-                    <th>{$v['username']}</th>
-                    <th>{$v['truename']}</th>
-                    <th>{$v['mobile']}</th>
+                    <td><?=$v['areainfo'][2]." ".$v['areainfo'][1]." ".$v['areainfo'][0] ?></td>
+                    <td>{$v['memberinfo']['userid']}</td>
+                    <td>{$v['memberinfo']['username']}</td>
+                    <td>{$v['memberinfo']['truename']}</td>
+                    <td>{$v['memberinfo']['mobile']}</td>
                 </tr>
-                <?php if($v['_child']): ?>
-                <?php foreach($v['_child'] as $k1 => $v1): ?>
+                <?php if($v['downlines']): ?>
+                <?php foreach($v['downlines'] as $k1 => $v1): ?>
                 <tr>
-                    <th></th>
-                    <th>{$v1['userid']}</th>
-                    <th>{$v1['username']}</th>
-                    <th>  ┠─ {$v1['truename']}</th>
-                    <th>{$v1['mobile']}</th>
+                    <td></td>
+                    <td>{$v1['memberinfo']['userid']}</td>
+                    <td>{$v1['memberinfo']['username']}</td>
+                    <td>{$v1['memberinfo']['truename']}</td>
+                    <td>{$v1['memberinfo']['mobile']}</td>
                 </tr>
                 <?php endforeach; ?>
-                <?php else: ?>
                 <?php endif; ?>
                 <?php endforeach; ?>
                 </tbody>

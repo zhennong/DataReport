@@ -363,16 +363,24 @@ class BusinessController extends AdminController
      */
     public function agentList()
     {
-        $sql = "SELECT userid, username, truename, mobile, topagentid FROM __MALL_member";
+        $sql = "SELECT * FROM __MALL_agent";
         $agents = $this->MallDb->list_query($sql);
-        $agents = Tools::list2tree($agents, 'userid', 'topagentid');
         foreach($agents as $k => $v){
-            if($v['_child']){
-                $x[] = $v;
-            }
+            $agents[$k]['areainfo'] = $this->getAreaInfoFromAreaID($v['agareaid']);
+            $agents[$k]['downlines'] = $this->getAgentDownLine($v['aguid']);
+            $agents[$k]['memberinfo'] = $this->getMemberInfo($v['aguid'], "userid, username, truename, mobile");
         }
-        $agents = $x;
         $this->assign(['agents'=>$agents]);
         $this->display();
+    }
+
+    private function getAgentDownLine($agent_uid)
+    {
+        $sql = "SELECT * FROM __MALL_agent_downline WHERE agentuid = ".$agent_uid;
+        $downlines = $this->MallDb->list_query($sql);
+        foreach($downlines as $k => $v){
+            $downlines[$k]['memberinfo'] = $this->getMemberInfo($v['userid'], "userid, username, truename, mobile");
+        }
+        return $downlines;
     }
 }

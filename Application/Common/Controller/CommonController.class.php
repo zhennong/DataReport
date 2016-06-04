@@ -193,6 +193,38 @@ abstract class CommonController extends Controller
         $this->mapYearRange = [['gt',$this->year_start],['lt',$this->year_end]];
     }
 
+    /**
+     * 根据地区id获取地区详细
+     */
+    function getAreaFullNameFromAreaID($areaid){
+        $y = getAreaInfoFromAreaID($areaid,$x);
+        return array_reverse($y);
+    }
+
+    function getAreaInfoFromAreaID($areaid,&$areaInfo){
+        $sql = "SELECT * FROM __MALL_area WHERE areaid = ".$areaid;
+        $x = $this->MallDb->list_query($sql);
+//        $x = D('Area')->where(['areaid'=>$areaid])->select();
+
+        if($x[0]['parentid'] == 0){
+            $areaInfo[] = $x[0]['areaname'];
+        }else{
+            $areaInfo[] = $x[0]['areaname'];
+            getAreaInfoFromAreaID($x[0]['parentid'],$areaInfo);
+        }
+        return $areaInfo;
+    }
+
+    /**
+     * 获取用户信息
+     */
+    protected function getMemberInfo($userid, $field='*')
+    {
+        $sql = "SELECT {$field} FROM __MALL_member WHERE userid = ".$userid;
+        $x = $this->MallDb->list_query($sql);
+        return $x[0];
+    }
+
     public function _empty()
     {
         $this->display('Public:error');
