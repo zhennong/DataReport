@@ -37,6 +37,11 @@
                 pageLength: 10,
             });
         });
+        $(document).ready(function () {
+            $("#see").click(function(){
+                $("#repeat").toggle();
+            });
+        });
     </script>
 </block>
 
@@ -61,8 +66,10 @@
                 </tfoot>
             </table>
         </div>
-        <h1>重复产品列表：</h1>
-        <div class="col-lg-12">
+
+
+        <h1>重复产品列表：<button type="button" class="btn" id="see">点击查看/关闭重复产品</button></h1>
+        <div class="col-lg-12" id="repeat" style="display: none;">
             <table id="repeat_products" class="table table-bordered table-hover">
                 <thead>
                 <tr>
