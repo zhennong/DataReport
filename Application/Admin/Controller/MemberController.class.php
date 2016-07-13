@@ -533,14 +533,12 @@ class MemberController extends AuthController
 			$mouth_solt_data[$k]['mouth_solt'] = $v;
 			$x = $Member->field('userid')->where($map)->select();
 			$mouth_solt_data[$k]['count'] = count($x);
-			$pirchase_member = $Member->table("destoon_member as a")->join("destoon_finance_trade as b on a.username = b.buyer")->field("a.username")->where($map)->select();
+			$pirchase_member = $Member->table("destoon_member as a")->join('destoon_finance_trade as b on a.username = b.buyer')->field("a.username")->where($map)->group("b.buyer")->select();
 			$mouth_solt_data[$k]['count_pirchase'] = count($pirchase_member);
 		}
 		$count = $mouth_solt_data[$k]['count'];
 		$count_pirchase = $mouth_solt_data[$k]['count_pirchase'];
 		$this->assign(['member_count' => $count,'count_pirchase' => $count_pirchase]);
 		$this->display();
-
-
 	}
 }
