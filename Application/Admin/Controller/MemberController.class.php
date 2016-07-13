@@ -525,6 +525,7 @@ class MemberController extends AuthController
 		$Member = D("Member");
 		$map['status'] = ['in', '2,3,4'];
 		$mouth_solt = get_month_solt($this->month_start,$this->month_end);
+
 		foreach ($mouth_solt as $k => $v)
 		{
 			$time_start = $mouth_solt[1]['start']['ts'];
@@ -533,12 +534,13 @@ class MemberController extends AuthController
 			$mouth_solt_data[$k]['mouth_solt'] = $v;
 			$x = $Member->field('userid')->where($map)->select();
 			$mouth_solt_data[$k]['count'] = count($x);
-			$pirchase_member = $Member->table("destoon_member as a")->join('destoon_finance_trade as b on a.username = b.buyer')->field("a.username")->where($map)->group("b.buyer")->select();
-			$mouth_solt_data[$k]['count_pirchase'] = count($pirchase_member);
+			$sql ="SELECT count(username) as username FROM (SELECT a.username FROM destoon_member as a left join destoon_finance_trade as b on a.username=b.buyer WHERE b.updatetime BETWEEN $time_start AND $time_end GROUP BY b.buyer) AS x";
+			$data = $Member->query($sql);
+			$mouth_solt_data[$k]['count_pirchase'] = $data;
 		}
 		$count = $mouth_solt_data[$k]['count'];
 		$count_pirchase = $mouth_solt_data[$k]['count_pirchase'];
-		$this->assign(['member_count' => $count,'count_pirchase' => $count_pirchase]);
+		$this->assign(['member_count' => $count,'count_pirchase' => $count_pirchase[0]['username']]);
 		$this->display();
 	}
 }
