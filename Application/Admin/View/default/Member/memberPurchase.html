@@ -1,0 +1,59 @@
+<extend name="Layout:ly2"/>
+
+<block name="head">
+    <script type="text/javascript">
+        $(function () {
+            option = {
+                title : {
+                    text: '购买客户总量统计图（开始时间：<?= date("Y-m-d",$month_start )?> - 结束时间：<?= date("Y-m-d",$month_end ) ?>',
+                    subtext: '按添加公历日期',
+                    x:'center'
+                },
+                tooltip : {
+                    trigger: 'item',
+                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left',
+                    data: ['注册总量','购买客户总量']
+                },
+                series : [
+                    {
+                        name: '资讯',
+                        type: 'pie',
+                        radius : '55%',
+                        center: ['50%', '60%'],
+                        data:[
+                            {value:<?=$member_count?>, name:'会员总量'},
+                            {value:<?=$count_pirchase?>, name:'购买客户总量'},
+
+            ],
+            itemStyle: {
+                emphasis: {
+                    shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            }
+        }
+            ]
+        };
+
+            var ratio = echarts.init(document.getElementById('ratio'));
+            ratio.setOption(option);
+            window.onresize = function(){
+                ratio.resize();
+            };
+        })
+    </script>
+</block>
+
+<block name="body">
+    <include file="Includes/monthSelect"/>
+    <div class="container-fluid">
+        <div class="col-lg-12">
+            <div id="ratio" class="charts_h600"></div>
+        </div>
+    </div>
+</block>

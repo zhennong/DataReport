@@ -516,4 +516,31 @@ class MemberController extends AuthController
 		$this->assign(['xAxis_data' => $xAxis_data, 'series_data_information' => $series_data_information,]);
 		$this->display();
 	}
+
+	/*
+	 * 会员购买记录总数
+	 */
+	public function memberPurchase(){
+		//计算用户总量
+		$Member = D("Member");
+		$map['status'] = ['in', '2,3,4'];
+		$mouth_solt = get_month_solt($this->month_start,$this->month_end);
+		foreach ($mouth_solt as $k => $v)
+		{
+			$time_start = $mouth_solt[1]['start']['ts'];
+			$time_end = $mouth_solt[$k]['end']['ts'];
+			$map['regtime'] = [between,[$time_start,$time_end]];
+			$mouth_solt_data[$k]['mouth_solt'] = $v;
+			$x = $Member->field('userid')->where($map)->select();
+			$mouth_solt_data[$k]['count'] = count($x);
+			$pirchase_member = $Member->table("destoon_member as a")->join("destoon_finance_trade as b on a.username = b.buyer")->field("a.username,b.updatetime")->where($map)->select();
+			$mouth_solt_data[$k]['count_pirchase'] = count($pirchase_member);
+		}
+		$count = $mouth_solt_data[$k]['count'];
+		$count_pirchase = $mouth_solt_data[$k]['count_pirchase'];
+		$this->assign(['member_count' => $count,'count_pirchase' => $count_pirchase]);
+		$this->display();
+
+
+	}
 }
