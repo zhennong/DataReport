@@ -309,6 +309,7 @@ class TradeController extends AdminController
         // 字段
         $column = [
             ['select'=>'trade.itemid','as'=>'trade_id','show_name'=>'itemid'],
+            ['select'=>'trade.product_id','as'=>'product_id','show_name'=>'产品编号'],
             ['select'=>'trade.ordercode','as'=>'ordercode','show_name'=>'订单编号'],
             ['select'=>'trade.buyer_name','as'=>'buyer_name','show_name'=>'买家姓名'],
             ['select'=>'trade.total','as'=>'total','show_name'=>'数量'],
