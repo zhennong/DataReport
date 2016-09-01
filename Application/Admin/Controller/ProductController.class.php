@@ -660,7 +660,7 @@ LIMIT {$start}, {$limit}";
             ['select'=>'supply.standard','as'=>'standard','show_name'=>'规格'],
             ['select'=>'supply.cj','as'=>'cj','show_name'=>'厂家'],
             ['select'=>'sale.title','as'=>'sale_name','show_name'=>'门市'],
-            ['select'=>'supply.price','as'=>'supply','show_name'=>'价格'],
+            ['select'=>'supply.price','as'=>'price','show_name'=>'价格'],
 //            ['select'=>'market.name','as'=>'market_name','show_name'=>'市场'],
         ];
         if($draw = I("get.draw")){
