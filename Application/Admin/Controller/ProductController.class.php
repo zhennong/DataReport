@@ -355,8 +355,7 @@ LIMIT {$start}, {$limit}";
      */
     public function refundProduct()
     {
-        if ($draw = I("get.draw"))
-        {
+        if ($draw = I("get.draw")) {
             // 字段
             $column = [
                 ['select' => 'itemid', 'as' => 'itemid'],
@@ -413,7 +412,7 @@ LIMIT {$start}, {$limit}";
             //I('get.title_c');
             $sql = "SELECT title,count(*) AS count from destoon_finance_trade WHERE title like '%.I('get.title_c').%' AND status IN (6)";
             $data_count = queryMysql($sql);
-            $this->assign(['data_count'=>$data_count]);
+            $this->assign(['data_count' => $data_count]);
 
             exit();
         }
@@ -433,27 +432,27 @@ LIMIT {$start}, {$limit}";
 //        $this->day_end = strtotime('2016-05-01 00:00:00');
         // 字段
         $column = [
-            ['select'=>'product.itemid','as'=>'product_id','show_name'=>'产品itemid'],
+            ['select' => 'product.itemid', 'as' => 'product_id', 'show_name' => '产品itemid'],
 //            ['select'=>'product.catid','as'=>'catid','show_name'=>'产品类别'],
-            ['select'=>'product.title','as'=>'title','show_name'=>'产品标题'],
-            ['select'=>'product.standard','as'=>'standard','show_name'=>'产品规格'],
-            ['select'=>'product.cj','as'=>'cj','show_name'=>'厂家'],
-            ['select'=>'product.company','as'=>'company','show_name'=>'公司'],
-            ['select'=>'product.price','as'=>'price','show_name'=>'产品价格'],
-            ['select'=>'product.yuanprice','as'=>'yuanprice','show_name'=>'原价'],
-            ['select'=>'product.activeid','as'=>'activeid','show_name'=>'活动id'],
-            ['select'=>'product.actprice','as'=>'actprice','show_name'=>'活动价格'],
-            ['select'=>'product.menshiid','as'=>'menshiid','show_name'=>'门市id'],
-            ['select'=>'product.menshiprice','as'=>'menshiprice','show_name'=>'门市价格'],
-            ['select'=>'product.daily_indulgence_yuanprice','as'=>'daily_indulgence_yuanprice','show_name'=>'每日特价原价'],
-            ['select'=>'product.daily_indulgence_price','as'=>'daily_indulgence_price','show_name'=>'每日特价'],
-            ['select'=>'product.buytimes','as'=>'buytimes','show_name'=>'购买次数'],
+            ['select' => 'product.title', 'as' => 'title', 'show_name' => '产品标题'],
+            ['select' => 'product.standard', 'as' => 'standard', 'show_name' => '产品规格'],
+            ['select' => 'product.cj', 'as' => 'cj', 'show_name' => '厂家'],
+            ['select' => 'product.company', 'as' => 'company', 'show_name' => '公司'],
+            ['select' => 'product.price', 'as' => 'price', 'show_name' => '产品价格'],
+            ['select' => 'product.yuanprice', 'as' => 'yuanprice', 'show_name' => '原价'],
+            ['select' => 'product.activeid', 'as' => 'activeid', 'show_name' => '活动id'],
+            ['select' => 'product.actprice', 'as' => 'actprice', 'show_name' => '活动价格'],
+            ['select' => 'product.menshiid', 'as' => 'menshiid', 'show_name' => '门市id'],
+            ['select' => 'product.menshiprice', 'as' => 'menshiprice', 'show_name' => '门市价格'],
+            ['select' => 'product.daily_indulgence_yuanprice', 'as' => 'daily_indulgence_yuanprice', 'show_name' => '每日特价原价'],
+            ['select' => 'product.daily_indulgence_price', 'as' => 'daily_indulgence_price', 'show_name' => '每日特价'],
+            ['select' => 'product.buytimes', 'as' => 'buytimes', 'show_name' => '购买次数'],
 //            ['select'=>'product.priceperarea','as'=>'priceperarea','show_name'=>'各地区价格'],
 //            ['select'=>'product.company','as'=>'company','show_name'=>'公司'],
 //            ['select'=>'product.cj','as'=>'cj','show_name'=>'厂家'],
-            ['select'=>'product.status','as'=>'status','show_name'=>'状态'],
+            ['select' => 'product.status', 'as' => 'status', 'show_name' => '状态'],
         ];
-        if($draw = I("get.draw")){
+        if ($draw = I("get.draw")) {
             // 预定义
             $start = $_GET['start'];
             $limit = $_GET['length'];
@@ -468,7 +467,7 @@ LIMIT {$start}, {$limit}";
                 }
             }
             $search = Tools::arr2str($search, " AND ");
-            foreach($column as $k => $v){
+            foreach ($column as $k => $v) {
                 $field[] = "{$v['select']} AS {$v['as']}";
             }
             $field = Tools::arr2str($field);
@@ -502,12 +501,12 @@ LIMIT {$start}, {$limit}";
             $x = json_encode($show);
             echo $x;
             exit();
-        }else{
+        } else {
             $sql = "SELECT trade.* FROM __MALL_finance_trade AS trade
             LEFT JOIN __MALL_sell_5 AS product ON trade.p_id = product.itemid
             LIMIT 0,10";
             $orderList = $this->MallDb->list_query($sql);
-            $this->assign(['column'=>$column,'orderList'=>$orderList]);
+            $this->assign(['column' => $column, 'orderList' => $orderList]);
             $this->display();
         }
     }
@@ -518,10 +517,10 @@ LIMIT {$start}, {$limit}";
     public function productExport()
     {
         $Product = D('Product');
-        if(IS_POST){
+        if (IS_POST) {
             $order_by_name = I('post.order_by_name');
             $order_by = I('post.order_by');
-            if(I("post.menshi")!=''){
+            if (I("post.menshi") != '') {
                 $menshi = I("post.menshi");
                 $sql = "SELECT gy.pid FROM __MALL_fahuo_gongying AS gy
                     LEFT JOIN __MALL_fahuo AS fh ON gy.fid = fh.id
@@ -531,37 +530,117 @@ LIMIT {$start}, {$limit}";
                     $product_arr[] = $v['pid'];
                 }
                 $product_str = Tools::arr2str($product_arr);
-                $map['itemid'] = ['in',$product_str];
-            }else{
+                $map['itemid'] = ['in', $product_str];
+            } else {
                 $menshi = "";
             }
-            if(I("post.username")!=''){
+            if (I("post.username") != '') {
                 $map['username'] = I("post.username");
             }
-            if(I("post.cj")!=''){
+            if (I("post.cj") != '') {
                 $map['cj'] = I("post.cj");
             }
-            if(I("post.company")!=''){
+            if (I("post.company") != '') {
                 $map['company'] = I("post.company");
             }
 
-            $data = $Product->field(["itemid","title","model","standard","price","diprice","username","cj","company","addtime"])->where($map)->order("{$order_by_name} {$order_by}")->select();
-            foreach($data as $k => $v){
-                $data[$k]['addtime'] = date("Y-m-d H:i:s",$v['addtime']);
+            $data = $Product->field(["itemid", "title", "model", "standard", "price", "diprice", "username", "cj", "company", "addtime"])->where($map)->order("{$order_by_name} {$order_by}")->select();
+            foreach ($data as $k => $v) {
+                $data[$k]['addtime'] = date("Y-m-d H:i:s", $v['addtime']);
                 $data[$k]['total'] = count(D('Trade')->where("p_id = {$v['itemid']}")->field("itemid")->select());
                 $data[$k]['menshi'] = $menshi;
             }
             $fileName = "产品导出";
-            $headArr = ["编号","标题","成份","规格","价格","底价","用户名","厂家","公司","发布日期","销售数","门市"];
-            if(count($data)==0){
+            $headArr = ["编号", "标题", "成份", "规格", "价格", "底价", "用户名", "厂家", "公司", "发布日期", "销售数", "门市"];
+            if (count($data) == 0) {
                 echo "没有数据可以导出";
                 exit();
-            }else{
+            } else {
                 exportExcel($fileName, $headArr, $data);
                 exit();
             }
         }
         $this->display();
+    }
+
+    /**
+     * 门市产品导出
+     */
+    public function salesProductExport()
+    {
+        // 字段
+        $column = [
+            ['select' => 'market.name', 'as' => 'market_name', 'show_name' => '市场'],
+            ['select' => 'sales.title', 'as' => 'sales_name', 'show_name' => '门市'],
+            ['select' => 'product.itemid', 'as' => 'product_id', 'show_name' => '产品itemid'],
+            ['select' => 'product.title', 'as' => 'product_title', 'show_name' => '产品'],
+            ['select' => 'product.standard', 'as' => 'standard', 'show_name' => '产品规格'],
+            ['select' => 'product.price', 'as' => 'price', 'show_name' => '产品价格'],
+            ['select' => 'product.diprice', 'as' => 'floor_price', 'show_name' => '产品底价'],
+        ];
+        foreach ($column as $k => $v) {
+            $field[] = "{$v['select']} AS {$v['as']}";
+        }
+        $field = Tools::arr2str($field);
+        $this->assign(['column' => $column]);
+        if ($draw = I("get.draw")) {
+            // 预定义
+            $start = $_GET['start'];
+            $limit = $_GET['length'];
+            $order = $_GET['order'];
+            $search = [" 1 "];
+
+            // 重组条件
+            $order = "{$column[$order[0]['column']]['as']} {$order[0]['dir']}";
+            foreach ($_GET['columns'] as $k => $v) {
+                if ($v['search']['value'] != '') {
+                    $search[] = "{$column[$v['data']]['select']} LIKE '%{$v[search][value]}%'";
+                }
+            }
+            $search = Tools::arr2str($search, " AND ");
+
+            // 查询总数
+            /*$_sql = "SELECT {$field} FROM __MALL_sell_5 AS product
+                WHERE {$search}
+                ORDER BY {$order}";*/
+            $_sql = "SELECT {$field} 
+FROM __MALL_fahuo_gongying AS supply 
+LEFT JOIN __MALL_sell_5 AS product ON supply.pid = product.itemid 
+LEFT JOIN __MALL_fahuo AS sales ON supply.fid = sales.id 
+LEFT JOIN __MALL_fahuo_market AS market ON sales.marketid = market.id 
+WHERE {$search} 
+ORDER BY {$order}";
+
+
+            $sql = "SELECT COUNT(x.product_id) as total FROM ({$_sql}) AS x ";
+            $x = $this->MallDb->list_query($sql);
+            $total = $x[0]['total'];
+
+            // 查询数据并重组
+            $sql = "{$_sql}
+                LIMIT {$start}, {$limit}";
+//            Tools::_vp($this->MallDb->getSql($sql),0,2);
+            $data = $this->MallDb->list_query($sql);
+            $x = [];
+            foreach ($data as $k => $v) {
+                foreach ($column as $key => $value) {
+                    $x[$k][] = $v[$value['as']];
+                }
+            }
+
+            //获取Datatables发送的参数 必要
+            $show = [
+                "draw" => $draw,
+                "recordsTotal" => $total,
+                "recordsFiltered" => $total,
+                "data" => $x,
+            ];
+            $x = json_encode($show);
+            echo $x;
+            exit();
+        } else {
+            $this->display();
+        }
     }
 
     /**
@@ -579,7 +658,7 @@ LIMIT {$start}, {$limit}";
             INNER JOIN __MALL_sell_5 AS product ON gy.pid = product.itemid";
 
         $markets = $this->MallDb->list_query($sql);
-        $this->assign(['markets'=>$markets]);
+        $this->assign(['markets' => $markets]);
         $this->display();
     }
 
@@ -588,8 +667,8 @@ LIMIT {$start}, {$limit}";
      */
     public function marketInfo()
     {
-        if($market_id = I('get.market_id')){
-            if($sale_id = I('get.sale_id')){
+        if ($market_id = I('get.market_id')) {
+            if ($sale_id = I('get.sale_id')) {
                 $sql = "SELECT id, name, areaid FROM __MALL_fahuo_market WHERE id = {$market_id}";
                 $markets = $this->MallDb->list_query($sql);
                 foreach ($markets as $k => $v) {
@@ -607,7 +686,7 @@ LIMIT {$start}, {$limit}";
                 }
                 $this->assign(['markets' => $markets]);
                 $this->display('products');
-            }else{
+            } else {
                 $sql = "SELECT id, name, areaid FROM __MALL_fahuo_market WHERE id = {$market_id}";
                 $markets = $this->MallDb->list_query($sql);
                 foreach ($markets as $k => $v) {
@@ -654,16 +733,16 @@ LIMIT {$start}, {$limit}";
     {
         // 字段
         $column = [
-            ['select'=>'product.itemid','as'=>'product_id','show_name'=>'产品id'],
-            ['select'=>'product.thumb','as'=>'thumb','show_name'=>'产品缩略图'],
-            ['select'=>'supply.product','as'=>'product','show_name'=>'产品'],
-            ['select'=>'supply.standard','as'=>'standard','show_name'=>'规格'],
-            ['select'=>'supply.cj','as'=>'cj','show_name'=>'厂家'],
-            ['select'=>'sale.title','as'=>'sale_name','show_name'=>'门市'],
-            ['select'=>'supply.price','as'=>'price','show_name'=>'价格'],
+            ['select' => 'product.itemid', 'as' => 'product_id', 'show_name' => '产品id'],
+            ['select' => 'product.thumb', 'as' => 'thumb', 'show_name' => '产品缩略图'],
+            ['select' => 'supply.product', 'as' => 'product', 'show_name' => '产品'],
+            ['select' => 'supply.standard', 'as' => 'standard', 'show_name' => '规格'],
+            ['select' => 'supply.cj', 'as' => 'cj', 'show_name' => '厂家'],
+            ['select' => 'sale.title', 'as' => 'sale_name', 'show_name' => '门市'],
+            ['select' => 'supply.price', 'as' => 'price', 'show_name' => '价格'],
 //            ['select'=>'market.name','as'=>'market_name','show_name'=>'市场'],
         ];
-        if($draw = I("get.draw")){
+        if ($draw = I("get.draw")) {
             // 预定义
             $start = $_GET['start'];
             $limit = $_GET['length'];
@@ -678,7 +757,7 @@ LIMIT {$start}, {$limit}";
                 }
             }
             $search = Tools::arr2str($search, " AND ");
-            foreach($column as $k => $v){
+            foreach ($column as $k => $v) {
                 $field[] = "{$v['select']} AS {$v['as']}";
             }
             $field = Tools::arr2str($field);
@@ -700,8 +779,8 @@ LIMIT {$start}, {$limit}";
 //            Tools::_vp($this->MallDb->getSql($sql),0,2);
             $data = $this->MallDb->list_query($sql);
 //            Tools::_vp($data,0,2);
-            foreach ($data as $k => $v){
-                $data[$k]['thumb'] = "<img src='".$v['thumb']."' />";
+            foreach ($data as $k => $v) {
+                $data[$k]['thumb'] = "<img src='" . $v['thumb'] . "' />";
             }
             foreach ($data as $k => $v) {
                 foreach ($column as $key => $value) {
@@ -719,8 +798,8 @@ LIMIT {$start}, {$limit}";
             $x = json_encode($show);
             echo $x;
             exit();
-        }else{
-            foreach($column as $k => $v){
+        } else {
+            foreach ($column as $k => $v) {
                 $field[] = "{$v['select']} AS {$v['as']}";
             }
             $field = Tools::arr2str($field);
@@ -730,12 +809,12 @@ LIMIT {$start}, {$limit}";
                 INNER JOIN __MALL_fahuo_market AS market ON sale.marketid = market.id
                 GROUP BY product.itemid";
             $x = $this->MallDb->list_query($sql);
-            foreach($x as $k => $v){
-                if($v['total']>1){
+            foreach ($x as $k => $v) {
+                if ($v['total'] > 1) {
                     $repeat_products[] = $v;
                 }
             }
-            $this->assign(['column'=>$column, 'repeat_products'=>$repeat_products]);
+            $this->assign(['column' => $column, 'repeat_products' => $repeat_products]);
             $this->display();
         }
     }
