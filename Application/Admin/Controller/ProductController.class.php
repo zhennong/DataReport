@@ -575,6 +575,7 @@ LIMIT {$start}, {$limit}";
             ['select' => 'product.itemid', 'as' => 'product_id', 'show_name' => '产品itemid'],
             ['select' => 'product.title', 'as' => 'product_title', 'show_name' => '产品'],
             ['select' => 'product.standard', 'as' => 'standard', 'show_name' => '产品规格'],
+            ['select' => 'supply.cj', 'as' => 'smanufactor', 'show_name' => '供应厂家'],
             ['select' => 'product.price', 'as' => 'price', 'show_name' => '产品价格'],
             ['select' => 'product.diprice', 'as' => 'floor_price', 'show_name' => '产品底价'],
         ];
