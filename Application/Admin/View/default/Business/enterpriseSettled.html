@@ -24,6 +24,7 @@
                     <th>姓名</th>
                     <th>联系方式</th>
                     <th>备注</th>
+                    <th>申请时间</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -34,6 +35,7 @@
                     <th>{$v['username']}</th>
                     <th>{$v['contact_way']}</th>
                     <th>{$v['note']}</th>
+                    <th>{$v['time']|date="Y-m-d H:i:s",###}</th>
                 </tr>
                 <?php endforeach; ?>
                 </tbody>
