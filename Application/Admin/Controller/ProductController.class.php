@@ -545,11 +545,15 @@ LIMIT {$start}, {$limit}";
             }
 
             $data = $Product->field(["itemid", "title", "model", "standard", "price", "diprice", "username", "cj", "company", "addtime"])->where($map)->order("{$order_by_name} {$order_by}")->select();
+
             foreach ($data as $k => $v) {
                 $data[$k]['addtime'] = date("Y-m-d H:i:s", $v['addtime']);
                 $data[$k]['total'] = count(D('Trade')->where("p_id = {$v['itemid']}")->field("itemid")->select());
                 $data[$k]['menshi'] = $menshi;
+                $data[$k]['diprice'] = $this->dprice($data[$k]['itemid'],$menshi);
             }
+            var_dump($data);
+            exit();
             $fileName = "产品导出";
             $headArr = ["编号", "标题", "成份", "规格", "价格", "底价", "用户名", "厂家", "公司", "发布日期", "销售数", "门市"];
             if (count($data) == 0) {
@@ -563,6 +567,13 @@ LIMIT {$start}, {$limit}";
         $this->display();
     }
 
+
+    private function dprice($itemid,$menshi){
+        $dsql = "SELECT fg.price FROM destoon_fahuo f,destoon_fahuo_gongying fg WHERE fg.pid=".$itemid." AND fg.type=0 AND f.id=fg.fid AND `title` ='{$menshi}'";
+        $diprice = $this->MallDb->list_query($dsql);
+        $diprice = $diprice[0]['price'];
+        return $diprice;
+    }
     /**
      * 门市产品导出
      */
