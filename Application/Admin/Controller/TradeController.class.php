@@ -370,4 +370,21 @@ class TradeController extends AdminController
             $this->display();
         }
     }
+
+    /**
+     * 批量采购
+     * @author Edwin <junqianhen@gmail.com>
+     */
+    public function bulkPurchase()
+    {
+        $BulkPurchase = D('BulkPurchase');
+        //查询数据
+        $bulk_purchase = $BulkPurchase->select();
+        foreach($bulk_purchase as $k => $v){
+            $bulk_purchase_list[$k] = $v;
+        };
+        //注入显示
+        $this->assign(['data_list'=>$bulk_purchase_list]);
+        $this->display();
+    }
 }
